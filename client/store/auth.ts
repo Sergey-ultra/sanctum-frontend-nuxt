@@ -1,5 +1,4 @@
-//import { useNuxtApp } from '#app'
-
+import { useNuxtApp } from '#app'
 import {useNotificationStore} from "./notification";
 
 export interface UserData {
@@ -54,6 +53,7 @@ export const useAuthStore = defineStore({
             this.isShowAuthModal = payload
         },
         async loginWithService(service) {
+            const { $api } = useNuxtApp()
             const { url } = await $api.get(`/login/${service}`)
             if (url) {
                 window.location.href = url
@@ -61,11 +61,13 @@ export const useAuthStore = defineStore({
         },
         async loginViaSocialServices(obj) {
             const { user_name, token, avatar } = obj
+            const { $api } = useNuxtApp()
             $api.setUserData({userName: user_name, token, avatar})
             this.SET_USER({ userName: user_name, avatar, role: 'Client' })
             this.setIsShowAuthModal(false)
         },
         async login(object) {
+            const { $api } = useNuxtApp()
             const res = await $api.post('/login', object);
             if (res.status) {
                 if (!res.isRequiredEmailVerification) {
@@ -83,6 +85,7 @@ export const useAuthStore = defineStore({
             }
         },
         async register(object) {
+            const { $api } = useNuxtApp()
             const res = await $api.post('/register', object);
 
             if (res.isRequiredEmailVerification) {
@@ -98,11 +101,13 @@ export const useAuthStore = defineStore({
             }
         },
         async logout() {
+            const { $api } = useNuxtApp()
             const { message } = await $api.post('/logout');
             $api.removeUserData();
             this.LOGOUT();
         },
         async resendVerificationEmail() {
+            const { $api } = useNuxtApp()
             const { message } = await $api.post('/email/verification-notification', {email: this.mailVerification.userEmail});
             if (message) {
                 const notificationStore = useNotificationStore();

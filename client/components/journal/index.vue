@@ -39,7 +39,6 @@
 <script setup>
     import {useArticleStore} from "../../store/article";
     import {storeToRefs} from "pinia";
-
     const articleStore = useArticleStore();
     const { articles } = storeToRefs(articleStore);
 
@@ -66,6 +65,7 @@
     };
 
     useAsyncData(async() => await articleStore.loadArticles());
+
 </script>
 
 <style lang="scss" scoped>

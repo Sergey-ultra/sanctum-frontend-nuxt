@@ -1,13 +1,6 @@
 <template>
     <div class="main">
-        <div class="main__row" v-if="isLoadingCategories">
-            <div
-                    class="main__row-item skeleton-loader"
-                    v-for="item in [1,2,3,4,5,6,7,8]"
-                    :key="item"
-            ></div>
-        </div>
-        <div class="main__row" v-else>
+        <div class="main__row">
             <nuxt-link
                     class="main__row-item"
                     v-for="category in categories"
@@ -30,7 +23,8 @@
     import { storeToRefs } from "pinia";
 
     const categoryStore = useCategoryStore();
-    const { isLoadingCategories, categories } = storeToRefs(categoryStore);
+    const { categories } = storeToRefs(categoryStore);
+
     useAsyncData(async() => {
         if (!categories.length) {
             await categoryStore.loadNestedCategories()

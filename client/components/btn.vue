@@ -38,7 +38,7 @@
     // },
     const styleObject = computed(() => {
         let styles = {
-            height: this.height + 'px',
+            height: props.height + 'px',
             background: background.value,
             border: `1px solid ${background.value}`,
         };

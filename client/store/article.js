@@ -1,6 +1,5 @@
+import { useNuxtApp } from '#app'
 import api from '../utils/api'
-
-
 
 export const useArticleStore = defineStore({
     id: 'article',
@@ -13,7 +12,9 @@ export const useArticleStore = defineStore({
     actions: {
         async loadArticles() {
             this.isLoadingArticles = true;
-            const { data } = await api.get('/articles/main');
+            const { $api } = useNuxtApp()
+            const { data } = await $api.get('/articles/main');
+
             if (data !== null) {
                 this.articles = [...data];
             }
@@ -22,7 +23,8 @@ export const useArticleStore = defineStore({
         async loadCurrentArticle(id) {
             this.isLoadingCurrentArticle = true;
 
-            const { data } = await api.get(`/articles/main/${id}`);
+            const { $api } = useNuxtApp()
+            const { data } = await $api.get(`/articles/main/${id}`);
             if (data) {
                 this.currentArticle = {...data };
             }

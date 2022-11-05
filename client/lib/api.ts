@@ -55,19 +55,39 @@ export default class Api {
         fetchOptions.method = method
         delete this.config.fetchOptions.body
         delete this.config.fetchOptions.params
-        if (params)
-            if (method === 'POST' || method === 'PUT')
+        if (params) {
+            if (method === 'POST' || method === 'PUT') {
                 this.config.fetchOptions.body = params
-            else
+            } else {
                 this.config.fetchOptions.params = params
+            }
+        }
         return this.config.fetchOptions
     }
 
 
 
+
+
     public async get(endpoint: string, params?: SearchParams, cb?: (e: FetchError) => void, toast = true) {
         try {
-            return await $fetch(endpoint, this.fetchOptions(params))
+            if (params && params.hasOwnProperty('params')) {
+                let queryArray = []
+                for (let [key, value] of Object.entries(params.params)) {
+                    if (Array.isArray(value) && value.length) {
+                        value.forEach(el => queryArray.push(`${key}[]=${el}`))
+                    } else if (("string" === typeof value && value !== '') || "number" === typeof value) {
+                        queryArray.push(`${key}=${value}`)
+                    }
+                }
+                delete params.params
+
+                if (queryArray.length) {
+                    endpoint += '?' + queryArray.join('&')
+                }
+            }
+
+            return await $fetch(endpoint, await this.fetchOptions(params))
         } catch (error) {
             if (cb) cb(error)
             if (toast) await this.handleError(error)
@@ -75,7 +95,6 @@ export default class Api {
     }
 
     public async post(endpoint: string, params?: SearchParams, cb?: (e: FetchError) => void, toast = true) {
-        console.log(await this.fetchOptions(params, 'POST'))
         try {
             return await $fetch(endpoint, await this.fetchOptions(params, 'POST'))
         } catch (error) {
@@ -86,7 +105,7 @@ export default class Api {
 
     public async put(endpoint: string, params?: SearchParams, cb?: (e: FetchError) => void, toast = true) {
         try {
-            return await $fetch(endpoint, this.fetchOptions(params, 'PUT'))
+            return await $fetch(endpoint, await this.fetchOptions(params, 'PUT'))
         } catch (error) {
             if (cb) cb(error)
             if (toast) await this.handleError(error)
@@ -95,7 +114,7 @@ export default class Api {
 
     public async delete(endpoint: string, params?: SearchParams, cb?: (e: FetchError) => void, toast = true) {
         try {
-            return await $fetch(endpoint, this.fetchOptions(params, 'DELETE'))
+            return await $fetch(endpoint, await this.fetchOptions(params, 'DELETE'))
         } catch (error) {
             if (cb) cb(error)
             if (toast) await this.handleError(error)

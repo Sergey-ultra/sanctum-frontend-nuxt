@@ -1,4 +1,4 @@
-import api from '../utils/api'
+import {useNuxtApp} from "#app";
 
 export const useProductStore = defineStore({
     id: 'product',
@@ -142,17 +142,18 @@ export const useProductStore = defineStore({
         },
         async loadProductsWithPagination(object = {}) {
             this.isLoadingProductsWithPagination = true;
-            let query = { ...this.queryParams };
+            const params = { ...this.queryParams };
+
 
             if (this.sortOption !== 'popular') {
-                query.sort = this.sortOption;
+                params.sort = this.sortOption;
             }
 
-            query.page = this.currentPage;
+            params.page = this.currentPage;
 
+            const { $api } = useNuxtApp()
+            const res = await $api.get(`/skus/main`, { params })
 
-            const res = await $fetch(`http://sanctum/api/skus/main`, {query})
-            console.log(res)
             if (res) {
                 if (this.isLoadMore) {
                     this.productsWithPagination = this.productsWithPagination.concat(res.products.data);

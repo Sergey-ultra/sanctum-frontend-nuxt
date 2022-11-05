@@ -1,4 +1,4 @@
-import api from '../utils/api'
+import {useNuxtApp} from "#app";
 
 export const useCurrentSkuStore = defineStore({
     id: 'currentSku',
@@ -15,7 +15,9 @@ export const useCurrentSkuStore = defineStore({
         },
         async loadCurrentSku() {
             this.isLoadingCurrentSku = true;
-            const { data } = await api.get(`/skus/by-sku-id/${this.currentSkuId}`);
+
+            const { $api } = useNuxtApp()
+            const { data } = await $api.get(`/skus/by-sku-id/${this.currentSkuId}`);
             if (data) {
                 this.currentSku = {...data};
             }
@@ -25,7 +27,8 @@ export const useCurrentSkuStore = defineStore({
             if (this.currentSkuId) {
                 this.isLoadingCompactCurrentSku = true;
 
-                const {data} = await api.get(`/skus/by-sku-id/${this.currentSkuId}`, {params: {view: 'compact'}})
+                const { $api } = useNuxtApp()
+                const { data } = await $api.get(`/skus/by-sku-id/${this.currentSkuId}`, {params: {view: 'compact'}})
                 if (data) {
                     this.compactCurrentSku = {...data};
                 }

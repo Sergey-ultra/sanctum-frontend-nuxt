@@ -1,4 +1,4 @@
-import api from '../utils/api'
+import {useNuxtApp} from "#app";
 
 export const useTrackingStore = defineStore({
     id: 'tracking',
@@ -18,7 +18,8 @@ export const useTrackingStore = defineStore({
                 this.trackingSkuIds.push(obj.sku_id);
 
                 localStorage.setItem('trackingSkuIds', JSON.stringify([...this.trackingSkuIds]));
-                const { data } = await api.post('add-to-tracking', obj);
+                const { $api } = useNuxtApp()
+                const { data } = await $api.post('add-to-tracking', obj);
                 if (data && data.status === 'success') {
                     this.isSuccessToAddingToTrackingSkuIds = true;
                 }

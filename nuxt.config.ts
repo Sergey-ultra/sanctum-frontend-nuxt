@@ -5,6 +5,7 @@ export default defineNuxtConfig({
     css: [
         "@/assets/css/normalize.css",
         "@/assets/css/app.css",
+        '@fortawesome/fontawesome-svg-core/styles.css'
     ],
     runtimeConfig: {
         public: {

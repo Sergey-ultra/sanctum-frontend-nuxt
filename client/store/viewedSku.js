@@ -1,4 +1,4 @@
-import api from '../utils/api'
+import {useNuxtApp} from "#app";
 
 export const useViewedSkuStore = defineStore({
     id: 'viewedSku',
@@ -33,7 +33,8 @@ export const useViewedSkuStore = defineStore({
             if (this.viewedSkuId.length) {
                 localStorage.setItem('viewedProducts', JSON.stringify([...this.viewedSkuId]));
 
-                const { data } = await api.get('/skus/viewed', { params: { ids: this.viewedSkuId } });
+                const { $api } = useNuxtApp()
+                const { data } = await $api.get('/skus/viewed', {params: { ids: this.viewedSkuId }});
                 if (data && Array.isArray(data)) {
                     this.viewedSkus = [...data];
                 }

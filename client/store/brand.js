@@ -1,5 +1,4 @@
-import api from '../utils/api'
-
+import { useNuxtApp } from '#app'
 
 export const useBrandStore = defineStore({
     id: 'brand',
@@ -17,7 +16,8 @@ export const useBrandStore = defineStore({
         },
         async loadAllBrand() {
             this.isLoadingAllBrands = true;
-            const { data } = await $fetch('http://sanctum/api/brands/all');
+            const { $api } = useNuxtApp()
+            const { data } = await $api.get('/brands/all');
             if (data) {
                 this.allBrands = [...data];
 
@@ -32,7 +32,8 @@ export const useBrandStore = defineStore({
             this.isLoadingAllBrands = false;
         },
         async loadPopularBrands() {
-            const { data } = await api.get('http://sanctum/api/brands/popular');
+            const { $api } = useNuxtApp()
+            const { data } = await $api.get('/brands/popular');
 
             if (data) {
                 this.popularBrands = [...data];
@@ -40,8 +41,8 @@ export const useBrandStore = defineStore({
         },
         async loadBrandByCode(code) {
             this.isLoadingCurrentBrand = true;
-
-            const { data } = await $fetch(`http://sanctum/api/brands/by-code/${code}`);
+            const { $api } = useNuxtApp()
+            const { data } = await $api.get(`/brands/by-code/${code}`);
             if (data) {
                 this.currentBrand = { ...data };
             }

@@ -17,8 +17,8 @@ export default defineNuxtPlugin(() => {
   }
 })
 
-// declare module '#app' {
-//   interface NuxtApp {
-//     $api: Api
-//   }
-// }
+declare module '#app' {
+  interface NuxtApp {
+    $api: Api
+  }
+}

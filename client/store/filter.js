@@ -1,4 +1,4 @@
-import api from '../utils/api'
+import {useNuxtApp} from "#app";
 import {useProductStore} from "./product";
 
 
@@ -34,7 +34,8 @@ export const useFilterStore = defineStore({
         async loadFilters() {
             this.isLoadingFilter = true;
             const productStore = useProductStore();
-            const { data } = await $fetch('http://sanctum/api/filter', { query: { ...productStore.queryParams } });
+            const { $api } = useNuxtApp()
+            const { data } = await $api.get('/filter', { params: { ...productStore.queryParams } });
             if (data) {
                 this.filters = { ...data};
             }
@@ -42,7 +43,8 @@ export const useFilterStore = defineStore({
         },
         async loadReceipts() {
             const productStore = useProductStore();
-            const { data } = await $fetch('http://sanctum/api/filter/receipts', { query: { ...productStore.queryParams } })
+            const { $api } = useNuxtApp()
+            const { data } = await $api.get('/filter/receipts', { params: { ...productStore.queryParams } })
             if (data) {
                 this.receipts = [ ...data];
             }

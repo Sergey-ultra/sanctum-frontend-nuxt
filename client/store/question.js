@@ -1,4 +1,4 @@
-import api from '../utils/api'
+import {useNuxtApp} from "#app";
 import {useCurrentSkuStore} from "./currentSku";
 import {useNotificationStore} from "./notification";
 
@@ -43,8 +43,8 @@ export const useQuestionStore = defineStore({
                     page: this.tableOptions.currentPage,
                     sku_id: skuId
                 }
-
-                const { data } = await api.get('questions', { params });
+                const { $api } = useNuxtApp()
+                const { data } = await $api.get('questions', { params });
                 if (data) {
                     this.questionWithPagination = [...data.data];
                     this.total = data.total;
@@ -58,7 +58,8 @@ export const useQuestionStore = defineStore({
             const skuId = currentSkuStore.currentSkuId;
             if (skuId) {
                 obj.sku_id = skuId;
-                const { data } = await api.post('questions', obj);
+                const { $api } = useNuxtApp()
+                const { data } = await $api.post('questions', obj);
                 const notificationStore = useNotificationStore();
                 notificationStore.setSuccess('Вопрос успешно создан и будет опубликован после модерации');
                 await this.reloadQuestions();

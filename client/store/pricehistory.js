@@ -1,4 +1,4 @@
-import api from '../utils/api'
+import {useNuxtApp} from "#app";
 
 export const usePriceHistoryStore = defineStore({
     id: 'priceHistory',
@@ -7,7 +7,8 @@ export const usePriceHistoryStore = defineStore({
     }),
     actions: {
         async loadPriceHistory(sku_id) {
-            const { data } = await api.get('price-history', { params: { sku_id } });
+            const { $api } = useNuxtApp()
+            const { data } = await $api.get('price-history', { params: { sku_id } });
             if (data) {
                 this.priceHistory = [...data];
             }

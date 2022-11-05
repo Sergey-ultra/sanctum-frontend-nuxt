@@ -188,7 +188,7 @@
             <h2 class="comparison__title">Список сравниваемых товаров пока пуст</h2>
             <p class="comparison__text">Вы можете начать свой выбор с нашего каталога товаров или воспользоваться поиском, если ищете что-то конкретное.</p>
             <btn>
-                <nuxt-link class="choice" :to="{ name: 'main' }" >Выбрать товары</nuxt-link>
+                <nuxt-link class="choice" :to="{ name: 'index' }" >Выбрать товары</nuxt-link>
             </btn>
         </div>
     </div>

@@ -1,4 +1,4 @@
-import api from '../utils/api'
+import { useNuxtApp } from '#app'
 
 export const useBannerStore = defineStore({
     id: 'banner',
@@ -13,7 +13,8 @@ export const useBannerStore = defineStore({
         },
         async loadBanner() {
             this.isLoadingBanner = true;
-            const { data } = await api.get(`banner`);
+            const { $api } = useNuxtApp()
+            const { data } = await $api.get(`banner`);
             if (data) {
                 this.bannerUrls = [...data];
             }

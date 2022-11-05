@@ -1,4 +1,4 @@
-import api from '../utils/api'
+import {useNuxtApp} from "#app";
 import {useCurrentSkuStore} from "./currentSku";
 import {useNotificationStore} from "./notification";
 
@@ -57,7 +57,8 @@ export const useReviewStore = defineStore({
             const currentSkuStore = useCurrentSkuStore();
             const skuId = currentSkuStore.currentSkuId;
             if (skuId) {
-                const { data } = await api.post('/rating/check-user-rating', { sku_id: skuId});
+                const { $api } = useNuxtApp()
+                const { data } = await $api.post('/rating/check-user-rating', { sku_id: skuId});
 
                 if (data.status === 'success') {
                     this.setSelectedRating(data.data);
@@ -68,7 +69,8 @@ export const useReviewStore = defineStore({
             const currentSkuStore = useCurrentSkuStore();
             const skuId = currentSkuStore.currentSkuId;
             if (skuId) {
-                const { data } = await api.post('/rating/create-or-update', {
+                const { $api } = useNuxtApp()
+                const { data } = await $api.post('/rating/create-or-update', {
                     sku_id: skuId,
                     rating
                 })
@@ -87,8 +89,8 @@ export const useReviewStore = defineStore({
                 if (this.tableOptions.rating.length) {
                     params['filter[rating]'] = this.tableOptions.rating;
                 }
-
-                const  data  = await api.get(`/reviews/by-sku-id/${skuId}`, { params });
+                const { $api } = useNuxtApp()
+                const  data  = await $api.get(`/reviews/by-sku-id/${skuId}`, { params });
                 if (data) {
                     this.reviewsWithPagination = [...data.data];
                     this.total = data.meta.total;
@@ -102,9 +104,9 @@ export const useReviewStore = defineStore({
             const skuId = currentSkuStore.currentSkuId;
 
             if (skuId) {
-               this.isLoadingReviewImages = true;
-
-                const { data }  = await api.get(`/reviews/additional-info-by-sku-id/${skuId}`)
+                this.isLoadingReviewImages = true;
+                const { $api } = useNuxtApp()
+                const { data }  = $api.get(`/reviews/additional-info-by-sku-id/${skuId}`)
                 if (data) {
                     this.reviewImages = [...data.images];
                     this.ratingFilter = {...data.rating_filter};
@@ -114,7 +116,8 @@ export const useReviewStore = defineStore({
         },
         async loadMyRatingsWithReviews() {
             this.isLoadingMyReviews = true;
-            const { data } = await api.get('/reviews/my');
+            const { $api } = useNuxtApp()
+            const { data } = await $api.get('/reviews/my');
             if (data) {
                 this.myReviews = [...data];
             }
@@ -125,8 +128,8 @@ export const useReviewStore = defineStore({
             const skuId = currentSkuStore.currentSkuId;
             if (skuId) {
                 this.isCheckingExistingReview = true;
-
-                const { data } = await api.post('/review/check-existing-review', { sku_id: skuId });
+                const { $api } = useNuxtApp()
+                const { data } = await $api.post('/review/check-existing-review', { sku_id: skuId });
 
                 if (data) {
                     this.setExistingReview(data);
@@ -142,8 +145,8 @@ export const useReviewStore = defineStore({
             const skuId = currentSkuStore.currentSkuId;
             if (skuId) {
                 obj.sku_id = skuId;
-
-                const { data } = await api.post('/reviews', obj);
+                const { $api } = useNuxtApp()
+                const { data } = await $api.post('/reviews', obj);
 
                 if (data.status === 'success') {
                     this.setExistingReview(data.data);
@@ -153,7 +156,8 @@ export const useReviewStore = defineStore({
             }
         },
         async deleteReview(id) {
-            await api.delete(`/reviews/${id}`)
+            const { $api } = useNuxtApp()
+            await $api.delete(`/reviews/${id}`)
             await this.loadMyRatingsWithReviews();
             const notificationStore = useNotificationStore();
             notificationStore.setSuccess('Отзыв успешно удален');

@@ -1,4 +1,4 @@
-import api from '../utils/api'
+import { useNuxtApp } from '#app'
 
 export const useComparisonStore = defineStore({
     id: 'comparison',
@@ -119,7 +119,8 @@ export const useComparisonStore = defineStore({
 
                 const ids = this.compared.find(el => el.category_id === this.currentCategoryId).ids;
 
-                const { data } = await api.get('show-compared-skus', { params: { ids }});
+                const { $api } = useNuxtApp()
+                const { data } = await $api.get('show-compared-skus', { params: { ids }});
                 if (data) {
                     this.setComparedSkus(data);
                 }
