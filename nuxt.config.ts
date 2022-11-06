@@ -2,6 +2,9 @@
 
 export default defineNuxtConfig({
     srcDir: 'client/',
+    // static: {
+    //     prefix: true
+    // },
     css: [
         "@/assets/css/normalize.css",
         "@/assets/css/app.css",

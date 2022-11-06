@@ -11,13 +11,13 @@
                             :key="index"
                             @click="selectPhotoIndex(index)"
                     >
-                        <img :src="image" >
+                        <img :src="image" />
                     </li>
                 </ul>
             </div>
             <div class="light__main">
                 <div class="light__inner">
-                    <img :src="images[selectedPhotoIndexLocal]">
+                    <img :src="images[selectedPhotoIndexLocal]"/>
                 </div>
             </div>
         </div>

@@ -72,12 +72,11 @@
                                 :key="parent"
                                 @click="selectPhotoIndex(parent)"
                             >
-                                <img :src="img" :alt="img"
-                                >
+                                <img :src="img" :alt="img"/>
                             </div>
                         </div>
                         <div class="main__photo" @click="showLightBox">
-                            <img :src="mainPhotos[selectedPhotoIndex]" alt="mainPhoto">
+                            <img :src="mainPhotos[selectedPhotoIndex]" alt="mainPhoto"/>
                         </div>
                     </div>
 
@@ -204,7 +203,7 @@
                             </a>
 
                             <div class="prices__item-img">
-                                <img v-lazyload :data-src="price.image" alt="price.image">
+                                <img v-lazyload :data-src="price.image" alt="price.image"/>
                             </div>
                         </div>
                     </div>

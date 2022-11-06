@@ -1,6 +1,6 @@
 <template>
     <div class="file-form">
-        <img :src="previewImage" class="">
+        <img :src="previewImage" class=""/>
 
         <progress-bar
                 v-if="isUploading"

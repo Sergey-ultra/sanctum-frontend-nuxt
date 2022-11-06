@@ -24,7 +24,7 @@
                 <div class="sku__inner" v-else>
                     <div class="sku__image"  v-if="currentSkuLocal.images && currentSkuLocal.images.length">
                         <nuxt-link  :to="`/product/${currentSkuProductCode}`">
-                            <img :src="currentSkuLocal.images[0]" >
+                            <img :src="currentSkuLocal.images[0]" />
                         </nuxt-link>
                     </div>
                     <div class="sku__text">

@@ -2,8 +2,8 @@
     <h2 class="title">{{ $route.meta.title }}</h2>
     <div class="edit">
         <div class="edit__item edit__photo">
-            <img v-if="userAvatar"  :src="userAvatar" :alt="userAvatar">
-            <img v-else src="/storage/icons/user-mf.svg" alt="user-mf.svg">
+            <img v-if="userAvatar"  :src="userAvatar" :alt="userAvatar"/>
+            <img v-else src="/storage/icons/user-mf.svg" alt="user-mf.svg"/>
 
             <fa class="edit__photo-icon icon" icon="camera"></fa>
             <input @change="loadImages($event)" type="file" id="formFileMultiple" multiple accept="image/jpeg, image/png">

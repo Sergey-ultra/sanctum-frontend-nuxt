@@ -1,198 +1,200 @@
 <template>
-    <h2 class="title">Сравнение товаров</h2>
+    <div>
+        <h2 class="title">Сравнение товаров</h2>
 
-    <div class="comparison__category">
-        <div
-                class="comparison__categoryItem"
-                :class="{'comparison__categoryItem-active': category.category_id === currentCategoryId }"
-                v-for="category in compared"
-                :key="category.category_id"
-                @click="setCurrentCategory(category.category_id)"
-        >
-            {{ category.name }}
-            <span>{{ category.ids.length }}</span>
-        </div>
-    </div>
-
-    <div class="comparison" ref="comparisonContainer">
-        <div class="comparison__layer" v-if="isLoadingComparedSkus">
-            <loader class="loader"/>
-        </div>
-        <div class="comparison__wrapper" v-if="compared.length">
-
-            <div class="comparison__header">
-                <span>Показывать:</span>
-                <span>Различающиеся характеристики</span>
-                <span>Все характеристики</span>
-                <span class="delete-list" @click="comparisonStore.removeIdsInCurrentCategory">
-                     <fa class="icon" icon="trash"></fa>
-                    Удалить список
-                </span>
+        <div class="comparison__category">
+            <div
+                    class="comparison__categoryItem"
+                    :class="{'comparison__categoryItem-active': category.category_id === currentCategoryId }"
+                    v-for="category in compared"
+                    :key="category.category_id"
+                    @click="setCurrentCategory(category.category_id)"
+            >
+                {{ category.name }}
+                <span>{{ category.ids.length }}</span>
             </div>
-            <div class="comparison__name">
-                <button
-                        v-if="!isMobileScreen && left < 0"
-                        class="arrow left"
-                        @click="moveToRight"
-                >
-                    <fa class="icon" icon="arrow-left"></fa>
-                </button>
-                <button
-                        v-if="!isMobileScreen && rightSideDiff > 0"
-                        class="arrow right"
-                        @click="moveToLeft"
-                >
-                    <fa class="icon" icon="arrow-right"></fa>
-                </button>
+        </div>
 
-                <div id="content" class="comparison__row" :style="translateX"  :class="{'no-transition': currentShiftX !== 0}">
-                    <div
-                        @touchstart="isMobileScreen ? startMobile($event) : ''"
-                        @touchmove="isMobileScreen ? moveMobile($event) : ''"
-                        @touchend="isMobileScreen ? endMobile() : ''"
-                        class="comparison__item"
-                        v-for="sku in comparedSkus"
-                        :key="sku.id"
+        <div class="comparison" ref="comparisonContainer">
+            <div class="comparison__layer" v-if="isLoadingComparedSkus">
+                <loader class="loader"/>
+            </div>
+            <div class="comparison__wrapper" v-if="compared.length">
+
+                <div class="comparison__header">
+                    <span>Показывать:</span>
+                    <span>Различающиеся характеристики</span>
+                    <span>Все характеристики</span>
+                    <span class="delete-list" @click="comparisonStore.removeIdsInCurrentCategory">
+                         <fa class="icon" icon="trash"></fa>
+                        Удалить список
+                    </span>
+                </div>
+                <div class="comparison__name">
+                    <button
+                            v-if="!isMobileScreen && left < 0"
+                            class="arrow left"
+                            @click="moveToRight"
                     >
-                        <div class="comparison__item-layer">
-                            <div
-                                    class="comparison__item-add-to-favorite"
-                                    @click="addToFav(sku.id)"
-                            >
-                                <fa class="icon" icon="star"></fa>
+                        <fa class="icon" icon="arrow-left"></fa>
+                    </button>
+                    <button
+                            v-if="!isMobileScreen && rightSideDiff > 0"
+                            class="arrow right"
+                            @click="moveToLeft"
+                    >
+                        <fa class="icon" icon="arrow-right"></fa>
+                    </button>
+
+                    <div id="content" class="comparison__row" :style="translateX"  :class="{'no-transition': currentShiftX !== 0}">
+                        <div
+                            @touchstart="isMobileScreen ? startMobile($event) : ''"
+                            @touchmove="isMobileScreen ? moveMobile($event) : ''"
+                            @touchend="isMobileScreen ? endMobile() : ''"
+                            class="comparison__item"
+                            v-for="sku in comparedSkus"
+                            :key="sku.id"
+                        >
+                            <div class="comparison__item-layer">
+                                <div
+                                        class="comparison__item-add-to-favorite"
+                                        @click="addToFav(sku.id)"
+                                >
+                                    <fa class="icon" icon="star"></fa>
+                                </div>
+                                <div
+                                        class="comparison__item-delete"
+                                        @click="comparisonStore.removeFromComparedSku(sku)"
+                                >
+                                    <fa class="icon" icon="trash"></fa>
+                                </div>
                             </div>
-                            <div
-                                    class="comparison__item-delete"
-                                    @click="comparisonStore.removeFromComparedSku(sku)"
-                            >
-                                <fa class="icon" icon="trash"></fa>
+                            <div class="comparison__img">
+                                <img :src="sku.image" :alt="sku.image"/>
+                            </div>
+                            <nuxt-link :to="`/product/${sku.code}-${sku.id}`">
+                                {{ sku.name }}
+                            </nuxt-link>
+                         </div>
+                    </div>
+                </div>
+                <div class="comparison__block">
+                    <div class="comparison__row" :style="translateX" :class="{'no-transition': currentShiftX !== 0}">
+                        <div
+                            @touchstart="isMobileScreen ? startMobile($event) : ''"
+                            @touchmove="isMobileScreen ? moveMobile($event) : ''"
+                            @touchend="isMobileScreen ? endMobile() : ''"
+                            class="comparison__item"
+                            v-for="sku in comparedSkus"
+                            :key="'rating' + sku.id"
+                        >
+                            <span class="comparison__rating-count"  v-if="sku.reviews_count === 0">Нет отзывов</span>
+                            <div class="comparison__item-rating" v-else>
+                                <span class="comparison__rating">{{ sku.rating }}</span>
+                                <span class="comparison__rating-count">{{ sku.reviews_count + ' ' + getReviewText(sku.reviews_count) }}</span>
                             </div>
                         </div>
-                        <div class="comparison__img">
-                            <img :src="sku.image" :alt="sku.image">
-                        </div>
-                        <nuxt-link :to="`/product/${sku.code}-${sku.id}`">
-                            {{ sku.name }}
-                        </nuxt-link>
-                     </div>
+                    </div>
                 </div>
-            </div>
-            <div class="comparison__block">
-                <div class="comparison__row" :style="translateX" :class="{'no-transition': currentShiftX !== 0}">
-                    <div
-                        @touchstart="isMobileScreen ? startMobile($event) : ''"
-                        @touchmove="isMobileScreen ? moveMobile($event) : ''"
-                        @touchend="isMobileScreen ? endMobile() : ''"
-                        class="comparison__item"
-                        v-for="sku in comparedSkus"
-                        :key="'rating' + sku.id"
-                    >
-                        <span class="comparison__rating-count"  v-if="sku.reviews_count === 0">Нет отзывов</span>
-                        <div class="comparison__item-rating" v-else>
-                            <span class="comparison__rating">{{ sku.rating }}</span>
-                            <span class="comparison__rating-count">{{ sku.reviews_count + ' ' + getReviewText(sku.reviews_count) }}</span>
+                <div class="comparison__block">
+                    <div class="comparison__row" :style="translateX" :class="{'no-transition': currentShiftX !== 0}">
+                        <div
+                            @touchstart="isMobileScreen ? startMobile($event) : ''"
+                            @touchmove="isMobileScreen ? moveMobile($event) : ''"
+                            @touchend="isMobileScreen ? endMobile() : ''"
+                            class="comparison__item"
+                            v-for="sku in comparedSkus"
+                            :key="'price' + sku.id"
+                        >
+                            <div>
+                                <strong>
+                                    <span v-if="sku.prices_count > 1">от</span>
+                                    {{ sku.min_price }} ₽
+                                </strong>
+                            </div>
+                            <nuxt-link  :to="`/product/${sku.code}-${sku.id}/prices`">
+                                {{ sku.prices_count }} предложения
+                            </nuxt-link>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="comparison__block">
-                <div class="comparison__row" :style="translateX" :class="{'no-transition': currentShiftX !== 0}">
-                    <div
-                        @touchstart="isMobileScreen ? startMobile($event) : ''"
-                        @touchmove="isMobileScreen ? moveMobile($event) : ''"
-                        @touchend="isMobileScreen ? endMobile() : ''"
-                        class="comparison__item"
-                        v-for="sku in comparedSkus"
-                        :key="'price' + sku.id"
-                    >
-                        <div>
-                            <strong>
-                                <span v-if="sku.prices_count > 1">от</span>
-                                {{ sku.min_price }} ₽
-                            </strong>
+                <div class="comparison__block comparison__block-padding">
+                    <div class="comparison__property">Страна</div>
+                    <div class="comparison__row" :style="translateX" :class="{'no-transition': currentShiftX !== 0}">
+                        <div
+                            @touchstart="isMobileScreen ? startMobile($event) : ''"
+                            @touchmove="isMobileScreen ? moveMobile($event) : ''"
+                            @touchend="isMobileScreen ? endMobile() : ''"
+                            class="comparison__item"
+                            v-for="sku in comparedSkus"
+                            :key="'country' + sku.id"
+                        >
+                            <span v-if="sku.country">{{ sku.country }}</span>
+                            <span v-else class="no-data">Нет данных</span>
                         </div>
-                        <nuxt-link  :to="`/product/${sku.code}-${sku.id}/prices`">
-                            {{ sku.prices_count }} предложения
-                        </nuxt-link>
                     </div>
                 </div>
-            </div>
-            <div class="comparison__block comparison__block-padding">
-                <div class="comparison__property">Страна</div>
-                <div class="comparison__row" :style="translateX" :class="{'no-transition': currentShiftX !== 0}">
-                    <div
-                        @touchstart="isMobileScreen ? startMobile($event) : ''"
-                        @touchmove="isMobileScreen ? moveMobile($event) : ''"
-                        @touchend="isMobileScreen ? endMobile() : ''"
-                        class="comparison__item"
-                        v-for="sku in comparedSkus"
-                        :key="'country' + sku.id"
-                    >
-                        <span v-if="sku.country">{{ sku.country }}</span>
-                        <span v-else class="no-data">Нет данных</span>
+                <div class="comparison__block comparison__block-padding">
+                    <div class="comparison__property">Бренд</div>
+                    <div class="comparison__row" :style="translateX" :class="{'no-transition': currentShiftX !== 0}">
+                        <div
+                            @touchstart="isMobileScreen ? startMobile($event) : ''"
+                            @touchmove="isMobileScreen ? moveMobile($event) : ''"
+                            @touchend="isMobileScreen ? endMobile() : ''"
+                            class="comparison__item"
+                            v-for="sku in comparedSkus"
+                            :key="'brand' + sku.id"
+                        >
+                            <span v-if="sku.brand">{{ sku.brand }}</span>
+                            <span v-else class="no-data">Нет данных</span>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="comparison__block comparison__block-padding">
-                <div class="comparison__property">Бренд</div>
-                <div class="comparison__row" :style="translateX" :class="{'no-transition': currentShiftX !== 0}">
-                    <div
-                        @touchstart="isMobileScreen ? startMobile($event) : ''"
-                        @touchmove="isMobileScreen ? moveMobile($event) : ''"
-                        @touchend="isMobileScreen ? endMobile() : ''"
-                        class="comparison__item"
-                        v-for="sku in comparedSkus"
-                        :key="'brand' + sku.id"
-                    >
-                        <span v-if="sku.brand">{{ sku.brand }}</span>
-                        <span v-else class="no-data">Нет данных</span>
+                <div class="comparison__block comparison__block-padding">
+                    <div class="comparison__property">Объем</div>
+                    <div class="comparison__row" :style="translateX" :class="{'no-transition': currentShiftX !== 0}">
+                        <div
+                            @touchstart="isMobileScreen ? startMobile($event) : ''"
+                            @touchmove="isMobileScreen ? moveMobile($event) : ''"
+                            @touchend="isMobileScreen ? endMobile() : ''"
+                            class="comparison__item"
+                            v-for="sku in comparedSkus"
+                            :key="'volume' + sku.id"
+                        >
+                            {{ sku.volume }}
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="comparison__block comparison__block-padding">
-                <div class="comparison__property">Объем</div>
-                <div class="comparison__row" :style="translateX" :class="{'no-transition': currentShiftX !== 0}">
-                    <div
-                        @touchstart="isMobileScreen ? startMobile($event) : ''"
-                        @touchmove="isMobileScreen ? moveMobile($event) : ''"
-                        @touchend="isMobileScreen ? endMobile() : ''"
-                        class="comparison__item"
-                        v-for="sku in comparedSkus"
-                        :key="'volume' + sku.id"
-                    >
-                        {{ sku.volume }}
+                <div class="comparison__block comparison__block-padding">
+                    <div class="comparison__property">Активные ингредиенты</div>
+                    <div class="comparison__row" :style="translateX" :class="{'no-transition': currentShiftX !== 0}">
+                        <div
+                            @touchstart="isMobileScreen ? startMobile($event) : ''"
+                            @touchmove="isMobileScreen ? moveMobile($event) : ''"
+                            @touchend="isMobileScreen ? endMobile : ''"
+                            class="comparison__item"
+                            v-for="sku in comparedSkus"
+                            :key="'ingredient' + sku.id"
+                        >
+                            {{ sku.ingredients.join(', ') }}
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="comparison__block comparison__block-padding">
-                <div class="comparison__property">Активные ингредиенты</div>
-                <div class="comparison__row" :style="translateX" :class="{'no-transition': currentShiftX !== 0}">
-                    <div
-                        @touchstart="isMobileScreen ? startMobile($event) : ''"
-                        @touchmove="isMobileScreen ? moveMobile($event) : ''"
-                        @touchend="isMobileScreen ? endMobile : ''"
-                        class="comparison__item"
-                        v-for="sku in comparedSkus"
-                        :key="'ingredient' + sku.id"
-                    >
-                        {{ sku.ingredients.join(', ') }}
-                    </div>
-                </div>
+
             </div>
 
+            <div  class="comparison__wrapper comparison__wrapper-center" v-else>
+                0
+                <img src="/libra.svg" class="comparison__icon" alt="Список пуст"/>
+                <h2 class="comparison__title">Список сравниваемых товаров пока пуст</h2>
+                <p class="comparison__text">Вы можете начать свой выбор с нашего каталога товаров или воспользоваться поиском, если ищете что-то конкретное.</p>
+                <btn>
+                    <nuxt-link class="choice" :to="{ name: 'index' }" >Выбрать товары</nuxt-link>
+                </btn>
+            </div>
         </div>
-
-        <div  class="comparison__wrapper comparison__wrapper-center" v-else>
-            0
-            <img src="/storage/icons/libra.svg" class="comparison__icon" alt="Список пуст">
-            <h2 class="comparison__title">Список сравниваемых товаров пока пуст</h2>
-            <p class="comparison__text">Вы можете начать свой выбор с нашего каталога товаров или воспользоваться поиском, если ищете что-то конкретное.</p>
-            <btn>
-                <nuxt-link class="choice" :to="{ name: 'index' }" >Выбрать товары</nuxt-link>
-            </btn>
-        </div>
+        <viewed-products></viewed-products>
     </div>
-    <viewed-products></viewed-products>
 </template>
 
 <script setup>

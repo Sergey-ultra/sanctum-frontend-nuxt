@@ -28,8 +28,8 @@
                 <ul class="menu__list-mobile">
                     <li class="menu__item menu__item-padding" v-if="isAuth"  @click="closeMobileMenuInternal">
                         <nuxt-link :to="'/edit-profile'">
-                            <img class="avatar" v-if="userAvatar" :src="userAvatar" :alt="userAvatar">
-                            <img class="avatar" v-else src="/storage/icons/user_avatar.png" alt="avatar">
+                            <img class="avatar" v-if="userAvatar" :src="userAvatar" :alt="userAvatar"/>
+                            <img class="avatar" v-else src="/storage/icons/user_avatar.png" alt="avatar"/>
                             <span>{{ userName }}</span>
                         </nuxt-link>
 

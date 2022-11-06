@@ -12,7 +12,7 @@
             </tool-tip>
             <div class="banner__wrap">
                 <a class="banner__link" href="http://fantasticskin.ru">
-                    <img :src="src" :alt="bannerAlt">
+                    <img :src="src" :alt="bannerAlt"/>
                 </a>
             </div>
         </div>

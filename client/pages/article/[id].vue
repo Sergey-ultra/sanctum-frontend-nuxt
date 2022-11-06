@@ -5,7 +5,7 @@
         <div class="article__meta">
             <div class="article__user">
                 <div class="article__userImg">
-                    <img :src="currentArticle.user_avatar" :alt="currentArticle.user_name">
+                    <img :src="currentArticle.user_avatar" :alt="currentArticle.user_name"/>
                 </div>
                 <div class="article__userInfo">
                     <div class="article__userName">
@@ -32,7 +32,7 @@
         </div>
 
         <div class="article__img">
-            <img :src="currentArticle.image" :alt="currentArticle.image">
+            <img :src="currentArticle.image" :alt="currentArticle.image"/>
         </div>
         <div class="article__body" v-html="currentArticle.body"></div>
     </div>

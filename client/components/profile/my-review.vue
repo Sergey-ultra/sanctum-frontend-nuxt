@@ -31,7 +31,7 @@
                     class="review__sku"
             >
                 <div class="review__img">
-                    <img :src="review.sku_image" :alt="review.sku_image">
+                    <img :src="review.sku_image" :alt="review.sku_image"/>
                 </div>
                 <div class="review__sku-name">{{ review.sku_name }}, {{ review.volume }}</div>
             </nuxt-link>

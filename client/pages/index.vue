@@ -7,7 +7,7 @@
                     :key="category.id"
                     :to="`category/${category.code}`"
             >
-                <img v-lazyload :data-src="category.image" alt="category.image">
+                <img :src="category.image" :alt="category.image"/>
                 <div class="subtitle">{{ category.name }}</div>
             </nuxt-link>
         </div>

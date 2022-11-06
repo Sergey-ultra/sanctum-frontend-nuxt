@@ -3,7 +3,7 @@
         <div class="container">
             <div class="current-compare__wrapper">
                 <div class="current-compare__img">
-                    <img  :src="currentComparedSku.image" :alt="currentComparedSku.image">
+                    <img  :src="currentComparedSku.image" :alt="currentComparedSku.image"/>
                 </div>
                 <div class="current-compare__inner">
                     <div class="current-compare__title">

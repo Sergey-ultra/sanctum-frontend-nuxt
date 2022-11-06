@@ -10,7 +10,7 @@
             v-for="(image, index) in images"
             :key="index"
         >
-            <img :src="image" >
+            <img :src="image" />
         </div>
     </div>
 </template>

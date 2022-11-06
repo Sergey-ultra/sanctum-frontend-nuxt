@@ -5,7 +5,7 @@
                 :class="{'review__avatar-is-right': isRight === true}"
         >
             <div class="review__avatar-img">
-                <img :src="review.user_avatar" alt="avatar">
+                <img :src="review.user_avatar" alt="avatar"/>
             </div>
         </div>
         <div>

@@ -29,7 +29,7 @@
 
                                     v-lazyload
                                     :data-src="sku.image"
-                                    :alt="sku.image">
+                                    :alt="sku.image"/>
                         </div>
                         <nuxt-link
                                 class="slider-product__name ui-link"

@@ -1,6 +1,6 @@
 <template>
    <div class="main">
-      <img src="/storage/icons/401.svg">
+      <img src="/storage/icons/401.svg"/>
       <h2>{{ text }}</h2>
       <button class="btn">
          <nuxt-link :to="route.query.from">Назад</nuxt-link>
