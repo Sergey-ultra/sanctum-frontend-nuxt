@@ -1,6 +1,6 @@
 <template>
     <div class="file-form">
-        <img :src="previewImage" class=""/>
+        <img :src="`${$config.APP_URL}/${previewImage}`" class=""/>
 
         <progress-bar
                 v-if="isUploading"

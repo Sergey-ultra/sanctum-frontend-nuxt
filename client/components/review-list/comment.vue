@@ -3,8 +3,8 @@
         <div class="comment__title">
             <div class="comment__avatar">
                 <div class="comment__avatar-img">
-                    <img v-if="comment.user_avatar" :src="comment.user_avatar" :alt="comment.user_avatar"/>
-                    <img v-else src="/storage/icons/user_avatar.png" alt="avatar"/>
+                    <img v-if="comment.user_avatar" :src="`${$config.APP_URL}/${comment.user_avatar}`" :alt="comment.user_avatar"/>
+                    <img v-else :src="`${$config.APP_URL}/storage/icons/user_avatar.png`" alt="avatar"/>
                 </div>
             </div>
             <span class="comment__name">{{comment.user_name}}</span>

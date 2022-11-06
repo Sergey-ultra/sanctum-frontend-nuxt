@@ -10,7 +10,7 @@
             v-for="(image, index) in images"
             :key="index"
         >
-            <img :src="image" />
+            <img :src="`${$config.APP_URL}/${image}`" />
         </div>
     </div>
 </template>

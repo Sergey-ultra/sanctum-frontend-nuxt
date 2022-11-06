@@ -6,7 +6,7 @@
                 class="file-form__item file-form__img"
                 :style="{width: width, height: `${height}px`}"
         >
-            <img :src="image" class=""/>
+            <img :src="`${$config.APP_URL}/${image}`" class=""/>
 
             <progress-bar
                 v-if="isUploading"

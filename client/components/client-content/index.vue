@@ -41,7 +41,7 @@
             >
                 <button class="client-content__image__btn" type="button">
                     <div class="client-content__image">
-                        <img :src="image"/>
+                        <img :src="`${$config.APP_URL}/${image}`"/>
                     </div>
                 </button>
             </div>

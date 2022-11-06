@@ -13,6 +13,7 @@ export default defineNuxtConfig({
     runtimeConfig: {
         public: {
             webURL: process.env.WEB_URL || 'http://localhost:3000',
+            APP_URL: process.env.APP_URL || 'http://sanctum',
             apiURL: process.env.API_URL || 'http://sanctum/api',
         },
     },

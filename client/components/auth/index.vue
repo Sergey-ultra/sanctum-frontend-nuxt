@@ -19,7 +19,7 @@
                     <div class="auth__wrap">
                         <div class="auth__wrap-el auth__with-g" @click="authStore.loginWithService('google')">
                             <div class="icon">
-                                <img src="/storage/icons/signin-with-g.svg" alt="signin-with-g.svg"/>
+                                <img :src="`${$config.APP_URL}/storage/icons/signin-with-g.svg`" alt="signin-with-g.svg"/>
                             </div>
                         </div>
 

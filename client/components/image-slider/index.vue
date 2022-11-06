@@ -5,7 +5,7 @@
     >
         <img
             v-lazyload
-            :data-src="photos[selectedPhotoIndex]"
+            :data-src="`${$config.APP_URL}/${photos[selectedPhotoIndex]}`"
             :alt="alt"
         >
         <ul class="slider__choice" v-if="photos.length > 1">
@@ -30,7 +30,7 @@
         >
             <img
                 v-lazyload
-                :data-src="image"
+                :data-src="`${$config.APP_URL}/${image}`"
                 :alt="`${alt}_${index}`"
             >
         </div>

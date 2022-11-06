@@ -28,7 +28,7 @@
                             <img
 
                                     v-lazyload
-                                    :data-src="sku.image"
+                                    :data-src="`${$config.APP_URL}/${sku.image}`"
                                     :alt="sku.image"/>
                         </div>
                         <nuxt-link
@@ -40,7 +40,7 @@
 
                         <div class="slider-product__branch">
                             <div
-                                    :class="{'pink': this.compared.includes( sku.id) }"
+                                    :class="{'pink': compared.includes( sku.id) }"
                                     class="slider-product__branch-item branch__item"
                                     @click="comparisonStore.toggleComparison(sku)"
                             >

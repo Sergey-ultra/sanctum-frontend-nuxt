@@ -2,7 +2,7 @@
     <div class="photos">
         <div class="photos__main__image">
             <picture class="photos__main__photo">
-                <img :src="images[photoMainIndex]"/>
+                <img :src="`${$config.APP_URL}/${images[photoMainIndex]}`"/>
             </picture>
         </div>
         <div class="photos__images" v-if="images.length > 1">
@@ -13,7 +13,7 @@
                     :key="imageIndex"
                     @click="photoMainIndex = imageIndex"
             >
-                <img class="" :src="image" :alt="image"/>
+                <img class="" :src="`${$config.APP_URL}/${image}`" :alt="image"/>
             </div>
         </div>
     </div>

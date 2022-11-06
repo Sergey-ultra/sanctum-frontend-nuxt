@@ -9,7 +9,7 @@
             <a :href="'/to/' + price.link_code">{{ price.price }}</a>
             <a class="prices__go" :href="'/to/' + price.link_code">Перейти в магазин</a>
             <div class="prices__img">
-                <img :src="price.image" :alt="price.image"/>
+                <img :src="`${$config.APP_URL}/${price.image}`" :alt="price.image"/>
             </div>
         </div>
     </div>

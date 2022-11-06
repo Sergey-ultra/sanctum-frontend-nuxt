@@ -1,6 +1,6 @@
 <template>
     <div class="main">
-        <img src="/storage/icons/401.svg"/>
+        <img :src="`${$config.APP_URL}/storage/icons/401.svg`"/>
         <h2>Страницы не существует</h2>
     </div>
 </template>

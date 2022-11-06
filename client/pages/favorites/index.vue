@@ -13,7 +13,7 @@
                     class="favorites__img"
                     :to="`/product/${sku.code}-${sku.id}`"
                 >
-                    <img :src="sku.images" :alt="sku.images"/>
+                    <img :src="`${$config.APP_URL}/${sku.images}`" :alt="sku.images"/>
                 </nuxt-link>
 
                 <div class="favorites__main">

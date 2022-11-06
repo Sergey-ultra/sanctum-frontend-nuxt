@@ -5,7 +5,7 @@
             <div v-for="article in articles" :key="article.id" class="journal__item">
                 <nuxt-link :to="`article/${article.id}`">
                     <div class="journal__image">
-                        <img :src="article.image" :alt="article.image"/>
+                        <img :src="`${$config.APP_URL}/${article.image}`" :alt="article.image"/>
                         <div class="journal__badge">
                             <span class="journal__tag" :style="{backgroundColor: getBackgroundColor(article.tag) }">{{ getArticleTag(article.tag) }}</span>
                         </div>
@@ -18,7 +18,7 @@
                     </div>
                     <div class="journal__user">
                         <div class="journal__avatar" v-if="article.user_avatar">
-                            <img :src="article.user_avatar" :alt="article.user_avatar"/>
+                            <img :src="`${$config.APP_URL}/${article.user_avatar}`" :alt="article.user_avatar"/>
                         </div>
                         <div class="journal__name">
                             {{ article.user_name }}

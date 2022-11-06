@@ -70,7 +70,7 @@
                                 </div>
                             </div>
                             <div class="comparison__img">
-                                <img :src="sku.image" :alt="sku.image"/>
+                                <img :src="`${$config.APP_URL}/${sku.image}`" :alt="sku.image"/>
                             </div>
                             <nuxt-link :to="`/product/${sku.code}-${sku.id}`">
                                 {{ sku.name }}
@@ -185,7 +185,7 @@
 
             <div  class="comparison__wrapper comparison__wrapper-center" v-else>
                 0
-                <img src="/libra.svg" class="comparison__icon" alt="Список пуст"/>
+                <img :src="`${$config.APP_URL}/storage/icons/libra.svg`" class="comparison__icon" alt="Список пуст"/>
                 <h2 class="comparison__title">Список сравниваемых товаров пока пуст</h2>
                 <p class="comparison__text">Вы можете начать свой выбор с нашего каталога товаров или воспользоваться поиском, если ищете что-то конкретное.</p>
                 <btn>

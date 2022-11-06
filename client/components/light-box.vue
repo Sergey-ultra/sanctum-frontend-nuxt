@@ -11,13 +11,13 @@
                             :key="index"
                             @click="selectPhotoIndex(index)"
                     >
-                        <img :src="image" />
+                        <img :src="`${$config.APP_URL}/${image}`" />
                     </li>
                 </ul>
             </div>
             <div class="light__main">
                 <div class="light__inner">
-                    <img :src="images[selectedPhotoIndexLocal]"/>
+                    <img :src="`${$config.APP_URL}/${images[selectedPhotoIndexLocal]}`"/>
                 </div>
             </div>
         </div>

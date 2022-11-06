@@ -94,7 +94,7 @@
                             <img
                                 v-lazyload
                                 v-if="product.currentSku.prices.length === 1"
-                                :data-src="product.currentSku.prices[0].image"
+                                :data-src="`${$config.APP_URL}/${product.currentSku.prices[0].image}`"
                                 :alt="product.currentSku.prices[0].name"
                             >
                         </a>
