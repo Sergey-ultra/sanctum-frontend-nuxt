@@ -142,11 +142,11 @@
     };
 
 
-    watch(currentSkuId, value => {
-        if (value) {
-            questionStore.loadQuestionsWithPagination();
-        }
-    });
+
+
+
+
+
 
     watch(
         () => ({params: route.params, query: route.query}),
@@ -159,10 +159,14 @@
         {deep: true}
     );
 
-    onMounted(() => {
+
+
+
+    useAsyncData(async () => {
         questionStore.setTableOptionsByQuery(route.query);
-        questionStore.loadQuestionsWithPagination();
+        await questionStore.loadQuestionsWithPagination();
     });
+
 </script>
 
 <style scoped lang="scss">

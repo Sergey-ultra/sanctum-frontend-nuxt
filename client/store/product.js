@@ -4,6 +4,9 @@ export const useProductStore = defineStore({
     id: 'product',
     state: () => ({
         currentCategory: null,
+        currentBrand: null,
+
+
         viewMode: 'compact',
 
         isLoadingProductsWithPagination: false,
@@ -162,7 +165,11 @@ export const useProductStore = defineStore({
                     this.productsWithPagination = [...res.products.data];
                     this.totalCount = res.products.total;
                     this.lastPage = res.products.last_page;
-                    this.currentCategory = { ...res.category };
+                    if (res.category) {
+                        this.currentCategory = { ...res.category };
+                    } else if (res.brand) {
+                        this.currentBrand = { ...res.brand };
+                    }
                 }
             }
             this.isLoadingProductsWithPagination = false;

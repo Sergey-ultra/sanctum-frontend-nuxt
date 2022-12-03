@@ -1,6 +1,6 @@
 <template>
     <div class="notification">
-        <transition-group name="note" class="note_list">
+<!--        <transition-group name="note" class="note_list">-->
             <div
                     v-for="(note, index) in notes"
                     :key="index"
@@ -24,7 +24,7 @@
                     </svg>
                 </div>
             </div>
-        </transition-group>
+<!--        </transition-group>-->
     </div>
 </template>
 

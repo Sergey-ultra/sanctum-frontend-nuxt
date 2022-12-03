@@ -1,46 +1,49 @@
 <template>
-    <div
-        class="slider"
-        @mousemove.prevent="photos.length > 1 ? selectPhotoIndex($event) : ''"
-    >
-        <img
-            v-lazyload
-            :data-src="`${$config.APP_URL}/${photos[selectedPhotoIndex]}`"
-            :alt="alt"
-        >
-        <ul class="slider__choice" v-if="photos.length > 1">
-            <li
-                class="slider__item"
-                :class="{'slider__item-selected': selectedPhotoIndex === index}"
-                v-for="(photo, index) in photos"
-                :key="photo"
-            ></li>
-        </ul>
-    </div>
-    <div class="mobile">
+    <div>
         <div
-            @touchstart="startMobile($event)"
-            @touchmove="moveMobile($event)"
-            @touchend="endMobile"
-            :style="{'left': left + (index - selectedPhotoIndex) * 100 + '%'}"
-            :class="{'no-transition': left !== 0}"
-            class="mobile__inner"
-            v-for="(image, index) in mobilePhotos"
-            :key="index"
+            class="slider"
+            @mousemove.prevent="photos.length > 1 ? selectPhotoIndex($event) : ''"
         >
             <img
                 v-lazyload
-                :data-src="`${$config.APP_URL}/${image}`"
-                :alt="`${alt}_${index}`"
+                :data-src="`${$config.APP_URL}/${photos[selectedPhotoIndex]}`"
+                :alt="alt"
             >
+            <ul class="slider__choice" v-if="photos.length > 1">
+                <li
+                    class="slider__item"
+                    :class="{'slider__item-selected': selectedPhotoIndex === index}"
+                    v-for="(photo, index) in photos"
+                    :key="photo"
+                ></li>
+            </ul>
         </div>
-        <div class="mobile__dots" v-if="mobilePhotos.length > 1">
+
+        <div class="mobile">
             <div
-                class="mobile__dot"
-                :class="{'mobile__dot-selected': index === selectedPhotoIndex}"
-                v-for="(_, index) in mobilePhotos"
+                @touchstart="startMobile($event)"
+                @touchmove="moveMobile($event)"
+                @touchend="endMobile"
+                :style="{'left': left + (index - selectedPhotoIndex) * 100 + '%'}"
+                :class="{'no-transition': left !== 0}"
+                class="mobile__inner"
+                v-for="(image, index) in mobilePhotos"
                 :key="index"
             >
+                <img
+                    v-lazyload
+                    :data-src="`${$config.APP_URL}/${image}`"
+                    :alt="`${alt}_${index}`"
+                >
+            </div>
+            <div class="mobile__dots" v-if="mobilePhotos.length > 1">
+                <div
+                    class="mobile__dot"
+                    :class="{'mobile__dot-selected': index === selectedPhotoIndex}"
+                    v-for="(_, index) in mobilePhotos"
+                    :key="index"
+                >
+                </div>
             </div>
         </div>
     </div>
@@ -99,7 +102,8 @@
 
 <style lang="scss" scoped>
     .slider {
-        display:block;
+        display:flex;
+        justify-content: center;
         position: relative;
         &:hover .slider__choice {
             opacity: 1;
@@ -138,7 +142,6 @@
         width: 100%;
         overflow: hidden;
         height: 100%;
-        margin: 20px 0;
         background: #fff;
         display: none;
         align-items: center;

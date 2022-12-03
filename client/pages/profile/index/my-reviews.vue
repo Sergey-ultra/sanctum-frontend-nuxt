@@ -28,6 +28,21 @@
     const reviewStore = useReviewStore();
     const { isLoadingMyReviews, myReviews } = storeToRefs(reviewStore);
 
+    const setSEO = () => {
+        const title = `Мои отзывы`;
+        const metaName = `${title} Smart-Beautiful - агрегатор цен косметических товаров`;
+        useHead({
+            title,
+            meta: [
+                {name: 'description', content: metaName},
+                {name: 'keywords', content: metaName}
+            ],
+        });
+    }
+
+    setSEO();
+
+
     onMounted(() => {
         reviewStore.loadMyRatingsWithReviews();
     });

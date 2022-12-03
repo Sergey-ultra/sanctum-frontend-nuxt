@@ -1,68 +1,55 @@
 <template>
-    <div class="journal" v-if="articles.length">
-        <div class="journal__title">Новости и секреты красоты</div>
-        <div class="journal__wrapper">
-            <div v-for="article in articles" :key="article.id" class="journal__item">
-                <nuxt-link :to="`article/${article.id}`">
+    <section class="journal" v-if="articles.length">
+        <h2 class="title">Новости и секреты красоты</h2>
+
+        <slider
+            :sliderItems="articles"
+            class="journal__slider"
+        >
+            <template v-slot:item="{ item }">
+                <nuxt-link :to="`article/${item.id}`"  class="journal__item">
                     <div class="journal__image">
-                        <img :src="`${$config.APP_URL}/${article.image}`" :alt="article.image"/>
+                        <img :src="`${$config.APP_URL}/${item.image}`" :alt="item.image"/>
                         <div class="journal__badge">
-                            <span class="journal__tag" :style="{backgroundColor: getBackgroundColor(article.tag) }">{{ getArticleTag(article.tag) }}</span>
+                                <span class="journal__tag" :style="{backgroundColor: item.tag.color }">
+                                    {{ item.tag.name }}
+                                </span>
                         </div>
                     </div>
-                    <div class="journal__main">
-                        {{ article.title }}
+                    <div class="journal__title">
+                        {{ item.title }}
                     </div>
                     <div class="journal__preview">
-                         {{article.preview}}
+                        {{ item.preview }}
                     </div>
                     <div class="journal__user">
-                        <div class="journal__avatar" v-if="article.user_avatar">
-                            <img :src="`${$config.APP_URL}/${article.user_avatar}`" :alt="article.user_avatar"/>
+                        <div class="journal__avatar" v-if="item.user_avatar">
+                            <img :src="`${$config.APP_URL}/${item.user_avatar}`" :alt="item.user_avatar"/>
                         </div>
                         <div class="journal__name">
-                            {{ article.user_name }}
+                            {{ item.user_name }}
                         </div>
                         <div class="journal__icon">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" data-tid="9bd43b8c">
-                                <path fill="#999" d="M12 17c3.356 0 6.549-1.81 8.96-5.01C18.527 8.794 15.341 7 12 7c-3.356 0-6.549 1.81-8.96 5.01C5.473 15.206 8.659 17 12 17zm0-11c3.816 0 7.299 2.097 9.85 5.51.2.29.2.668 0 .958C19.3 15.903 15.816 18 12 18s-7.299-2.097-9.85-5.51c-.2-.29-.2-.668 0-.958C4.7 8.097 8.184 6 12 6zm-3.5 5.994c.458.349 1.04.541 1.671.5 1.224-.073 2.252-1.1 2.326-2.323A2.568 2.568 0 0 0 11.99 8.5a3.512 3.512 0 0 1 3.503 3.73 3.494 3.494 0 0 1-3.263 3.263 3.512 3.512 0 0 1-3.73-3.499z"></path>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                 data-tid="9bd43b8c">
+                                <path fill="#999"
+                                      d="M12 17c3.356 0 6.549-1.81 8.96-5.01C18.527 8.794 15.341 7 12 7c-3.356 0-6.549 1.81-8.96 5.01C5.473 15.206 8.659 17 12 17zm0-11c3.816 0 7.299 2.097 9.85 5.51.2.29.2.668 0 .958C19.3 15.903 15.816 18 12 18s-7.299-2.097-9.85-5.51c-.2-.29-.2-.668 0-.958C4.7 8.097 8.184 6 12 6zm-3.5 5.994c.458.349 1.04.541 1.671.5 1.224-.073 2.252-1.1 2.326-2.323A2.568 2.568 0 0 0 11.99 8.5a3.512 3.512 0 0 1 3.503 3.73 3.494 3.494 0 0 1-3.263 3.263 3.512 3.512 0 0 1-3.73-3.499z"></path>
                             </svg>
                         </div>
-                        <div class="journal__viewsCount">{{ article.views_count  }}</div>
+                        <div class="journal__viewsCount">{{ item.views_count }}</div>
                     </div>
                 </nuxt-link>
-            </div>
-        </div>
-    </div>
+            </template>
+        </slider>
+    </section>
 </template>
 
 <script setup>
+    import slider from '../slider'
     import {useArticleStore} from "../../store/article";
     import {storeToRefs} from "pinia";
     const articleStore = useArticleStore();
     const { articles } = storeToRefs(articleStore);
-
-    const getArticleTag = value => {
-        switch (value) {
-            case 'review':
-                return 'Обзор';
-            case 'compilation':
-                return 'Подборка';
-            case 'opinion':
-                return 'Мнение эксперта';
-        }
-    };
-
-    const getBackgroundColor = value => {
-        switch (value) {
-            case 'review':
-                return '#ffa300';
-            case 'compilation':
-                return '#673ab7';
-            case 'opinion':
-                return '#ff4500';
-        }
-    };
 
     useAsyncData(async() => await articleStore.loadArticles());
 
@@ -72,31 +59,32 @@
     a {
         text-decoration: none;
     }
+    .title {
+        font-weight: 500;
+        line-height: 32px;
+        font-size: 26px;
+        color: #222;
+        padding-bottom: 20px;
+        margin:0;
+    }
     .journal {
         width: 100%;
         min-height:300px;
-        &__title {
-            font-weight: 500;
-            line-height: 32px;
-            font-size: 26px;
-            color: #222;
-            padding-bottom: 20px;
-        }
-        &__wrapper {
+
+        &__slider {
             height: 360px;
-            width: 100%;
             border-radius: 8px;
             background-color: #fff;
-            overflow:hidden;
             padding: 20px;
-            display: flex;
-
         }
         &__item {
-            height: 100%;
+            display: flex;
+            flex-direction: column;
             width: 296px;
+            flex-shrink: 0;
+            height: 100%;
             &:not(:last-child) {
-                margin-right: 15px;
+                padding-right: 15px;
             }
             & a {
                 height: 100%;
@@ -136,12 +124,17 @@
             text-transform: uppercase;
             letter-spacing: 1.1px;
         }
-        &__main {
+        &__title {
             font-weight: 700;
             font-size: 20px;
             line-height: 24px;
             color: #222;
+            max-height:60px;
             margin-top: 4px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            position: relative;
+            flex-shrink: 0;
         }
         &__preview {
             font-weight: 400;
@@ -154,15 +147,17 @@
             overflow: hidden;
             text-overflow: ellipsis;
             position: relative;
-            &:after {
-                background: linear-gradient(rgba(255, 255, 255, 0), #fff);
-                content: "";
-                height: 30px;
-                left: 0;
-                position: absolute;
-                top: 44px;
-                width: 100%;
-            }
+        }
+
+        &__title:after,
+        &__preview:after {
+            background: linear-gradient(rgba(255, 255, 255, 0), #fff);
+            content: "";
+            height: 30px;
+            left: 0;
+            position: absolute;
+            top: 44px;
+            width: 100%;
         }
 
         &__user {
@@ -171,8 +166,8 @@
             font-size: 16px;
             line-height: 22px;
             white-space: nowrap;
+            flex-shrink: 0;
             display: flex;
-            flex-wrap:wrap;
             align-items: center;
         }
         &__avatar {
@@ -208,31 +203,62 @@
     }
 
     @media (max-width: 1000px) {
-        .journal__item {
-            width: 250px;
+        .journal {
+            &__slider {
+                height: 270px;
+                padding:15px;
+            }
+            &__item {
+                width: 220px;
+            }
+            &__title{
+                font-weight: 600;
+                font-size: 16px;
+                line-height: 21px;
+            }
+        }
+    }
+
+    @media (max-width: 800px) {
+        .arrow {
+            display: none;
+        }
+        .journal {
+            &__name {
+                font-size: 14px;
+            }
         }
     }
 
     @media (max-width: 700px) {
         .journal {
-            &__wrapper {
+            &__slider {
+                height: 280px;
                 padding:15px;
             }
+
             &__item {
-                width: 200px;
-                height: 200px;
+                width: 220px;
+            }
+            &__tag {
+                font-size: 10px;
+                line-height: 14px;
+            }
+            &__title {
+                font-weight: 600;
+                font-size: 16px;
+                line-height: 21px;
             }
         }
     }
-    @media (max-width: 400px) {
+    @media (max-width: 500px) {
         .journal {
-            &__wrapper {
+            &__slider {
+                height: 250px;
                 padding:10px;
             }
             &__item {
-                height: 150px;
-                width: 180px;
-
+                width: 190px;
             }
         }
     }

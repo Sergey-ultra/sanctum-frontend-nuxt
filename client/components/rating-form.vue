@@ -25,7 +25,6 @@
     import {useReviewStore} from "../store/review";
     import { storeToRefs } from "pinia";
 
-
     const enteredValue = ref(0);
 
     const props = defineProps({
@@ -37,14 +36,6 @@
 
     const reviewStore = useReviewStore();
     const { selectedRating } = storeToRefs(reviewStore);
-
-
-    onBeforeMount(() => {
-        if (props.initLoading) {
-            reviewStore.checkUserRating();
-        }
-    });
-
 
     const ratingText = value => {
         switch (Number(value)) {
@@ -62,6 +53,12 @@
                 return '';
         }
     };
+
+    onMounted(() => {
+        if (props.initLoading) {
+            //reviewStore.checkUserRating();
+        }
+    });
 </script>
 
 <style lang="scss" scoped>

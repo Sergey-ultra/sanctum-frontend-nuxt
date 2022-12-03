@@ -1,127 +1,126 @@
-<template>
-    <div class="chart" ref="chartdiv">
-    </div>
-</template>
+<!--<template>-->
+<!--    <div>-->
+<!--        <div class="chart" ref="chartdiv"></div>-->
+<!--    </div>-->
+<!--</template>-->
 
-<script setup>
-    const { $am4 } = useNuxtApp()
-    let {am4core, am4charts, am4themes_animated} = $am4();
-
-    am4core.useTheme(am4themes_animated);
-
-    const props = defineProps({
-        chartData: {
-            type: Array,
-            default: () => [{
-                date: 0,
-                count: 0,
-                min: 0,
-                max: 0,
-            }]
-        }
-    });
-
-    let chartContent = ref('');
-    let chartdiv = ref (null);
-
-    const preparedData = computed(() => {
-        return props.chartData.map(el => {
-            return {
-                date: el.date,
-                name: "name" + el.date,
-                valueAvg: el.avg,
-                valueMin: el.min,
-                valueMax: el.max,
-            }
-        })
-    });
-
-    watch(preparedData, value => {
-            if (value.length) {
-                renderChart();
-            }
-        }
-    );
-
-    onMounted(() => renderChart());
-
-    onUnmounted(() => {
-        if (chartContent.value) {
-          chartContent.value.dispose();
-        }
-    });
-
-    const renderChart = () => {
-        let chart = am4core.create(chartdiv.value, am4charts.XYChart);
-
-        chart.paddingRight = 20;
+<!--<script>-->
+<!--import * as am5 from '@amcharts/amcharts5';-->
+<!--import * as am5xy from '@amcharts/amcharts5/xy';-->
+<!--import am5themes_Animated from '@amcharts/amcharts5/themes/Animated';-->
 
 
-        chart.data =  preparedData.value;
+<!--export default {-->
+<!--    name: 'HelloWorld',-->
+<!--    data() {-->
+<!--        return {-->
+<!--            root: ''-->
+<!--        }-->
+<!--    },-->
+<!--    props: {-->
+<!--        chartData: Array-->
+<!--    },-->
+<!--    mounted() {-->
+<!--        let root = am5.Root.new(this.$refs.chartdiv);-->
 
-        chart.dateFormatter.inputDateFormat = "yyyy-MM-dd";
+<!--        root.setThemes([am5themes_Animated.new(root)]);-->
 
-        let dateAxis = chart.xAxes.push(new am4charts.DateAxis());
-        dateAxis.renderer.grid.template.location = 0;
+<!--        let chart = root.container.children.push(-->
+<!--            am5xy.XYChart.new(root, {-->
+<!--                panY: false,-->
+<!--                layout: root.verticalLayout-->
+<!--            })-->
+<!--        );-->
 
-        let valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
-        valueAxis.tooltip.disabled = true;
-        valueAxis.renderer.minWidth = 35;
+<!--        // Define data-->
+<!--        let data = [{-->
+<!--            category: "Research",-->
+<!--            value1: 1000,-->
+<!--            value2: 588-->
+<!--        },-->
+<!--            {-->
+<!--                category: "Marketing",-->
+<!--                value1: 1200,-->
+<!--                value2: 1800-->
+<!--            }, {-->
+<!--                category: "Sales",-->
+<!--                value1: 850,-->
+<!--                value2: 1230-->
+<!--            }-->
+<!--        ];-->
 
-        let series1 = chart.series.push(new am4charts.LineSeries());
-        series1.dataFields.dateX = "date";
-        series1.dataFields.valueY = "valueAvg";
+<!--        // Create Y-axis-->
+<!--        let yAxis = chart.yAxes.push(-->
+<!--            am5xy.ValueAxis.new(root, {-->
+<!--                renderer: am5xy.AxisRendererY.new(root, {})-->
+<!--            })-->
+<!--        );-->
 
-        series1.tooltipText = "средняя";
-        chart.cursor = new am4charts.XYCursor();
+<!--        // Create X-Axis-->
+<!--        let xAxis = chart.xAxes.push(-->
+<!--            am5xy.CategoryAxis.new(root, {-->
+<!--                renderer: am5xy.AxisRendererX.new(root, {}),-->
+<!--                categoryField: "category"-->
+<!--            })-->
+<!--        );-->
+<!--        xAxis.data.setAll(data);-->
 
-        let bullet = series1.bullets.push(new am4charts.CircleBullet());
-        bullet.circle.strokeWidth = 2;
-        bullet.circle.radius = 4;
-        bullet.circle.fill = am4core.color("#fff");
+<!--        // Create series-->
+<!--        let series1 = chart.series.push(-->
+<!--            am5xy.ColumnSeries.new(root, {-->
+<!--                name: "Series",-->
+<!--                xAxis: xAxis,-->
+<!--                yAxis: yAxis,-->
+<!--                valueYField: "value1",-->
+<!--                categoryXField: "category"-->
+<!--            })-->
+<!--        );-->
+<!--        series1.data.setAll(data);-->
 
-        let bullethover = bullet.states.create("hover");
-        bullethover.properties.scale = 1.3;
+<!--        let series2 = chart.series.push(-->
+<!--            am5xy.ColumnSeries.new(root, {-->
+<!--                name: "Series",-->
+<!--                xAxis: xAxis,-->
+<!--                yAxis: yAxis,-->
+<!--                valueYField: "value2",-->
+<!--                categoryXField: "category"-->
+<!--            })-->
+<!--        );-->
+<!--        series2.data.setAll(data);-->
 
+<!--        // Add legend-->
+<!--        let legend = chart.children.push(am5.Legend.new(root, {}));-->
+<!--        legend.data.setAll(chart.series.values);-->
 
-        let series2 = chart.series.push(new am4charts.LineSeries());
-        series2.dataFields.dateX = "date";
-        series2.dataFields.valueY = "valueMin";
+<!--        // Add cursor-->
+<!--        chart.set("cursor", am5xy.XYCursor.new(root, {}));-->
 
-        series2.tooltipText = "минимальная";
-        chart.cursor = new am4charts.XYCursor();
+<!--        this.root = root;-->
+<!--    },-->
 
-        let bullet2 = series2.bullets.push(new am4charts.CircleBullet());
-        bullet.circle.strokeWidth = 2;
-        bullet.circle.radius = 4;
-        bullet.circle.fill = am4core.color("#fff");
+<!--    beforeDestroy() {-->
+<!--        // if (this.root) {-->
+<!--        //     this.root.dispose();-->
+<!--        // }-->
+<!--    }-->
+<!--}-->
+<!--</script>-->
 
-        let bullethover2 = bullet2.states.create("hover");
-        bullethover2.properties.scale = 1.3;
+<!--<style scoped lang="scss">-->
+<!--.chart {-->
+<!--    width: 100%;-->
+<!--    height: 300px;-->
+<!--}-->
 
+<!--@media (max-width: 700px) {-->
+<!--    .chart {-->
+<!--        height: 250px;-->
+<!--    }-->
+<!--}-->
 
-        // let scrollbarX = new am4charts.XYChartScrollbar();
-        // scrollbarX.series.push(series1);
-        // chart.scrollbarX = scrollbarX;
-
-      chartContent.value = chart;
-    };
-</script>
-
-<style scoped lang="scss">
-    .chart {
-        width: 100%;
-        height: 300px;
-    }
-
-    @media (max-width: 700px) {
-        .chart {
-            height: 250px;
-        }
-    }
-    @media (max-width: 500px) {
-        .chart {
-            height: 200px;
-        }
-    }
-</style>
+<!--@media (max-width: 500px) {-->
+<!--    .chart {-->
+<!--        height: 200px;-->
+<!--    }-->
+<!--}-->
+<!--</style>-->

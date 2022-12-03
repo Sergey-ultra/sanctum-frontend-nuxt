@@ -4,7 +4,6 @@
                 v-for="(image, index) in previewImages"
                 :key="index"
                 class="file-form__item file-form__img"
-                :style="{width: width, height: `${height}px`}"
         >
             <img :src="`${$config.APP_URL}/${image}`" class=""/>
 
@@ -22,7 +21,8 @@
 
 
         </div>
-        <div  class="file-form__item file-form__upload"     :style="{width: width, height: `${height}px`}">
+
+        <div  class="file-form__item file-form__upload">
             <svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24"
                  stroke-linecap="round" stroke-linejoin="round" height="1em" width="1em"
                  xmlns="http://www.w3.org/2000/svg">
@@ -46,25 +46,16 @@
     const { progress, isUploading, uploadingImageUrls } = storeToRefs(imageStore);
 
     const emit = defineEmits(['update:initialImageUrls']);
+
     const props = defineProps({
         folder: String,
         initialImageUrls: Array,
-        photoCountInRow: {
-            type: Number,
-            default: 5
-        },
-        height: {
-            type: Number,
-            default: 113
-        }
     });
 
     const previewImages = ref([]);
     const mainPhotoIndex = ref(0);
     const isPreviewImagesInit = ref(true);
 
-
-    const width = computed(() => `calc(100% /  ${props.photoCountInRow}  - 16px)`);
     let initialImageUrlsLocal = computed({
         get() {
             return props.initialImageUrls;
@@ -73,6 +64,8 @@
             emit('update:initialImageUrls', value);
         }
     });
+
+
 
     const loadImages = event => {
         const files = event.target.files || event.dataTransfer.files
@@ -109,13 +102,12 @@
 <style lang="scss" scoped>
     .file-form {
         display: flex;
-        justify-content: flex-start;
         flex-wrap: wrap;
-        align-items: flex-start;
         border: 1px dashed #d9d9d9;
         border-radius: 4px;
         overflow: hidden;
         &__item {
+            max-height: 100%;
             margin: 8px;
             display: flex;
             justify-content: center;
@@ -123,6 +115,7 @@
             border: 1px solid #e6e6e6;
             position: relative;
             border-radius: 4px;
+            width: calc(100% / 4 - 16px);
 
             &  img {
                 max-height: 100%;
@@ -213,5 +206,17 @@
         right: 0;
         left: 0;
         bottom: 0;
+    }
+
+    @media (max-width: 900px) {
+        .file-form__item  {
+            width: calc(100% / 2 - 16px);
+        }
+    }
+
+    @media (max-width: 500px) {
+        .file-form__item  {
+            width: 100%;
+        }
     }
 </style>

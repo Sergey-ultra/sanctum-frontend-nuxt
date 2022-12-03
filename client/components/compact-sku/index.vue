@@ -14,7 +14,7 @@
             </nuxt-link>
         </div>
         <div class="compact__main">
-            <section class="sku">
+            <div class="sku">
                 <div
                         v-if="isLoadingCompactCurrentSku"
                         class="loader-wrapper"
@@ -67,7 +67,8 @@
                         </div>
                     </div>
                 </div>
-            </section>
+            </div>
+
             <div class="compact__inner">
                 <slot></slot>
             </div>
@@ -81,7 +82,7 @@
     import {storeToRefs} from "pinia";
 
     const currentSkuStore = useCurrentSkuStore();
-    const { currentSku, compactCurrentSku, isLoadingCompactCurrentSku } = storeToRefs(currentSkuStore);
+    const {compactCurrentSku,  currentSku, currentSkuProductCode, isLoadingCompactCurrentSku } = storeToRefs(currentSkuStore);
 
     const route = useRoute();
 
@@ -109,7 +110,7 @@
         return currentSkuLocal.value.reviews_count + ' ' + text;
     });
 
-    const currentSkuProductCode = computed(() => currentSkuLocal.value.code + '-' + currentSkuLocal.value.id);
+    // const currentSkuProductCode = computed(() => currentSkuLocal.value.code + '-' + currentSkuLocal.value.id);
 
     const currentSkuId = computed(() => {
         if (route.params.product_code && route.params.product_code.includes('-')) {
@@ -120,6 +121,33 @@
     });
 
 
+    const getPageTitle = () => {
+        switch(true) {
+            case route.name.includes('add-review'):
+                return `Добавить отзыв`;
+            case route.name.includes('add-photos'):
+                return 'Добавить фото';
+            case route.name.includes('reviews'):
+                return 'Отзывы на';
+            case route.name.includes('questions'):
+                return 'Вопросы о';
+
+        }
+    }
+    const setSEO = (name) => {
+        const title = `${getPageTitle()} ${name}`;
+        const metaName = `${title} Smart-Beautiful.ru`;
+        useHead({
+            title,
+            meta: [
+                { name: 'description', content: metaName},
+                { name: 'keywords', content: metaName},
+                { property: 'og:title', content: metaName }
+            ],
+        });
+    }
+
+
     watch(currentSkuId, value => {
         if (value) {
             currentSkuStore.setCurrentSkuId(value);
@@ -127,12 +155,18 @@
         }
     });
 
-    onMounted(() => {
+    watch(compactCurrentSku, value => setSEO(value.name));
+
+
+    await useAsyncData(async () => {
         if (currentSkuId.value) {
             currentSkuStore.setCurrentSkuId(currentSkuId.value);
-            currentSkuStore.loadCompactCurrentSku();
+            await currentSkuStore.loadCompactCurrentSku();
         }
     });
+
+    setSEO(compactCurrentSku.value.name);
+
 </script>
 
 <style lang="scss" scoped>

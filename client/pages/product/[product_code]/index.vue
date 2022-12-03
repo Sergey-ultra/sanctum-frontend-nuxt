@@ -47,7 +47,10 @@
 
         <div  class="description__item price__dynamics" id="price__dynamics">
             <h2 class="title">Динамика цен</h2>
-
+            <ClientOnly>
+<!--            <sku-price-history-chart :chartData="priceHistory"/>-->
+                <price-history-chart class="chart" :chartData="priceHistory" />
+            </ClientOnly>
         </div>
 
         <section class="description__item ingredients" v-if="currentSku.ingredients.length">
@@ -140,6 +143,8 @@
 </template>
 
 <script setup>
+    // import skuPriceHistoryChart from '../../../components/sku-price-history-chart'
+    import priceHistoryChart from '../../../components/price-history-chart'
     import ratingForm from '../../../components/rating-form'
     import reviewList from "../../../components/review-list";
     import clientContent from "../../../components/client-content";
@@ -161,6 +166,7 @@
 
 
     const route = useRoute();
+
     const currentSkuProductCode = computed (() => {
       if (!Object.keys(currentSku.value).length) {
         return '';
@@ -168,13 +174,20 @@
       return currentSku.value.code + '-' +  currentSku.value.id;
     });
 
-    const loadCurrentPriceDynamics = () => {
+    const skuId = computed(() => {
         if (route.params.product_code) {
             const urlParts = route.params.product_code.split('-');
-            const skuId = urlParts[urlParts.length - 1];
-            priceHistoryStore.loadPriceHistory(skuId);
+            return urlParts[urlParts.length - 1];
+        }
+        return null;
+    })
+
+    const loadCurrentPriceDynamics = () => {
+        if (skuId.value) {
+            priceHistoryStore.loadPriceHistory(skuId.value);
         }
     };
+
     const getCharacteristicsTitle = value => {
         switch (value) {
             case 'application':
@@ -201,7 +214,25 @@
         return res;
     };
 
-    onBeforeMount(() => {
+    const setSEO = name => {
+        const title = `Описание товара ${name}`;
+        const metaName = `${title} Smart-Beautiful - агрегатор цен косметических товаров`;
+        useHead({
+            title,
+            meta: [
+                {name: 'description', content: metaName},
+                {name: 'keywords', content: metaName}
+            ],
+        });
+    };
+
+
+    watch(currentSku, value => setSEO(value.name));
+
+    setSEO(currentSku.value.name);
+
+
+    onMounted(() => {
         loadCurrentPriceDynamics();
 
         if (isAuth.value) {
@@ -383,6 +414,14 @@
             margin: 10px 0;
         }
     }
+
+    .chart {
+        width: 100%;
+        height: 300px;
+    }
+
+
+
     @media (max-width: 1000px) {
         .reviews {
             &__body {
@@ -417,6 +456,17 @@
                     background-color: rgba(0,0,0,.04);
                 }
             }
+        }
+    }
+    @media (max-width: 700px) {
+        .chart {
+            height: 250px;
+        }
+    }
+
+    @media (max-width: 500px) {
+        .chart {
+            height: 200px;
         }
     }
 </style>

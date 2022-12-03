@@ -29,13 +29,26 @@
     import {useProductStore} from "../../store/product";
     import {useFilterStore} from "../../store/filter";
 
-    const brandStore = useBrandStore();
+    // const brandStore = useBrandStore();
     const productStore = useProductStore();
     const filterStore = useFilterStore();
-    const { currentBrand, isLoadingCurrentBrand } = storeToRefs(brandStore);
-    const { totalCount, filterOptions } = storeToRefs(productStore);
+    // const { currentBrand, isLoadingCurrentBrand } = storeToRefs(brandStore);
+    const { currentBrand, totalCount } = storeToRefs(productStore);
 
     const route =  useRoute();
+    const setSEO = name => {
+        const title = `Бренд ${name}`;
+        const metaName = `${title} Smart-Beautiful - агрегатор цен косметических товаров`;
+        useHead({
+            title,
+            meta: [
+                {name: 'description', content: metaName},
+                {name: 'keywords', content: metaName}
+            ],
+        });
+    }
+
+
 
     const loadProductsByBrandCode = async () => {
         await Promise.all([
@@ -44,32 +57,12 @@
         ]);
     };
 
-    const setTitle = name => {
-        // if (name) {
-        //     document.title = route.meta.title + ' ' + name +
-        //         ' Smart-Beautiful - агрегатор цен косметических товаров';
-        // }
-    }
-
-    useAsyncData(async () => {
-        if (route.params.brand_code) {
-            await brandStore.loadBrandByCode(route.params.brand_code);
-            if (currentBrand) {
-                setTitle(currentBrand.name);
-            }
-
-            productStore.setProductLoadingMode({ brand_code: route.params.brand_code });
-            productStore.setProductParamsByProductQuery(route.query);
-            await loadProductsByBrandCode();
-        }
-    });
-
     watch(
         currentBrand,
         (value) => {
             if (value) {
                 filterStore.loadReceipts()
-                setTitle(value.name)
+                setSEO(value.name)
             }
         }
     );
@@ -79,7 +72,8 @@
             if (value.params.brand_code) {
                 if (value.params.brand_code !== oldValue.params.brand_code) {
                     productStore.setProductLoadingMode({brand_code: value.params.brand_code})
-                    brandStore.loadBrandByCode(value.params.brand_code)
+                    // brandStore.loadBrandByCode(value.params.brand_code)
+
                 }
                 productStore.setProductParamsByProductQuery(value.query)
                 loadProductsByBrandCode()
@@ -88,7 +82,18 @@
         { deep: true }
     );
 
+    if (currentBrand.value && currentBrand.value.name) {
+        setSEO(currentBrand.value.name)
+    }
 
+    useAsyncData(async () => {
+        if (route.params.brand_code) {
+            productStore.setProductLoadingMode({ brand_code: route.params.brand_code });
+            productStore.setProductParamsByProductQuery(route.query);
+            await loadProductsByBrandCode();
+            // await brandStore.loadBrandByCode(route.params.brand_code);
+        }
+    });
 </script>
 
 <style lang="scss" scoped>

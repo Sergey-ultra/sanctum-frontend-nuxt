@@ -48,7 +48,7 @@
     import {useProductStore} from "../../store/product";
 
 
-    const localFilterParams = reactive({
+    const localFilterParams = ref({
         min_price: "",
         max_price: "",
         brand_ids: [],

@@ -1,67 +1,108 @@
 <template>
-    <div v-if="currentArticle !== null" class="article">
-        <div class="article__title">{{ currentArticle.title }}</div>
-        <div class="article__preview">{{ currentArticle.preview }}</div>
-        <div class="article__meta">
-            <div class="article__user">
-                <div class="article__userImg">
-                    <img :src="`${$config.APP_URL}/${currentArticle.user_avatar}`" :alt="currentArticle.user_name"/>
-                </div>
-                <div class="article__userInfo">
-                    <div class="article__userName">
-                        <span>
-                            {{ currentArticle.user_name }}
-                        </span>
+    <div>
+        <loader
+            class="loader"
+            v-if="isLoadingCurrentArticle"
+        />
+
+        <div v-else class="article">
+            <div class="article__title">{{ currentArticle.title }}</div>
+            <div class="article__preview">{{ currentArticle.preview }}</div>
+            <div class="article__meta">
+                <div class="article__user">
+                    <div class="article__userImg">
+                        <img :src="`${$config.APP_URL}/${currentArticle.user_avatar}`" :alt="currentArticle.user_name"/>
                     </div>
+                    <div class="article__userInfo">
+                        <div class="article__userName">
+                            <span>
+                                {{ currentArticle.user_name }}
+                            </span>
+                        </div>
 
+                    </div>
+                </div>
+                <div class="article__info">
+                    <div class="article__infoItem">{{ currentArticle.created_at }}</div>
+                    <div class="article__infoItem">
+                        <span class="article__viewsIcon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                 data-tid="9bd43b8c">
+                                <path fill="#999"
+                                      d="M12 17c3.356 0 6.549-1.81 8.96-5.01C18.527 8.794 15.341 7 12 7c-3.356 0-6.549 1.81-8.96 5.01C5.473 15.206 8.659 17 12 17zm0-11c3.816 0 7.299 2.097 9.85 5.51.2.29.2.668 0 .958C19.3 15.903 15.816 18 12 18s-7.299-2.097-9.85-5.51c-.2-.29-.2-.668 0-.958C4.7 8.097 8.184 6 12 6zm-3.5 5.994c.458.349 1.04.541 1.671.5 1.224-.073 2.252-1.1 2.326-2.323A2.568 2.568 0 0 0 11.99 8.5a3.512 3.512 0 0 1 3.503 3.73 3.494 3.494 0 0 1-3.263 3.263 3.512 3.512 0 0 1-3.73-3.499z"></path>
+                            </svg>
+                        </span>
+                        {{ currentArticle.views_count }}
+                    </div>
                 </div>
             </div>
-            <div class="article__info">
-                <div class="article__infoItem">{{ currentArticle.created_at }}</div>
-                <div class="article__infoItem">
-                    <span class="article__viewsIcon">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
-                             data-tid="9bd43b8c">
-                            <path fill="#999"
-                                  d="M12 17c3.356 0 6.549-1.81 8.96-5.01C18.527 8.794 15.341 7 12 7c-3.356 0-6.549 1.81-8.96 5.01C5.473 15.206 8.659 17 12 17zm0-11c3.816 0 7.299 2.097 9.85 5.51.2.29.2.668 0 .958C19.3 15.903 15.816 18 12 18s-7.299-2.097-9.85-5.51c-.2-.29-.2-.668 0-.958C4.7 8.097 8.184 6 12 6zm-3.5 5.994c.458.349 1.04.541 1.671.5 1.224-.073 2.252-1.1 2.326-2.323A2.568 2.568 0 0 0 11.99 8.5a3.512 3.512 0 0 1 3.503 3.73 3.494 3.494 0 0 1-3.263 3.263 3.512 3.512 0 0 1-3.73-3.499z"></path>
-                        </svg>
-                    </span>
-                    {{ currentArticle.views_count }}
-                </div>
-            </div>
-        </div>
 
-        <div class="article__img">
-            <img :src="`${$config.APP_URL}/${currentArticle.image}`" :alt="currentArticle.image"/>
+            <div class="article__img">
+                <img :src="`${$config.APP_URL}/${currentArticle.image}`" :alt="currentArticle.image"/>
+            </div>
+            <div class="article__body" v-html="currentArticle.body"></div>
         </div>
-        <div class="article__body" v-html="currentArticle.body"></div>
     </div>
 </template>
 
 <script setup>
+    import loader from '../../components/loader'
     import {useArticleStore} from "../../store/article";
     import { storeToRefs } from "pinia";
 
     const route =  useRoute();
     const articleStore = useArticleStore();
-    const { currentArticle } = storeToRefs(articleStore);
+    const { currentArticle, isLoadingCurrentArticle } = storeToRefs(articleStore);
+
+    const setSEO = name => {
+        const title = `Статья ${name}`;
+        const metaName = `${title} Smart-Beautiful - агрегатор цен косметических товаров`;
+        useHead({
+            title,
+            meta: [
+                {name: 'description', content: metaName},
+                {name: 'keywords', content: metaName}
+            ],
+        });
+    }
+
+    // watch(
+    //     () => route,
+    //     async (value, oldValue) => {
+    //         console.log(value)
+    //         if (value.params.id) {
+    //             if (value.params.id !== oldValue.params.id) {
+    //
+    //                 await articleStore.loadCurrentArticle(value.params.id);
+    //                 setSEO(currentArticle.value.title);
+    //             }
+    //         }
+    //     },
+    //     { deep: true}
+    // );
 
 
-    watch(
-        currentArticle,
-        (value) => {
-            document.title = `Статья ${value.title} Smart-Beautiful - агрегатор цен косметических товаров`;
+    watch(currentArticle, value => {
+        if (value && value.title) {
+            setSEO(value.title)
         }
-    );
+    });
+
+    if (currentArticle.value && currentArticle.value.title) {
+        setSEO(currentArticle.value.title)
+    }
+
 
     useAsyncData(async() => {
-        if (route.params.id) {
-            await articleStore.loadCurrentArticle(route.params.id)
-        }
+        await articleStore.loadCurrentArticle(route.params.id);
     });
 </script>
 
 <style lang="scss" scoped>
+    .loader {
+        width: 200px;
+        height: 200px;
+    }
     .article {
         width: 100%;
         background-color: #fff;

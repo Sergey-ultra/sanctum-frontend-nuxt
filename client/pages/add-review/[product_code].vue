@@ -42,12 +42,11 @@
                 <h4>Фотографии отзыва</h4>
 
                 <multiple-image-upload
-                        :folder="'premoderatedReviews'"
-                        v-model:initialImageUrls="editedReview.images"
-                        :photoCountInRow="photoCountInRow"
-                        :height="150"
-
+                    class="image-upload"
+                    :folder="'premoderatedReviews'"
+                    v-model:initialImageUrls="editedReview.images"
                 />
+
                 <div class="form-group ">
                     <label>
                         <input v-model="anonymouslyLocal" type="checkbox"/>
@@ -120,16 +119,7 @@
     };
     const v$ = useVuelidate(rules, {editedReview, rating});
 
-    const photoCountInRow = computed(() => {
-        const width = document.documentElement.clientWidth
-        if (width < 500) {
-            return 1;
-        }
-        if (width > 500 && width < 900) {
-            return 2;
-        }
-        return 4;
-    });
+
 
     const anonymouslyLocal = computed({
         get() {
@@ -167,13 +157,6 @@
         }
     };
 
-    onMounted(async () => {
-        rating.value = selectedRating.value;
-        if (isAuth.value && currentSkuId) {
-            await reviewStore.checkExistingReview();
-        }
-    });
-
     let router =  useRouter();
     let route =  useRoute();
 
@@ -197,6 +180,17 @@
             }
         }
     }
+
+
+
+
+
+    onMounted(async () => {
+        rating.value = selectedRating.value;
+        if (isAuth.value && currentSkuId) {
+            await reviewStore.checkExistingReview();
+        }
+    });
 </script>
 
 <style lang="scss" scoped>
@@ -302,5 +296,8 @@
 
     .invalid-feedback {
         color: #fc675c;
+    }
+    .image-upload {
+        height: 168px;
     }
 </style>

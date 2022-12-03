@@ -10,6 +10,18 @@
 
 <script setup>
     import reviewsAnswersNav from "~/components/profile/reviewsAnswersNav";
+    const setSEO = () => {
+        const title = `Мои ответы`;
+        const metaName = `${title} Smart-Beautiful - агрегатор цен косметических товаров`;
+        useHead({
+            title,
+            meta: [
+                {name: 'description', content: metaName},
+                {name: 'keywords', content: metaName}
+            ],
+        });
+    }
+    setSEO();
 </script>
 
 <style scoped>

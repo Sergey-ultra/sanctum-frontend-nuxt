@@ -79,6 +79,19 @@
         }
     });
 
+    const setSEO = () => {
+        const title = `Редактирование профиля`;
+        const metaName = `${title} Smart-Beautiful - агрегатор цен косметических товаров`;
+        useHead({
+            title,
+            meta: [
+                {name: 'description', content: metaName},
+                {name: 'keywords', content: metaName}
+            ],
+        });
+    }
+    setSEO();
+
     onMounted(async () => {
         if (Object.keys(userInfo.value).length) {
             editedUserInfo.value = {...userInfo.value}

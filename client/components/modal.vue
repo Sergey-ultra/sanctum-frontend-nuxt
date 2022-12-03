@@ -32,27 +32,27 @@
         }
     });
     let widthLocal = computed(() => {
-      if (!props.width && document) {
-        const width = document.documentElement.clientWidth
+        if (!props.width && document) {
+            const width = document.documentElement.clientWidth
 
-        if (width < 1470 && width > 1200) {
-          return 30;
-        }
-        if (width < 1200 && width > 900) {
-          return 35;
-        }
-        if (width < 900 && width > 700) {
-          return 50;
-        }
-        if (width < 700 && width > 500) {
-          return 70;
-        }
+            if (width < 1470 && width > 1200) {
+                return 30;
+            }
+            if (width < 1200 && width > 900) {
+                return 35;
+            }
+            if (width < 900 && width > 700) {
+                return 50;
+            }
+            if (width < 700 && width > 500) {
+                return 70;
+            }
 
-        if (width < 500) {
-          return 95;
+            if (width < 500) {
+                return 95;
+            }
         }
-      }
-      return props.width;
+        return props.width;
     });
 
     watch(() => props.isShowModal, value => {

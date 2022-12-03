@@ -9,6 +9,17 @@ export const useCurrentSkuStore = defineStore({
         compactCurrentSku: {},
         isLoadingCompactCurrentSku: false,
     }),
+    getters: {
+        currentSkuLocal (state) {
+            if (!Object.keys(state.currentSku).length) {
+                return state.compactCurrentSku;
+            }
+            return state.currentSku;
+        },
+        currentSkuProductCode (getters) {
+            return getters.currentSkuLocal.code + '-' + getters.currentSkuLocal.id
+        }
+    },
     actions: {
         setCurrentSkuId(payload) {
             this.currentSkuId = payload;

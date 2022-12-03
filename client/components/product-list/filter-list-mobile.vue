@@ -31,9 +31,11 @@
             <div class="collapse__header">
                 <div class="collapse__title">
                     <div class="collapse__hide" @click="hide">
-                        <fa icon="arrow-left"></fa>
+                        <fa class="collapse__back" icon="arrow-left"></fa>
+                        <span class="collapse__name">{{ title }}</span>
                     </div>
-                    <span class="collapse__name">{{ title }}</span>
+
+
                     <button class="collapse__close" @click="$emit('hideMobileFilter')">
                         <span>✕</span>
                     </button>
@@ -283,15 +285,20 @@
         &__title {
             position: relative;
             padding: 0 15px;
-            height:40px;
+            height:46px;
             display:flex;
             align-items: center;
         }
         &__hide {
+            height: 100%;
+            display:flex;
+            align-items:center;
+        }
+        &__back {
             opacity: 0.6;
-            margin-right:10px;
         }
         &__name {
+            margin-left:10px;
             font-weight: bold;
         }
         &__close {
@@ -300,11 +307,11 @@
             cursor: pointer;
             font-size: 1.5rem;
             font-weight: 700;
-            line-height: 1;
             color: #000;
             text-shadow: 0 1px 0 #fff;
+            padding: 0 10px;
+            margin: 0 -10px;
             opacity: .5;
-            padding: 0;
             border-style: none;
             background-color: transparent;
         }

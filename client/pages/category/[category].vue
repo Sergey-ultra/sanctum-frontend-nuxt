@@ -31,34 +31,35 @@
     const { currentCategory, totalCount } = storeToRefs(productStore);
     const route =  useRoute();
 
+    const setSEO = name => {
+        const title = `Категория ${name}`;
+        const metaName = `${title} Smart-Beautiful - агрегатор цен косметических товаров`;
+        useHead({
+            title,
+            meta: [
+                {name: 'description', content: metaName},
+                {name: 'keywords', content: metaName}
+            ],
+        });
+    }
 
     const loadProductsByCategoryCode = async () => {
-      await Promise.all([
-        productStore.loadProductsWithPagination(),
-        filterStore.loadFilters()
-      ]);
-    };
-    const setTitle = name => {
-        // if (name && document) {
-        //     document.title = `Категория ${name} Smart-Beautiful - агрегатор цен косметических товаров`;
-        // }
+        await Promise.all([
+            productStore.loadProductsWithPagination(),
+            filterStore.loadFilters()
+        ]);
     };
 
-    useAsyncData(async() => {
-          if (route.params.category) {
-            if (currentCategory) {
-              setTitle(currentCategory.name)
-            }
-            productStore.setProductLoadingMode({category_code: route.params.category})
-            productStore.setProductParamsByProductQuery(route.query)
-            await loadProductsByCategoryCode()
-          }
-        });
 
-    watch(currentCategory, (value) => {
+
+
+
+    watch(
+        currentCategory,
+        (value) => {
             if (value) {
                 filterStore.loadReceipts();
-                setTitle(value.name);
+                setSEO(value.name);
             }
         }
     );
@@ -66,16 +67,31 @@
     watch(
         () => ({params: route.params, query: route.query}),
         (value, oldValue) => {
-          if (value.params.category) {
-            if (oldValue && oldValue.params.category !== value.params.category) {
-              productStore.setProductLoadingMode({category_code: value.params.category})
+            if (value.params.category) {
+                if (oldValue && oldValue.params.category !== value.params.category) {
+                    productStore.setProductLoadingMode({category_code: value.params.category})
+                }
+                productStore.setProductParamsByProductQuery(value.query)
+                loadProductsByCategoryCode()
             }
-            productStore.setProductParamsByProductQuery(value.query)
-            loadProductsByCategoryCode()
-          }
         },
         {deep: true}
     );
+
+    if (currentCategory.value && currentCategory.value.name) {
+        setSEO(currentCategory.value.name)
+    }
+
+    useAsyncData(async () => {
+        if (route.params.category) {
+            productStore.setProductLoadingMode({category_code: route.params.category})
+            productStore.setProductParamsByProductQuery(route.query)
+            await loadProductsByCategoryCode()
+
+        }
+    });
+
+
 
 </script>
 

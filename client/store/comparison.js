@@ -4,6 +4,7 @@ export const useComparisonStore = defineStore({
     id: 'comparison',
     state: () => ({
         compared:[],
+        isExtractingCompared: false,
         comparedSkus:[],
         isLoadingComparedSkus: false,
         currentComparedSku: null,
@@ -15,12 +16,15 @@ export const useComparisonStore = defineStore({
            let categoryId
            state.compared.forEach(el => {
                if (el.ids.length > max) {
-                   max = el.ids.length
-                   categoryId = el.category_id
+                   max = el.ids.length;
+                   categoryId = el.category_id;
                }
            })
-           return categoryId
+           return categoryId;
        },
+        firstCategoryId: state => {
+           return  state.compared.length ? state.compared[0].category_id : null;
+        },
         categoryIdsWithComparedSkuIds: state => state.compared.map(el => el.category_id),
         allComparedSkuIdsCount: state => state.compared.reduce((accumulator, currentValue) => accumulator + currentValue.ids.length, 0),
         allComparedSkuIds: state => state.compared.reduce((accumulator, currentValue) => {
@@ -57,10 +61,13 @@ export const useComparisonStore = defineStore({
             existingCategoryWithSkuIds.ids.splice(index, 1);
         },
         async checkCompared() {
+            this.isExtractingCompared = true;
             let array = await JSON.parse(localStorage.getItem('comparedSkuIds'));
             if (array) {
                 this.compared = [...array];
+                this.setCurrentCategoryId(this.firstCategoryId);
             }
+            this.isExtractingCompared = false;
         },
         async toggleComparison(object) {
             this.setCurrentComparedSkuToNull();
@@ -111,8 +118,8 @@ export const useComparisonStore = defineStore({
         },
         async loadComparedSkus() {
             this.isLoadingComparedSkus = true;
-
             if (this.compared.length) {
+
                 if (!this.currentCategoryId) {
                     this.setCurrentCategoryId(this.categoryIdWithMaxSkuIds);
                 }
@@ -122,6 +129,7 @@ export const useComparisonStore = defineStore({
                 const { $api } = useNuxtApp()
                 const { data } = await $api.get('show-compared-skus', { params: { ids }});
                 if (data) {
+
                     this.setComparedSkus(data);
                 }
             } else {

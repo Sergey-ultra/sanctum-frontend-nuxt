@@ -40,6 +40,19 @@
     const { userName, userAvatar } = storeToRefs(authStore);
     const { userInfo } = storeToRefs(userStore);
 
+    const setSEO = () => {
+        const title = `Мой профиль`;
+        const metaName = `${title} Smart-Beautiful - агрегатор цен косметических товаров`;
+        useHead({
+            title,
+            meta: [
+                {name: 'description', content: metaName},
+                {name: 'keywords', content: metaName}
+            ],
+        });
+    }
+    setSEO();
+
     onMounted(async () => {
         await userStore.loadUserInfo();
     })

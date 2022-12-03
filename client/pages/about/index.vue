@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h2 class="title">О нас</h2>
+    <h1 class="title">О нас</h1>
     <div class="block">
         <div class="row">
             <div class="row__item">
@@ -39,9 +39,22 @@
 </template>
 
 <script setup>
-const sendComment = () => {
+    const sendComment = () => {
 
-}
+    }
+
+    const setSEO = () => {
+        const name = `О нас`;
+        const metaName = `Smart-Beautiful - агрегатор цен косметических товаров ${name}`;
+        useHead({
+            title: name,
+            meta: [
+                {name: 'description', content: metaName},
+                {name: 'keywords', content: metaName}
+            ],
+        });
+    }
+    setSEO();
 </script>
 
 <style lang="scss" scoped>

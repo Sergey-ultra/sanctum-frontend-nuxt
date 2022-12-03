@@ -6,9 +6,10 @@ export const usePriceHistoryStore = defineStore({
         priceHistory:[]
     }),
     actions: {
-        async loadPriceHistory(sku_id) {
+        async loadPriceHistory(id) {
             const { $api } = useNuxtApp()
-            const { data } = await $api.get('price-history', { params: { sku_id } });
+            const { data } = await $api.get(`price-history?sku_id=${id}`);
+
             if (data) {
                 this.priceHistory = [...data];
             }

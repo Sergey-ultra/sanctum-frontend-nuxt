@@ -35,11 +35,20 @@
         productStore.loadProductsWithPagination();
         filterStore.loadFilters();
     };
-    const setTitle = name => {
-        if (name) {
-            document.title = `Поиск по ${name} Smart-Beautiful - агрегатор цен косметических товаров`;
-        }
-    };
+
+
+
+    const setSEO = name => {
+        const title = `Поиск по ${name}`;
+        const metaName = `${title} Smart-Beautiful - агрегатор цен косметических товаров`;
+        useHead({
+            title,
+            meta: [
+                {name: 'description', content: metaName},
+                {name: 'keywords', content: metaName}
+            ],
+        });
+    }
 
     watch(
         () => ({ params: route.params, query: route.query }),
@@ -47,7 +56,7 @@
             if (![undefined, null].includes(value.query.search)) {
 
                 if (value.query.search !== oldValue.query.search) {
-                    setTitle(value.query.search);
+                    setSEO(value.query.search);
                     productStore.setProductLoadingMode({search: value.query.search});
                 }
                 productStore.setProductParamsByProductQuery(value.query);
@@ -57,9 +66,11 @@
         {deep: true}
     );
 
-    onMounted(() => {
+    setSEO();
+
+    useAsyncData(() => {
         if (![undefined, null].includes(route.query.search)) {
-            setTitle(route.query.search);
+            setSEO(route.query.search);
             productStore.setProductLoadingMode({search: route.query.search});
             productStore.setProductParamsByProductQuery(route.query);
             searchByString();

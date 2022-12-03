@@ -5,13 +5,14 @@
             <h3 v-else>Готово!</h3>
         </template>
 
+
         <div v-if="!isSuccessToAddingToTrackingSkuIds">
             <div class="description">
                 Оставьте свой адрес — как только цена на товар снизится, вы сразу об этом узнаете
             </div>
             <form class="form" @submit.prevent="add">
                 <div class="form__item">
-                    <input class="input"  type="text" v-model.trim="mail" placeholder="email">
+                    <input class="input" type="text" v-model.trim="mail" placeholder="email">
                     <div class="invalid-feedback" v-for="error of v$.mail.$errors" :key="error.$uid">
                         {{ error.$message }}
                     </div>
@@ -26,14 +27,14 @@
         </div>
 
         <div v-else>
-
             <div class="description">
                 Теперь вы обязательно узнаете, когда цена на
-                <span class="description__product">{{ product.name }} </span>
+                <span class="description__product">{{ currentSku.name }} </span>
                 снизится
             </div>
-            <button  class="button" @click="closeTrackingModal">Хорошо</button>
+            <button class="button" @click="closeTrackingModal">Хорошо</button>
         </div>
+
     </modal>
 </template>
 
@@ -58,7 +59,7 @@
             type: Boolean,
             default: false
         },
-        product: {
+        currentSku: {
             type: Object,
             default: () => {}
         }
@@ -84,7 +85,7 @@
         const isValidate = await v$.value.mail.$validate();
 
         if (isValidate) {
-            trackingStore.addToTracking({email: mail.value, sku_id: props.product.id});
+            trackingStore.addToTracking({email: mail.value, sku_id: props.currentSku.id});
         }
         v$.value.$reset();
     };

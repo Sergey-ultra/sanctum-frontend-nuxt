@@ -21,13 +21,12 @@
             </div>
 
 
-            <multiple-images-upload
-                    :folder="'premoderatedReviews'"
-                    v-model:initialImageUrls="editedReview.images"
-                    :photoCountInRow="photoCountInRow"
-                    :height="150"
-
+            <multiple-image-upload
+                class="image-upload"
+                :folder="'premoderatedReviews'"
+                v-model:initialImageUrls="editedReview.images"
             />
+
             <div class="form-group mt-4">
                 <button
                         class="add-btn"
@@ -51,7 +50,7 @@
 </template>
 
 <script setup>
-    import multipleImagesUpload from "../../components/image-upload-as-form/multiple-image-upload";
+    import multipleImageUpload from "../../components/image-upload-as-form/multiple-image-upload";
     import compactSku from '../../components/compact-sku'
     import ratingForm from "../../components/rating-form";
     import useVuelidate from '@vuelidate/core'
@@ -85,30 +84,12 @@
     const v$ = useVuelidate(rules, {editedReview, rating});
 
 
-    const photoCountInRow = computed(() => {
-        const width = document.documentElement.clientWidth
-        if (width < 500) {
-            return 1
-        }
-        if (width > 500 && width < 900) {
-            return 2
-        }
-        return 4
-    });
 
-    watch(() => selectedRating, value => rating.value = value);
-
-    onMounted(async () => {
-        rating.value = selectedRating
-        if (existingReview === null) {
-            await reviewStore.checkExistingReview()
-        }
-    });
 
     let router =  useRouter();
 
     const addReviewPhotos = async () => {
-      console.log(!existingReview);
+        //console.log(!existingReview);
         if (!existingReview) {
 
             const validated = await v$.$validate();
@@ -121,10 +102,22 @@
                 }
                 rating.value = 0;
                 v$.$reset();
-                router.push({ name: 'reviews'})
+                router.push({name: 'reviews'})
             }
         }
     }
+
+    watch(() => selectedRating, value => rating.value = value);
+
+
+
+
+    onMounted(async () => {
+        rating.value = selectedRating
+        if (existingReview === null) {
+            await reviewStore.checkExistingReview()
+        }
+    });
 </script>
 
 <style scoped lang="scss">
@@ -168,5 +161,8 @@
         &:not(:disabled):hover {
             background-color: #f5c423;
         }
+    }
+    .image-upload {
+        height: 168px;
     }
 </style>

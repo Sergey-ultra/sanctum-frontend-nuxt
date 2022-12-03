@@ -1,153 +1,164 @@
 <template>
-
-    <loader
-        class="loader"
-        v-if="isLoadingCurrentSku"/>
-
-
-    <div v-else-if="Object.keys(currentSku).length" class="sku">
-        <div class="breadcrumb">
-            <nuxt-link class="breadcrumb__item" to="/">Каталог</nuxt-link>
-            <nuxt-link
-                class="breadcrumb__item"
-                :to="`/category/${currentSku.category_code}`"
-            >
-                {{ currentSku.category }}
-            </nuxt-link>
-            <nuxt-link
-                class="breadcrumb__item"
-                :to="`/brand/${currentSku.brand_code}`"
-            >
-                {{ currentSku.brand }}
-            </nuxt-link>
-        </div>
+    <div>
+        <loader
+            class="loader"
+            v-if="isLoadingCurrentSku"/>
 
 
-        <h4 class="sku__title sku__title-full">{{ skuName }}</h4>
-
-        <div class="sku__meta">
-            <tabs
-                :tabs="tabValues"
-            />
-
-            <div class="branch">
-                <tool-tip class="branch__inner" :position="'bottom'">
-                    <template v-slot:content>
-                        Добавить в избранное
-                    </template>
-                    <div class="branch__item" @click="addToFav(currentSku.id)">
-                        <fa class="icon" :class="{'pink': favorites.includes( currentSku.id) }" icon="heart"></fa>
-                        <span class="branch__text">В избранное</span>
-                    </div>
-                </tool-tip>
-
-                <tool-tip class="branch__inner" :position="'bottom'">
-                    <template v-slot:content>
-                        <span v-if="!allComparedSkuIds.includes( currentSku.id)">Добавить к сравнению</span>
-                        <span v-else>Удалить из сравнения</span>
-                    </template>
-                    <div class="branch__item" @click="getComparison">
-                        <svg
-                            :class="{'pink': allComparedSkuIds.includes( currentSku.id) }"
-                            class="icon"
-                            xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 32 32">
-                            <path fill="currentColor"
-                                  d="M12 2h20v4h-20v-4zM12 14h20v4h-20v-4zM12 26h20v4h-20v-4zM0 4c0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.209-1.791 4-4 4s-4-1.791-4-4zM0 16c0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.209-1.791 4-4 4s-4-1.791-4-4zM0 28c0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.209-1.791 4-4 4s-4-1.791-4-4z"></path>
-                        </svg>
-                        <span class="branch__text">Сравнить</span>
-                    </div>
-                </tool-tip>
+        <div v-else-if="Object.keys(currentSku).length" class="sku">
+            <div class="breadcrumb">
+                <nuxt-link class="breadcrumb__item" to="/">Каталог</nuxt-link>
+                <nuxt-link
+                    class="breadcrumb__item"
+                    :to="`/category/${currentSku.category_code}`"
+                >
+                    {{ currentSku.category }}
+                </nuxt-link>
+                <nuxt-link
+                    class="breadcrumb__item"
+                    :to="`/brand/${currentSku.brand_code}`"
+                >
+                    {{ currentSku.brand }}
+                </nuxt-link>
             </div>
-        </div>
 
-        <div class="product">
-            <div class="header">
-                <div class="header__item header__item-sku">
-                    <div class="header__images">
-                        <div class="photos" v-if="smallPhotos.length > 1">
-                            <div
-                                class="photos__item"
-                                :class="{'photos__item-selected': selectedPhotoIndex === parent}"
-                                v-for="(img, index) in smallPhotos"
-                                :key="parent"
-                                @click="selectPhotoIndex(parent)"
-                            >
-                                <img :src="`${$config.APP_URL}/${img}`" :alt="img"/>
+
+            <h4 class="sku__title sku__title-full">{{ skuName }}</h4>
+
+            <div class="sku__meta">
+                <tabs
+                    :tabs="tabValues"
+                />
+
+                <div class="branch">
+                    <tool-tip class="branch__inner" :position="'bottom'">
+                        <template v-slot:content>
+                            Добавить в избранное
+                        </template>
+                        <div class="branch__item" @click="addToFav(currentSku.id)">
+                            <fa class="icon" :class="{'pink': favorites.includes( currentSku.id) }" icon="heart"></fa>
+                            <span class="branch__text">В избранное</span>
+                        </div>
+                    </tool-tip>
+
+                    <tool-tip class="branch__inner" :position="'bottom'">
+                        <template v-slot:content>
+                            <span v-if="!allComparedSkuIds.includes( currentSku.id)">Добавить к сравнению</span>
+                            <span v-else>Удалить из сравнения</span>
+                        </template>
+                        <div class="branch__item" @click="getComparison">
+                            <svg
+                                :class="{'pink': allComparedSkuIds.includes( currentSku.id) }"
+                                class="icon"
+                                xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 32 32">
+                                <path fill="currentColor"
+                                      d="M12 2h20v4h-20v-4zM12 14h20v4h-20v-4zM12 26h20v4h-20v-4zM0 4c0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.209-1.791 4-4 4s-4-1.791-4-4zM0 16c0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.209-1.791 4-4 4s-4-1.791-4-4zM0 28c0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.209-1.791 4-4 4s-4-1.791-4-4z"></path>
+                            </svg>
+                            <span class="branch__text">Сравнить</span>
+                        </div>
+                    </tool-tip>
+                </div>
+            </div>
+
+            <div class="product">
+                <div class="header">
+                    <div class="header__item header__item-sku">
+                        <div class="header__images">
+                            <div class="photos" v-if="smallPhotos.length > 1">
+                                <div
+                                    class="photos__item"
+                                    :class="{'photos__item-selected': selectedPhotoIndex === index}"
+                                    v-for="(img, index) in smallPhotos"
+                                    :key="index"
+                                    @click="selectPhotoIndex(index)"
+                                >
+                                    <img :src="`${$config.APP_URL}/${img}`" :alt="img"/>
+                                </div>
+                            </div>
+                            <div class="main__photo" @click="showLightBox">
+                                <img :src="`${$config.APP_URL}/${mainPhotos[selectedPhotoIndex]}`" alt="mainPhoto"/>
                             </div>
                         </div>
-                        <div class="main__photo" @click="showLightBox">
-                            <img :src="`${$config.APP_URL}/${mainPhotos[selectedPhotoIndex]}`" alt="mainPhoto"/>
+
+                        <mobile-slider
+                            class="mobile-slider"
+                            :images="mainPhotos"
+                            v-model:selectedPhotoIndex="selectedPhotoIndex"
+                        />
+
+
+                        <div class="header__info">
+                            <h3>Коротко о товаре</h3>
+                            <div class="header__info-item">Активный ингредиент</div>
+                            <div class="header__info-item" v-if="currentSku.country">
+                                <span class="header__info-el">Страна</span>
+                                <span class="header__info-el">{{ currentSku.country }}</span>
+                            </div>
+                            <div class="header__info-item">
+                                <a href="#description">Подробней</a>
+                            </div>
+                            <div class="header__info-item">
+                                <nuxt-link :to="`/questions/${currentSku.code + '-' + currentSku.id }`">
+                                    Задать вопрос о товаре
+                                </nuxt-link>
+                            </div>
+                            <div class="header__info-item">
+                                <nuxt-link :to="`/brand/${currentSku.brand_code}`">
+                                    Все товары
+                                    <strong>{{ currentSku.brand }}</strong>
+                                </nuxt-link>
+                            </div>
                         </div>
                     </div>
 
-                    <mobile-slider
-                        class="mobile-slider"
-                        :images="mainPhotos"
-                        v-model:selectedPhotoIndex="selectedPhotoIndex"
-                    />
+                    <div class="header__item header__item-branch">
+                        <div class="branch__item" @click="addToFav(currentSku.id)">
+                            <fa class="icon" :class="{'pink': favorites.includes( currentSku.id) }" icon="heart"></fa>
+                        </div>
 
+                        <div class="branch__item branch__item-gray">
+                            {{ selectedPhotoIndex + 1 }} из {{ mainPhotos.length }} фото
+                        </div>
 
-                    <div class="header__info">
-                        <h3>Коротко о товаре</h3>
-                        <div class="header__info-item">Активный ингредиент</div>
-                        <div class="header__info-item" v-if="currentSku.country">
-                            <span class="header__info-el">Страна</span>
-                            <span class="header__info-el">{{ currentSku.country }}</span>
-                        </div>
-                        <div class="header__info-item">
-                            <a href="#description">Подробней</a>
-                        </div>
-                        <div class="header__info-item">
-                            <nuxt-link :to="`/questions/${currentSku.code + '-' + currentSku.id }`">
-                                Задать вопрос о товаре
-                            </nuxt-link>
-                        </div>
-                        <div class="header__info-item">
-                            <nuxt-link :to="`/brand/${currentSku.brand_code}`">
-                                Все товары
-                                <strong>{{ currentSku.brand }}</strong>
-                            </nuxt-link>
+                        <div class="branch__item" @click="getComparison">
+                            <svg
+                                :class="{'pink': allComparedSkuIds.includes( currentSku.id) }"
+                                class="icon"
+                                xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 32 32">
+                                <path fill="currentColor"
+                                      d="M12 2h20v4h-20v-4zM12 14h20v4h-20v-4zM12 26h20v4h-20v-4zM0 4c0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.209-1.791 4-4 4s-4-1.791-4-4zM0 16c0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.209-1.791 4-4 4s-4-1.791-4-4zM0 28c0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.209-1.791 4-4 4s-4-1.791-4-4z"></path>
+                            </svg>
                         </div>
                     </div>
-                </div>
 
-                <div class="header__item header__item-branch">
-                    <div class="branch__item" @click="addToFav(currentSku.id)">
-                        <fa class="icon" :class="{'pink': favorites.includes( currentSku.id) }" icon="heart"></fa>
+                    <div class="header__item header__item-title">
+                        <h4 class="sku__title">{{ skuName }}</h4>
                     </div>
 
-                    <div class="branch__item branch__item-gray">
-                        {{ selectedPhotoIndex + 1 }} из {{ mainPhotos.length }} фото
-                    </div>
+                    <tabs class="header__item header__item-tabs" :tabs="tabValues"/>
 
-                    <div class="branch__item" @click="getComparison">
-                        <svg
-                            :class="{'pink': allComparedSkuIds.includes( currentSku.id) }"
-                            class="icon"
-                            xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 32 32">
-                            <path fill="currentColor"
-                                  d="M12 2h20v4h-20v-4zM12 14h20v4h-20v-4zM12 26h20v4h-20v-4zM0 4c0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.209-1.791 4-4 4s-4-1.791-4-4zM0 16c0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.209-1.791 4-4 4s-4-1.791-4-4zM0 28c0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.209-1.791 4-4 4s-4-1.791-4-4z"></path>
-                        </svg>
-                    </div>
-                </div>
+                    <div class="header__item header__item-right">
+                        <div class="header__item-prices">
 
-                <div class="header__item header__item-title">
-                    <h4 class="sku__title">{{ skuName }}</h4>
-                </div>
+                            <tool-tip
+                                v-if="trackingSkuIds.includes(currentSku.id)"
+                                :position="'bottom'"
+                            >
+                                <template v-slot:content>
+                                    Вы следите за снижением цены товара
+                                </template>
+                                <div class="prices__tracking">
+                                    <svg class="icon" data-tid="67c99287 3e657a83" data-tid-prop="3e657a83" width="16"
+                                         height="16" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path
+                                            d="M 7.383 7.768 L 9.748 5.472 L 15.135 10.7 L 16.7 9.18 L 18 15 L 12.004 13.738 L 13.569 12.219 L 9.783 8.545 L 7.453 10.807 L 3.342 6.817 C 2.9 6.388 2.884 5.708 3.307 5.297 C 3.73 4.887 4.43 4.903 4.872 5.332 L 7.382 7.768 Z"
+                                            fill="currentColor"></path>
+                                    </svg>
+                                    <span>Следить за снижением цены</span>
+                                </div>
+                            </tool-tip>
 
-                <tabs class="header__item header__item-tabs" :tabs="tabValues"/>
-
-                <div class="header__item header__item-right">
-                    <div class="header__item-prices">
-
-                        <tool-tip
-                            v-if="trackingSkuIds.includes(currentSku.id)"
-                            :position="'bottom'"
-                        >
-                            <template v-slot:content>
-                                Вы следите за снижением цены товара
-                            </template>
-                            <div class="prices__tracking">
+                            <div v-else class="prices__tracking" @click="openTrackingModal">
                                 <svg class="icon" data-tid="67c99287 3e657a83" data-tid-prop="3e657a83" width="16"
                                      height="16" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <path
@@ -156,81 +167,70 @@
                                 </svg>
                                 <span>Следить за снижением цены</span>
                             </div>
-                        </tool-tip>
-
-                        <div v-else class="prices__tracking" @click="openTrackingModal">
-                            <svg class="icon" data-tid="67c99287 3e657a83" data-tid-prop="3e657a83" width="16"
-                                 height="16" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path
-                                    d="M 7.383 7.768 L 9.748 5.472 L 15.135 10.7 L 16.7 9.18 L 18 15 L 12.004 13.738 L 13.569 12.219 L 9.783 8.545 L 7.453 10.807 L 3.342 6.817 C 2.9 6.388 2.884 5.708 3.307 5.297 C 3.73 4.887 4.43 4.903 4.872 5.332 L 7.382 7.768 Z"
-                                    fill="currentColor"></path>
-                            </svg>
-                            <span>Следить за снижением цены</span>
-                        </div>
 
 
-                        <div class="prices__title">
-                            <div>
-                                       <span v-if="currentSku.prices.length > 1">
-                                           <span>от</span>
-                                           <span class="low-price">{{ currentSku.minPrice }}</span>
-                                           <span>до</span>
-                                      </span>
-                                <span class="high-price">{{ currentSku.maxPrice }}  р.</span>
+                            <div class="prices__title">
+                                <div>
+                                           <span v-if="currentSku.prices.length > 1">
+                                               <span>от</span>
+                                               <span class="low-price">{{ currentSku.minPrice }}</span>
+                                               <span>до</span>
+                                          </span>
+                                    <span class="high-price">{{ currentSku.maxPrice }}  р.</span>
+                                </div>
+                                <div class="goto-price-charts">
+                                    <tool-tip class="goto-price-charts__wrapper" :position="'top'">
+                                        <template v-slot:content>
+                                            Динамика цен
+                                        </template>
+                                        <a class="goto-price-charts__link" href="#price__dynamics">
+                                            <fa class="goto-price-charts__icon" icon="chart-line"></fa>
+                                        </a>
+                                    </tool-tip>
+                                </div>
                             </div>
-                            <div class="goto-price-charts">
-                                <tool-tip class="goto-price-charts__wrapper" :position="'top'">
-                                    <template v-slot:content>
-                                        Динамика цен
-                                    </template>
-                                    <a class="goto-price-charts__link" href="#price__dynamics">
-                                        <fa class="goto-price-charts__icon" icon="chart-line"></fa>
-                                    </a>
-                                </tool-tip>
-                            </div>
-                        </div>
-                        <div v-if="currentSku.prices.length > 1">Сравнить цены {{ currentSku.prices.length }}</div>
-                        <div
-                            class="prices__item"
-                            v-for="price in currentSku.prices"
-                            :key="price.price"
-                        >
+                            <div v-if="currentSku.prices.length > 1">Сравнить цены {{ currentSku.prices.length }}</div>
+                            <div
+                                class="prices__item"
+                                v-for="price in currentSku.prices"
+                                :key="price.price"
+                            >
 
-                            <a class="prices__item-link" :href="'/to/' + price.link_code">
-                                <span>{{ price.name }}</span>
-                                <span>→</span>
-                                <span>{{ price.price }}</span>
-                            </a>
+                                <a class="prices__item-link" :href="'/to/' + price.link_code">
+                                    <span>{{ price.name }}</span>
+                                    <span>→</span>
+                                    <span>{{ price.price }}</span>
+                                </a>
 
-                            <div class="prices__item-img">
-                                <img v-lazyload :data-src="`${$config.APP_URL}/${price.image}`" alt="price.image"/>
+                                <div class="prices__item-img">
+                                    <img v-lazyload :data-src="`${$config.APP_URL}/${price.image}`" alt="price.image"/>
+                                </div>
                             </div>
                         </div>
+                        <a href="/supplier" class="publish__prices">
+                            Разместить цены
+                        </a>
                     </div>
-                    <a href="/supplier" class="publish__prices">
-                        Разместить цены
-                    </a>
                 </div>
+
+                <nuxtPage/>
             </div>
-
-            <nuxtPage/>
         </div>
+
+        <viewed-products></viewed-products>
+        <tracking-modal
+            v-model:isShowTrackingModal="isShowTrackingModal"
+            :currentSku="currentSku"
+        />
+        <light-box
+            class="light-box"
+            v-if="isShowLightBox"
+            :images="mainPhotos"
+            :smallImages="smallPhotos"
+            v-model:selectedPhotoIndex="selectedPhotoIndex"
+            v-model:isShowLightBox="isShowLightBox"
+        />
     </div>
-
-    <viewed-products></viewed-products>
-    <tracking-modal
-        v-model:isShowTrackingModal="isShowTrackingModal"
-        :currentSku="currentSku"
-    />
-    <light-box
-        class="light-box"
-        v-if="isShowLightBox"
-        :images="mainPhotos"
-        :smallImages="smallPhotos"
-        v-model:selectedPhotoIndex="selectedPhotoIndex"
-        v-model:isShowLightBox="isShowLightBox"
-    />
-
 </template>
 
 <script setup>
@@ -370,6 +370,20 @@
         ]);
     };
 
+
+
+    // const setSEO = name => {
+    //     const title = `Описание товара ${name}`;
+    //     const metaName = `${title} Smart-Beautiful - агрегатор цен косметических товаров`;
+    //     useHead({
+    //         title,
+    //         meta: [
+    //             {name: 'description', content: metaName},
+    //             {name: 'keywords', content: metaName}
+    //         ],
+    //     });
+    // };
+
     watch(
         currentSkuId,
         (value) => {
@@ -385,12 +399,14 @@
         (value) => {
             selectPhotoIndex(0);
             reviewStore.setSelectedRating(0);
-            //document.title = `${route.meta.title} ${value.name} Smart-Beautiful - агрегатор цен косметических товаров`;
+            // setSEO(value.name);
         }
     );
 
 
-    useAsyncData(async () => {
+    // setSEO(currentSku.value.name);
+
+    await useAsyncData(async () => {
         if (currentSkuId.value !== null) {
             currentSkuStore.setCurrentSkuId(currentSkuId.value);
             await loadCurrentSkuAndAddItToViewed();
@@ -770,6 +786,9 @@
                     display: none;
                 }
             }
+        }
+        .mobile-slider {
+            display:flex;
         }
         .header {
             flex-wrap: wrap;

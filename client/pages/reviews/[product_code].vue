@@ -49,7 +49,7 @@
     const currentSkuStore = useCurrentSkuStore();
     const { reviewsWithPagination, existingReview, lastPage, tableOptions } = storeToRefs(reviewStore);
     const { isAuth } = storeToRefs(authStore);
-    const { currentSkuId } = storeToRefs(currentSkuStore);
+    const { currentSkuId  } = storeToRefs(currentSkuStore);
 
     const route = useRoute();
     const router = useRouter();
@@ -74,6 +74,8 @@
         router.push({ query,  params: { ...route.params, savePosition: true }})
     };
 
+
+
     watch(currentSkuId, value => {
         if (value && isAuth.value) {
             reviewStore.checkExistingReview();
@@ -91,11 +93,13 @@
         {deep: true}
     );
 
-    onMounted(() => {
+
+
+    useAsyncData(() => {
         if (isAuth.value) {
             reviewStore.checkExistingReview()
         }
-        reviewStore.setTableOptionsByQuery(route.query)
+        reviewStore.setTableOptionsByQuery(route.query);
     });
 </script>
 

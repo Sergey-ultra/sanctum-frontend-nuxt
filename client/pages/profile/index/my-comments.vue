@@ -25,6 +25,20 @@
     const commentStore = useCommentStore();
     const { isLoadingMyComments, myComments } = storeToRefs(commentStore);
 
+    const setSEO = () => {
+        const title = `Мои комменты`;
+        const metaName = `${title} Smart-Beautiful - агрегатор цен косметических товаров`;
+        useHead({
+            title,
+            meta: [
+                {name: 'description', content: metaName},
+                {name: 'keywords', content: metaName}
+            ],
+        });
+    }
+
+    setSEO();
+
     onMounted(() => {
         commentStore.loadMyComments();
     });

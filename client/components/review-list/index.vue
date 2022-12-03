@@ -1,15 +1,19 @@
 <template>
-    <div class="reviews__row reviews__row-flex" v-if="isLoadingReviews">
-        <loader class="loader"/>
-    </div>
+    <div>
+        <div class="reviews__row reviews__row-flex" v-if="isLoadingReviews">
+            <loader class="loader"/>
+        </div>
 
-    <div
-            v-else
-            class="reviews__row"
-            v-for="(review, index) in reviewsWithPagination"
-            :key="index"
-    >
-       <review :review="review"/>
+        <div v-else>
+            <div
+
+                    class="reviews__row"
+                    v-for="(review, index) in reviewsWithPagination"
+                    :key="index"
+            >
+               <review :review="review"/>
+            </div>
+        </div>
     </div>
 </template>
 

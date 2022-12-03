@@ -39,30 +39,30 @@ export default class Api {
         this.userData.value = undefined
     }
 
-    private async fetchOptions(params?: SearchParams, method = 'GET'): FetchOptions<'json'> {
-        const fetchOptions = this.config.fetchOptions
+    private  fetchOptions(params?: SearchParams, method = 'GET'): FetchOptions<'json'> {
+        const fetchOptions = {...this.config.fetchOptions}
         fetchOptions.headers = {
             Accept: 'application/json',
             Referer: this.config.webURL,
         }
 
-        const userData = await this.getUserData()
-        if (userData) {
+        const userData =  this.getUserData()
+        if (userData.token) {
             fetchOptions.headers.Authorization = `Bearer ${userData.token}`
         }
 
 
         fetchOptions.method = method
-        delete this.config.fetchOptions.body
-        delete this.config.fetchOptions.params
+
         if (params) {
             if (method === 'POST' || method === 'PUT') {
-                this.config.fetchOptions.body = params
+                fetchOptions.body = params
             } else {
-                this.config.fetchOptions.params = params
+                fetchOptions.params = params
             }
         }
-        return this.config.fetchOptions
+
+        return fetchOptions
     }
 
 
@@ -87,7 +87,9 @@ export default class Api {
                 }
             }
 
-            return await $fetch(endpoint, await this.fetchOptions(params))
+            const fetchOptions = await this.fetchOptions(params, 'GET');
+
+            return await $fetch(endpoint, fetchOptions)
         } catch (error) {
             if (cb) cb(error)
             if (toast) await this.handleError(error)
@@ -96,7 +98,8 @@ export default class Api {
 
     public async post(endpoint: string, params?: SearchParams, cb?: (e: FetchError) => void, toast = true) {
         try {
-            return await $fetch(endpoint, await this.fetchOptions(params, 'POST'))
+            const fetchOptions = await this.fetchOptions(params, 'POST');
+            return await $fetch(endpoint, fetchOptions);
         } catch (error) {
             if (cb) cb(error)
             if (toast) await this.handleError(error)
@@ -105,7 +108,8 @@ export default class Api {
 
     public async put(endpoint: string, params?: SearchParams, cb?: (e: FetchError) => void, toast = true) {
         try {
-            return await $fetch(endpoint, await this.fetchOptions(params, 'PUT'))
+            const fetchOptions =  await this.fetchOptions(params, 'PUT');
+            return await $fetch(endpoint, fetchOptions)
         } catch (error) {
             if (cb) cb(error)
             if (toast) await this.handleError(error)
@@ -114,7 +118,8 @@ export default class Api {
 
     public async delete(endpoint: string, params?: SearchParams, cb?: (e: FetchError) => void, toast = true) {
         try {
-            return await $fetch(endpoint, await this.fetchOptions(params, 'DELETE'))
+            const fetchOptions =  await this.fetchOptions(params, 'DELETE');
+            return await $fetch(endpoint, fetchOptions)
         } catch (error) {
             if (cb) cb(error)
             if (toast) await this.handleError(error)

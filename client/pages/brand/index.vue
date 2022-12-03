@@ -19,27 +19,20 @@
                 </div>
                 <div
                     class="brands__list"
-                    v-for="(letter, index) in handledBrands"
+                    v-for="(letter, index) in filteredBrands"
                     :key="index"
                 >
                     <div class="brands__title">{{ letter.letter }}</div>
-                    <div
-                        class="brands__column"
-                        v-for="(brandBlock, brandBlockIndex) in letter.brands"
-                        :key="brandBlockIndex"
-                    >
-
-                        <div
+                    <div class="brands__items">
+                        <nuxt-link
                             class="brands__item"
-                            v-for="brand in brandBlock"
+                            v-for="brand in letter.brands"
                             :key="brand.id"
+                            :to="`/brand/${brand.code}`"
                         >
-
-                            <nuxt-link :to="`/brand/${brand.code}`">
-                                {{ brand.name }}
-                                <span>{{ brand.country }}</span>
-                            </nuxt-link>
-                        </div>
+                            <span>{{ brand.name }}</span>
+                            <span class="brands__country">{{ brand.country }}</span>
+                        </nuxt-link>
                     </div>
                 </div>
             </div>
@@ -55,22 +48,22 @@
 
     const country = ref('null');
     const search = ref('');
-    let chunksCount = ref(3);
+    // let chunksCount = ref(3);
 
     const searchReset = () => {
         country.value = 'null';
         search.value = '';
     };
 
-    const spliceIntoChunks = (arr, countOfChunks = 3) => {
-        let res = [];
-        const chunkSize = Math.ceil(arr.length / countOfChunks)
-        for (let i = 0; i < countOfChunks; i++) {
-            const chunk = arr.slice(chunkSize * i, chunkSize * (i + 1));
-            res.push(chunk);
-        }
-        return res;
-    }
+    // const spliceIntoChunks = (arr, countOfChunks = 3) => {
+    //     let res = [];
+    //     const chunkSize = Math.ceil(arr.length / countOfChunks)
+    //     for (let i = 0; i < countOfChunks; i++) {
+    //         const chunk = arr.slice(chunkSize * i, chunkSize * (i + 1));
+    //         res.push(chunk);
+    //     }
+    //     return res;
+    // }
 
     let filteredBrands = computed(() => {
         if (country.value !== 'null' || search.value !== '') {
@@ -78,16 +71,16 @@
                 let brands = el.brands
 
                 if (country.value !== 'null') {
-                    brands = index.filter(brand => brand.country === country.value)
+                    brands = brands.filter(brand => brand.country === country.value)
                 }
 
                 if (search.value !== '') {
-                    brands = index.filter(brand => brand.name.toLowerCase().includes(search.value.toLowerCase()))
+                    brands = brands.filter(brand => brand.name.toLowerCase().includes(search.value.toLowerCase()))
                 }
 
                 return {
                     letter: el.letter,
-                    brands: brands
+                    brands
                 }
             }).filter(el => el.brands.length > 0)
         }
@@ -96,16 +89,41 @@
 
 
 
-    const handledBrands = computed(() => {
-        return filteredBrands.value.map(el => {
-            return {
-                letter: el.letter,
-                brands: spliceIntoChunks(el.brands, chunksCount.value)
-            };
+    // const handledBrands = computed(() => {
+    //     return filteredBrands.value.map(el => {
+    //         return {
+    //             letter: el.letter,
+    //             brands: spliceIntoChunks(el.brands, chunksCount.value)
+    //         };
+    //     });
+    // });
+
+    const setSEO = () => {
+        const name = 'Бренды'
+        const metaName = `${name} Smart-Beautiful - агрегатор цен косметических товаров`;
+        useHead({
+            title: name,
+            meta: [
+                {name: 'description', content: metaName},
+                {name: 'keywords', content: metaName}
+            ],
         });
-    });
+    }
 
-
+    setSEO();
+    //
+    // onBeforeMount(() => {
+    //     const width = document.documentElement.clientWidth
+    //     if (width > 600) {
+    //         chunksCount.value = 3;
+    //     }
+    //     if (width < 600 && width > 401) {
+    //         chunksCount.value = 2;
+    //     }
+    //     if (width < 400) {
+    //         chunksCount.value = 1;
+    //     }
+    // });
 
     useAsyncData(async () => {
         if (!allBrands.value.length) {
@@ -113,18 +131,7 @@
         }
     });
 
-    onBeforeMount(() => {
-        const width = document.documentElement.clientWidth
-        if (width > 600) {
-            chunksCount = 3;
-        }
-        if (width < 600 && width > 401) {
-            chunksCount = 2;
-        }
-        if (width < 400) {
-            chunksCount = 1;
-        }
-    })
+
 </script>
 
 <style lang="scss" scoped>
@@ -230,43 +237,55 @@
 
     &__list {
         display: flex;
-        justify-content: space-between;
         border-top: 1px solid rgba(0, 0, 0, 0.1);
         padding: 15px;
         margin-bottom: 15px;
     }
 
     &__title {
+        display:flex;
+        justify-content: center;
+        flex-shrink:0;
         font-size: 70px;
         line-height: 85%;
         color: #5cbf1a;
-        width: 16%;
+        width: 10%;
     }
 
-    &__column {
-        width: calc((100% - 16px) / 3);
-        padding-right: 20px;
+    //&__column {
+    //    width: calc((100% - 16px) / 3);
+    //    padding-right: 20px;
+    //}
+    &__items {
+        display: flex;
+        flex-grow:1;
+        flex-wrap: wrap;
+        justify-content: space-between;
     }
 
     &__item {
+        width: calc(100% / 3);
         line-height: 26px;
-
-        & a {
-            font-size: 17px;
-            text-decoration: none;
-        }
-
-        & span {
-            color: #9fa3a7;
-        }
-
+        font-size: 17px;
+        text-decoration: none;
+    }
+    &__country {
+        color: #9fa3a7;
+        margin-left: 10px;
     }
 }
 
 @media (max-width: 600px) {
-    .brands__column {
-        width: calc((100% - 16px) / 2);
+    .brands {
+        &__item {
+            width: 50%;
+        }
+        &__title {
+            width: 15%;
+            font-size: 60px;
+        }
     }
+
 }
 
 @media (max-width: 420px) {
@@ -278,8 +297,14 @@
     }
 }
 @media (max-width: 400px) {
-    .brands__column {
-        width: calc(100% - 16px);
+    .brands {
+        &__item {
+            width: 100%;
+        }
+        &__title {
+            width: 23%;
+            font-size: 50px;
+        }
     }
 }
 

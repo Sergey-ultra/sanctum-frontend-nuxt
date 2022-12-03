@@ -26,7 +26,23 @@
                 return 'Вы не авторизованы'
         }
     });
+
     const authStore = useAuthStore();
+
+    const setSEO = (text) => {
+        const metaName = `Smart-Beautiful - агрегатор цен косметических товаров ${text}`;
+        useHead({
+            title: text,
+            meta: [
+                {name: 'description', content: metaName},
+                {name: 'keywords', content: metaName}
+            ],
+        });
+    }
+
+    setSEO(text.value);
+
+
 </script>
 
 <style scoped lang="scss">
