@@ -6,15 +6,15 @@
 
         <div v-else>
             <div
-
-                    class="reviews__row"
-                    v-for="(review, index) in reviewsWithPagination"
-                    :key="index"
+                class="reviews__row"
+                v-for="item in reviewsWithPagination"
+                :key="item.id"
             >
-               <review :review="review"/>
+                <review :review="item"/>
             </div>
         </div>
     </div>
+
 </template>
 
 <script setup>
@@ -33,7 +33,7 @@
 
     watch(currentSkuId, () => reviewStore.loadReviewsWithPagination());
 
-    onBeforeMount(()=> reviewStore.loadReviewsWithPagination());
+    onMounted(async ()=> await reviewStore.loadReviewsWithPagination());
 </script>
 
 <style lang="scss" scoped>

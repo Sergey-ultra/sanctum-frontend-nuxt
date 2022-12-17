@@ -41,18 +41,67 @@
                 <img :src="`${$config.APP_URL}/${currentArticle.image}`" :alt="currentArticle.image"/>
             </div>
             <div class="article__body" v-html="currentArticle.body"></div>
+
+            <div class="article__tags">
+                <nuxt-link
+                    :to="`/article/tag/${tag}`"
+                    class="article__tag"
+                    v-for="tag in currentArticle.tags"
+                    :key="tag"
+                >
+                    {{tag}}
+                </nuxt-link>
+            </div>
+
+            <div class="article__block">
+                <h4>Комментарии</h4>
+                <comment-list
+                    class="article__comments"
+                    :isShowComments="true"
+                    @sendComment="sendComment"
+                    :comments="currentArticle.comments"
+                    :isLoadingComments="false"
+                />
+
+                <form class="add-comment__form" @submit.prevent="sendNewComment">
+                    <textarea class="textarea" v-model="userComment" name="comment" placeholder="Написать комментарий"></textarea>
+
+                    <button type="submit" class="btn">Отправить комментарий</button>
+                </form>
+
+            </div>
         </div>
     </div>
 </template>
 
 <script setup>
     import loader from '../../components/loader'
+    import commentList from '../../components/comment-list'
     import {useArticleStore} from "../../store/article";
     import { storeToRefs } from "pinia";
+    import {useAuthStore} from "../../store/auth";
 
-    const route =  useRoute();
+    const route = useRoute();
     const articleStore = useArticleStore();
+    const authStore = useAuthStore();
     const { currentArticle, isLoadingCurrentArticle } = storeToRefs(articleStore);
+    const { isAuth } = storeToRefs(authStore);
+
+    let userComment = ref('');
+
+
+    const sendComment = obj => {
+        obj.article_id = currentArticle.value.id;
+        articleStore.createArticleComment(obj);
+    }
+
+    const sendNewComment = () => {
+        if (!isAuth.value) {
+            authStore.setIsShowAuthModal(true);
+        } else {
+            sendComment({comment: userComment.value});
+        }
+    }
 
     const setSEO = name => {
         const title = `Статья ${name}`;
@@ -94,11 +143,17 @@
 
 
     useAsyncData(async() => {
-        await articleStore.loadCurrentArticle(route.params.id);
+        await articleStore.loadCurrentArticle(route.params.slug);
     });
 </script>
 
 <style lang="scss" scoped>
+    h4 {
+        margin-bottom: 1rem !important;
+        font-size: 1.3rem;
+        font-weight: 500;
+        line-height: 1.2;
+    }
     .loader {
         width: 200px;
         height: 200px;
@@ -215,5 +270,66 @@
             height: 300px;
             object-fit: cover;
         }
+        &__tags {
+            display: flex;
+            flex-wrap: nowrap;
+            overflow-x: auto;
+            margin-bottom:30px;
+        }
+        &__tag {
+            font-size: .875rem;
+            line-height: 1.5;
+            padding: .25rem .5rem;
+            color: #555;
+            background: #faf7ef;
+            border-radius: 50rem !important;
+            margin-right: .25rem !important;
+            white-space: normal;
+            flex: 0 0 auto;
+            position: relative;
+            text-decoration: none;
+            transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+        }
+        &__comments {
+            border-top: 1px solid #dee2e6;
+            padding: 15px 0 0;
+        }
+    }
+    .add-comment__form {
+        margin-top:15px;
+        display:flex;
+        flex-direction: column;
+        align-items:flex-end;
+    }
+    .textarea {
+        width: 100%;
+        resize: vertical;
+        outline: #000 none medium;
+        overflow: visible;
+        transition: background-color 0.3s ease 0s, border-color 0.3s ease 0s;
+        border: 1px solid transparent;
+        border-radius: 8px;
+        padding: 8px;
+        background-color: rgb(240, 242, 252);
+        &:hover {
+            border-color: rgb(192, 201, 240);
+            transition: border-color 0.3s ease 0s;
+        }
+        &:focus {
+            background-color: white;
+            border-color: rgb(59, 87, 208);
+            transition: background-color 0.3s ease 0s, border-color 0.3s ease 0s;
+        }
+    }
+
+    .btn {
+        margin-top: 15px;
+        color: #fff;
+        background-color: #42b983;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        line-height: 36px;
+        padding:0 20px;
     }
 </style>

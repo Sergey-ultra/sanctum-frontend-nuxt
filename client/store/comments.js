@@ -27,7 +27,6 @@ export const useCommentStore = defineStore({
             }
         },
         async sendComment(object) {
-
             const { $api } = useNuxtApp()
             const { data } = await $api.post('/comments', object);
             if (data.status) {

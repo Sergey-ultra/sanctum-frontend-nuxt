@@ -61,10 +61,10 @@
                 </div>
             </div>
             <transition name="comment__answer">
-                <form v-show="comment.isShowAnswerForm" class="comment__form" @submit.prevent="send">
+                <form v-show="comment.isShowAnswerForm" class="comment__form" @submit.prevent="sendComment">
                     <textarea class="textarea" v-model="commentField" name="comment" placeholder="Написать ответ"></textarea>
                     <div class="comment__buttons">
-                        <button @click="toggleAnswerForm(comment)" class="btn btn-cancel">Отменить</button>
+                        <button type="button" @click="toggleAnswerForm(comment)" class="btn btn-cancel">Отменить</button>
                         <button type="submit" class="btn">Ответить</button>
                     </div>
                 </form>
@@ -92,9 +92,9 @@
     import modal from '../modal'
     import { storeToRefs } from "pinia";
     import {useAuthStore} from "../../store/auth";
-    import {useCommentStore} from "../../store/comments";
 
-    const emit = defineEmits(['toggleAnswerForm']);
+    const emit = defineEmits(['toggleAnswerForm', 'sendComment']);
+
     const props = defineProps({
         comment: Object
     });
@@ -104,19 +104,17 @@
 
 
     const authStore = useAuthStore();
-    const commentStore = useCommentStore();
     const { isAuth } = storeToRefs(authStore);
 
 
-    const send = () => {
+    const sendComment = () => {
         if (commentField.value) {
             if (!isAuth.value) {
                 authStore.setIsShowAuthModal(true);
             } else {
-                commentStore.sendComment({
+                emit('sendComment',{
                     comment: commentField.value,
                     reply_id: props.comment.id,
-                    review_id: props.comment.reviewId
                 });
                 commentField.value = '';
             }

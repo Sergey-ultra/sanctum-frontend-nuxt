@@ -16,8 +16,8 @@ export const useCurrentSkuStore = defineStore({
             }
             return state.currentSku;
         },
-        currentSkuProductCode (getters) {
-            return getters.currentSkuLocal.code + '-' + getters.currentSkuLocal.id
+        currentSkuProductCode () {
+            return this.currentSkuLocal.code + '-' + this.currentSkuLocal.id
         }
     },
     actions: {

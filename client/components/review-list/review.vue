@@ -60,29 +60,36 @@
         <comment-list
                 class="review__comments"
                 v-if="isShowComments"
-                :reviewId="review.id"
+                @sendComment="sendComment"
                 :isShowComments="isShowComments"
+                :comments="comments"
+                :isLoadingComments="isLoadingComments"
         />
         <add-comment
                 v-if="isAddComment"
                 :reviewId="review.id"
         />
+
+        <modal v-model:isShowModal="isShowComplaintForm">
+            <template v-slot:header>
+                <h3>Жалоба на отзыв</h3>
+            </template>
+        </modal>
     </div>
-
-    <modal v-model:isShowModal="isShowComplaintForm">
-        <template v-slot:header>
-            <h3>Жалоба на отзыв</h3>
-        </template>
-    </modal>
-
 </template>
 
 <script setup>
-    import commentList from './comment-list'
+    import commentList from '../comment-list'
     import addComment from './add-comment'
     import modal from '../modal'
     import dropMenu from '../drop-menu'
     import reviewCommon from '../review-common'
+    import {useCommentStore} from "../../store/comments";
+    import { storeToRefs } from "pinia";
+
+
+    const commentStore = useCommentStore();
+    const { comments, isLoadingComments } = storeToRefs(commentStore);
 
 
     const props = defineProps({
@@ -96,7 +103,10 @@
     let isShowComplaintForm = ref(false);
     const dropMenuItems =  ['complaint'];
 
-
+    const sendComment = obj => {
+        obj.review_id = props.review.id;
+        commentStore.sendComment(obj);
+    }
     const toggleShowComments = () => isShowComments.value = !isShowComments.value;
     const toggleAddComment = () => isAddComment.value = !isAddComment.value;
     const showComplaintForm = () =>  isShowComplaintForm.value = true;
@@ -112,6 +122,15 @@
                 return `${value} комментариев`;
         }
     };
+
+    watch(
+        isShowComments,
+        async (value) => {
+            if (value && !comments.value.length) {
+                await commentStore.loadComments(props.review.id);
+            }
+        }
+    );
 </script>
 
 <style scoped lang="scss">

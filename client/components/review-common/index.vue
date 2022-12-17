@@ -1,41 +1,43 @@
 <template>
-    <div class="review__title">
-        <div
+    <div>
+        <div class="review__title">
+            <div
                 class="review__avatar"
                 :class="{'review__avatar-is-right': isRight === true}"
-        >
-            <div class="review__avatar-img">
-                <img :src="`${$config.APP_URL}/${review.user_avatar}`" alt="avatar"/>
+            >
+                <div class="review__avatar-img">
+                    <img :src="`${$config.APP_URL}/${review.user_avatar}`" alt="avatar"/>
+                </div>
+            </div>
+            <div>
+                <span class="review__user">{{ review.user_name }}</span>
+                <span class="review__date">{{ review.created_at }}</span>
+                <ratingView :rating="Number(review.rating)"/>
             </div>
         </div>
-        <div>
-            <span class="review__user">{{ review.user_name }}</span>
-            <span class="review__date">{{ review.created_at }}</span>
-            <ratingView :rating="Number(review.rating)"/>
-        </div>
-    </div>
 
-    <review-images
+        <review-images
             v-if="review.images && review.images.length"
             :images="review.images"
-    />
+        />
 
-    <div class="review__items">
-        <dl v-if="review.plus"  class="review__item">
-            <dt>Достоинства:</dt>
-            <dd>{{ review.plus }}</dd>
-        </dl>
+        <div class="review__items">
+            <dl v-if="review.plus" class="review__item">
+                <dt>Достоинства:</dt>
+                <dd>{{ review.plus }}</dd>
+            </dl>
 
-        <dl v-if="review.minus" class="review__item">
-            <dt>Недостатки:</dt>
-            <dd>{{ review.minus }}</dd>
-        </dl>
+            <dl v-if="review.minus" class="review__item">
+                <dt>Недостатки:</dt>
+                <dd>{{ review.minus }}</dd>
+            </dl>
 
 
-        <dl v-if="review.comment" class="review__item">
-            <dt>Комментарий:</dt>
-            <dd>{{ review.comment }}</dd>
-        </dl>
+            <dl v-if="review.comment" class="review__item">
+                <dt>Комментарий:</dt>
+                <dd>{{ review.comment }}</dd>
+            </dl>
+        </div>
     </div>
 </template>
 

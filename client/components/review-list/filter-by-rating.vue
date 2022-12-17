@@ -3,9 +3,9 @@
         <div class="filter__show">Показать отзывы с оценкой</div>
         <nuxt-link
             :to="{
-                name: 'reviews',
-                params: { ...$route.params, savePosition: mode ==='review'},
-                query: { rating: getLinkQuery(rating) }
+                name: 'reviews-product_code',
+                params: { ...$route.params, savePosition: mode ==='review' },
+                query: { rating: getLinkQuery(rating)}
             }"
             class="filter__chunk"
             v-for="(reviewsCount, rating) in ratingFilter"

@@ -5,11 +5,12 @@
         </div>
         <div
                 class="comments__row"
-                v-for="comment in comments"
-                :key="comment.id"
+                v-for="commentItem in comments"
+                :key="commentItem.id"
         >
             <comment
-                    :comment="comment"
+                    :comment="commentItem"
+                    @sendComment="$emit('sendComment')"
                     @toggleAnswerForm="toggleAnswerForm"
             />
         </div>
@@ -19,43 +20,44 @@
 <script setup>
     import comment from './comment'
     import loader from '../loader'
-    import { storeToRefs } from "pinia";
-    import {useCommentStore} from "../../store/comments";
 
+    const emit = defineEmits(['sendComment']);
 
     const props = defineProps({
-        reviewId: {
-            type: Number
-        },
         isShowComments: {
+            type: Boolean,
+            default: false
+        },
+        comments: {
+            type: Array,
+            default: () => []
+        },
+        isLoadingComments: {
             type: Boolean,
             default: false
         }
     });
 
-    const commentStore = useCommentStore();
-    const { comments, isLoadingComments } = storeToRefs(commentStore);
 
-    watch(isShowComments, async (value) => {
-            if (value && !comments.value.length) {
-                initLoad();
+
+    watch(
+        props.isShowComments,
+        value => {
+            if (value) {
+                setFalseToAnswerForms(props.comments);
             }
         }
     );
 
-    onBeforeMount(() => initLoad());
+    onMounted(() => setFalseToAnswerForms(props.comments));
 
 
-    const initLoad = async () => {
-        await commentStore.loadComments(props.reviewId);
-        setFalseToAnswerForms(comments.value);
-    };
     //const toggleAddForm = () => {
     //     isShowAddForm.value = !isShowAddForm.value;
     //     setFalseToAnswerForms(comments.value);
     // },
 
-    const toggleAnswerForm = comment => setAnswerForms(comments.value, comment.id);
+    const toggleAnswerForm = comment => setAnswerForms(props.comments, comment.id);
 
     const setAnswerForms = (comments, id) => {
         comments.forEach(comment => {

@@ -1,11 +1,16 @@
 import { useNuxtApp } from '#app'
-import api from '../utils/api'
+import {useNotificationStore} from "~/store/notification";
 
 export const useArticleStore = defineStore({
     id: 'article',
     state: () => ({
         isLoadingArticles: false,
         articles:[],
+        isLoadingArticlesByTag: false,
+        articlesByTag: {
+            data:[],
+            tag: {}
+        },
         isLoadingCurrentArticle: false,
         currentArticle: null
     }),
@@ -13,22 +18,41 @@ export const useArticleStore = defineStore({
         async loadArticles() {
             this.isLoadingArticles = true;
             const { $api } = useNuxtApp()
-            const { data } = await $api.get('/articles/main');
+            const { data } = await $api.get('/articles');
 
             if (data !== null) {
                 this.articles = [...data];
             }
             this.isLoadingArticles = false;
         },
-        async loadCurrentArticle(id) {
+        async loadArticlesByTag(tag) {
+            this.isLoadingArticlesByTag = true;
+            const { $api } = useNuxtApp()
+            const { data } = await $api.get(`/articles/by-tag/${tag}`);
+
+            if (data !== null) {
+                this.articlesByTag = {...data};
+            }
+            this.isLoadingArticlesByTag = false;
+
+        },
+        async loadCurrentArticle(slug) {
             this.isLoadingCurrentArticle = true;
 
-            const { $api } = useNuxtApp()
-            const { data } = await $api.get(`/articles/main/${id}`);
+            const { $api } = useNuxtApp();
+            const { data } = await $api.get(`/articles/${slug}`);
             if (data) {
                 this.currentArticle = {...data };
             }
             this.isLoadingCurrentArticle = false;
+        },
+        async createArticleComment(object) {
+            const { $api } = useNuxtApp();
+            const { data } = await $api.post('/article-comments', object);
+            if (data.status) {
+                const notificationStore = useNotificationStore()
+                notificationStore.setSuccess('Комментарий успешно создан и будет опубликован после модерации');
+            }
         }
     }
 })

@@ -106,7 +106,8 @@ export const useReviewStore = defineStore({
             if (skuId) {
                 this.isLoadingReviewImages = true;
                 const { $api } = useNuxtApp()
-                const { data }  = $api.get(`/reviews/additional-info-by-sku-id/${skuId}`)
+                const { data }  = await $api.get(`/reviews/additional-info-by-sku-id/${skuId}`)
+
                 if (data) {
                     this.reviewImages = [...data.images];
                     this.ratingFilter = {...data.rating_filter};

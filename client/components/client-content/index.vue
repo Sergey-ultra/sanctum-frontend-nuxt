@@ -70,11 +70,7 @@
 
     const showImageLoadingForm = () => isShowImageLoadingForm.value = true;
 
-    watch(currentSkuId,
-        () => {
-            reviewStore.loadReviewAdditionalInfo();
-        }
-    );
+    watch(currentSkuId, () => reviewStore.loadReviewAdditionalInfo());
 
     onMounted(() => {
         reviewStore.loadReviewAdditionalInfo()
