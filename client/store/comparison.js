@@ -11,19 +11,19 @@ export const useComparisonStore = defineStore({
         currentCategoryId: null
     }),
     getters: {
-       categoryIdWithMaxSkuIds: state => {
-           let max = 0
-           let categoryId
-           state.compared.forEach(el => {
-               if (el.ids.length > max) {
-                   max = el.ids.length;
-                   categoryId = el.category_id;
-               }
-           })
-           return categoryId;
-       },
+        categoryIdWithMaxSkuIds: state => {
+            let max = 0
+            let categoryId
+            state.compared.forEach(el => {
+                if (el.ids.length > max) {
+                    max = el.ids.length;
+                    categoryId = el.category_id;
+                }
+            })
+            return categoryId;
+        },
         firstCategoryId: state => {
-           return  state.compared.length ? state.compared[0].category_id : null;
+            return state.compared.length ? state.compared[0].category_id : null;
         },
         categoryIdsWithComparedSkuIds: state => state.compared.map(el => el.category_id),
         allComparedSkuIdsCount: state => state.compared.reduce((accumulator, currentValue) => accumulator + currentValue.ids.length, 0),

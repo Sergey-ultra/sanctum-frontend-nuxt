@@ -17,11 +17,16 @@ export const useAuthStore = defineStore({
             userEmail:'',
             after: ''
         },
-        userName:'',
+        userName: '',
         userAvatar: '',
-        userRole:'',
+        userRole: '',
         isShowAuthModal: false
     }),
+    getters: {
+        isWriter: state => {
+            return state.userRole.toLowerCase() == 'writer';
+        },
+    },
     actions: {
         SET_USER({ userName, avatar, role }) {
             this.isAuth = true;
@@ -60,10 +65,10 @@ export const useAuthStore = defineStore({
             }
         },
         async loginViaSocialServices(obj) {
-            const { user_name, token, avatar } = obj
+            const { user_name, token, avatar, role } = obj
             const { $api } = useNuxtApp()
-            $api.setUserData({userName: user_name, token, avatar})
-            this.SET_USER({ userName: user_name, avatar, role: 'Client' })
+            $api.setUserData({userName: user_name, token, avatar, role })
+            this.SET_USER({ userName: user_name, avatar, role })
             this.setIsShowAuthModal(false)
         },
         async login(object) {
@@ -73,7 +78,7 @@ export const useAuthStore = defineStore({
                 if (!res.isRequiredEmailVerification) {
                     const { user_name, token, avatar, role } = res;
                     this.SET_USER({ userName: user_name, avatar, role });
-                    $api.setUserData({userName: user_name, token, avatar})
+                    $api.setUserData({userName: user_name, token, avatar, role})
                     this.setIsShowAuthModal(false);
                 } else {
                     this.setEmailVerification({ email: res.email, after: 'login' });

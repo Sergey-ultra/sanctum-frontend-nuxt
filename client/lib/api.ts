@@ -25,7 +25,9 @@ export default class Api {
     }
 
     public setUserData(userData: UserData) {
-        this.userData.value = JSON.stringify(userData)
+        console.log(userData)
+        this.userData.value = JSON.stringify(userData);
+        console.log(userData);
     }
 
     public async getUserData() {
@@ -39,15 +41,16 @@ export default class Api {
         this.userData.value = undefined
     }
 
-    private  fetchOptions(params?: SearchParams, method = 'GET'): FetchOptions<'json'> {
+    private async fetchOptions(params?: SearchParams, method = 'GET') {
         const fetchOptions = {...this.config.fetchOptions}
         fetchOptions.headers = {
             Accept: 'application/json',
             Referer: this.config.webURL,
         }
 
-        const userData =  this.getUserData()
-        if (userData.token) {
+        const userData = await this.getUserData()
+
+        if (userData && userData.token) {
             fetchOptions.headers.Authorization = `Bearer ${userData.token}`
         }
 

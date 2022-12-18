@@ -64,7 +64,10 @@
                 />
 
                 <form class="add-comment__form" @submit.prevent="sendNewComment">
-                    <textarea class="textarea" v-model="userComment" name="comment" placeholder="Написать комментарий"></textarea>
+                    <textarea class="textarea" v-model.trim="userComment" name="comment" placeholder="Написать комментарий"></textarea>
+                    <div class="invalid-feedback" v-for="error of v$.userComment.$errors" :key="error.$uid">
+                        {{ error.$message }}
+                    </div>
 
                     <button type="submit" class="btn">Отправить комментарий</button>
                 </form>
@@ -80,26 +83,45 @@
     import {useArticleStore} from "../../store/article";
     import { storeToRefs } from "pinia";
     import {useAuthStore} from "../../store/auth";
+    import {helpers, minLength, required} from "@vuelidate/validators";
+    import useVuelidate from '@vuelidate/core'
+    import {useArticleCommentStore} from "../../store/article-comments";
+
 
     const route = useRoute();
+
     const articleStore = useArticleStore();
+    const articleCommentStore = useArticleCommentStore();
     const authStore = useAuthStore();
     const { currentArticle, isLoadingCurrentArticle } = storeToRefs(articleStore);
     const { isAuth } = storeToRefs(authStore);
 
     let userComment = ref('');
 
+    const rules = {
+        userComment: {
+            required:  helpers.withMessage('Поле должно быть заполнено', required),
+            minLength: helpers.withMessage('Поле должно быть не меньше 8 символов', minLength(8))
+        }
+    };
+
+    const v$ = useVuelidate(rules, { userComment });
 
     const sendComment = obj => {
         obj.article_id = currentArticle.value.id;
-        articleStore.createArticleComment(obj);
+        articleCommentStore.createArticleComment(obj);
     }
 
-    const sendNewComment = () => {
-        if (!isAuth.value) {
-            authStore.setIsShowAuthModal(true);
+    const sendNewComment = async() => {
+        if (isAuth.value) {
+            const validated = await v$.value.userComment.$validate();
+            if (validated) {
+                sendComment({comment: userComment.value});
+                userComment.value = '';
+                v$.value.$reset();
+            }
         } else {
-            sendComment({comment: userComment.value});
+            authStore.setIsShowAuthModal(true);
         }
     }
 
@@ -174,7 +196,7 @@
         }
         &__preview {
             font-weight: 400;
-            font-size: 28px;
+            font-size: 24px;
             line-height: 36px;
             margin-top: 8px;
             letter-spacing: .2px;
@@ -262,7 +284,7 @@
         }
 
         &__body {
-            font-size: 22px;
+            font-size: 20px;
             line-height: 1.5;
         }
         & .image {

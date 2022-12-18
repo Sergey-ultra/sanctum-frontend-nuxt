@@ -1,9 +1,12 @@
 import { useNuxtApp } from '#app'
-import {useNotificationStore} from "~/store/notification";
 
 export const useArticleStore = defineStore({
     id: 'article',
     state: () => ({
+        articleCategories: [],
+        availableArticleTags: [],
+        isLoadingMyArticles: false,
+        myArticles: [],
         isLoadingArticles: false,
         articles:[],
         isLoadingArticlesByTag: false,
@@ -15,6 +18,30 @@ export const useArticleStore = defineStore({
         currentArticle: null
     }),
     actions: {
+        async loadArticleCategories() {
+            const { $api } = useNuxtApp()
+            const { data } = await $api.get(`/articles/categories`);
+            if (data && Array.isArray(data)) {
+                this.articleCategories = [...data];
+            }
+        },
+        async loadAvailableArticleTags()  {
+            const { $api } = useNuxtApp();
+            const { data } = await $api.get(`/articles/tags`);
+            if (data && Array.isArray(data)) {
+                this.availableArticleTags = [...data];
+            }
+        },
+        async loadMyArticles() {
+            this.isLoadingMyArticles = true;
+            const { $api } = useNuxtApp()
+            const { data } = await $api.get('/articles/my');
+
+            if (data.data !== null) {
+                this.myArticles = [...data.data];
+            }
+            this.isLoadingMyArticles = false;
+        },
         async loadArticles() {
             this.isLoadingArticles = true;
             const { $api } = useNuxtApp()
@@ -40,20 +67,18 @@ export const useArticleStore = defineStore({
             this.isLoadingCurrentArticle = true;
 
             const { $api } = useNuxtApp();
-            const { data } = await $api.get(`/articles/${slug}`);
+            const { data } = await $api.get(`/articles/by-slug/${slug}`);
             if (data) {
                 this.currentArticle = {...data };
             }
             this.isLoadingCurrentArticle = false;
         },
-        async createArticleComment(object) {
-            const { $api } = useNuxtApp();
-            const { data } = await $api.post('/article-comments', object);
-            if (data.status) {
-                const notificationStore = useNotificationStore()
-                notificationStore.setSuccess('Комментарий успешно создан и будет опубликован после модерации');
-            }
-        }
+        async createItem() {
+
+        },
+        async updateItem () {
+
+        },
     }
 })
 

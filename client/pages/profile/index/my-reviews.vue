@@ -4,13 +4,13 @@
         <div class="loader__wrapper" v-if="isLoadingMyReviews">
             <loader class="loader"></loader>
         </div>
-        <div class="reviews__wrapper" v-else>
+        <div class="wrapper" v-else>
             <h4 v-if="!myReviews.length">
                У вас пока нет отзывов
             </h4>
             <my-review
                     :review="review"
-                    class="reviews__item"
+                    class="item"
                     v-for="(review, index) in myReviews"
                     :key="index"
             />

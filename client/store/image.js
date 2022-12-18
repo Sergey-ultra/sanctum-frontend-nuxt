@@ -1,4 +1,4 @@
-import api from '../utils/api'
+import {useNuxtApp} from "#app";
 
 export const useImageStore = defineStore({
     id: 'image',
@@ -22,8 +22,8 @@ export const useImageStore = defineStore({
                 form.append('images[]', files[i]);
             }
 
-
-            const { data } = await api.post('/images', form,  {
+            const { $api } = useNuxtApp();
+            const { data } = await $api.post('/images', form,  {
                 headers: {'Content-Type': 'multipart/form-data' },
                 onUploadProgress: e => {
                     if (e.lengthComputable) {

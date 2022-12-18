@@ -311,7 +311,7 @@
 
     onMounted(async () => {
         await comparisonStore.loadComparedSkus();
-        console.log(currentCategoryId.value)
+        console.log('currentCategoryId', currentCategoryId.value)
 
         if (comparisonContainer) {
             containerWidth = comparisonContainer.value.clientWidth;
