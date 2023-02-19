@@ -42,15 +42,28 @@
             </div>
             <div class="article__body" v-html="currentArticle.body"></div>
 
-            <div class="article__tags">
+            <div class="article__tags" id="article_tags" ref="tags">
                 <nuxt-link
                     :to="`/article/tag/${tag}`"
                     class="article__tag"
+                    :class="{'article__tag-hide': hiddenTags.includes(tag)}"
                     v-for="tag in currentArticle.tags"
                     :key="tag"
+                    :id="tag"
                 >
                     {{tag}}
                 </nuxt-link>
+                <div class="article__tag layer" id="layer" @click="showAllTags" :class="{'layer-hide': isShowAllTags}">
+                    <details>
+                        <summary role="button">
+                            <div class="layer__item">
+                                <svg aria-hidden="true" height="16" viewBox="0 0 16 16" version="1.1" width="16" data-view-component="true" class="octicon">
+                                    <path d="M8 9a1.5 1.5 0 100-3 1.5 1.5 0 000 3zM1.5 9a1.5 1.5 0 100-3 1.5 1.5 0 000 3zm13 0a1.5 1.5 0 100-3 1.5 1.5 0 000 3z"></path>
+                                </svg>
+                            </div>
+                        </summary>
+                    </details>
+                </div>
             </div>
 
             <div class="article__block">
@@ -82,21 +95,22 @@
     import commentList from '../../components/comment-list'
     import {useArticleStore} from "../../store/article";
     import { storeToRefs } from "pinia";
-    import {useAuthStore} from "../../store/auth";
     import {helpers, minLength, required} from "@vuelidate/validators";
     import useVuelidate from '@vuelidate/core'
     import {useArticleCommentStore} from "../../store/article-comments";
-
+    import { useNuxtApp } from '#app'
+    const { $api } = useNuxtApp();
 
     const route = useRoute();
 
     const articleStore = useArticleStore();
     const articleCommentStore = useArticleCommentStore();
-    const authStore = useAuthStore();
     const { currentArticle, isLoadingCurrentArticle } = storeToRefs(articleStore);
-    const { isAuth } = storeToRefs(authStore);
 
     let userComment = ref('');
+    let tags = ref('');
+    let isShowAllTags = ref(true);
+    let hiddenTags = ref([]);
 
     const rules = {
         userComment: {
@@ -107,13 +121,19 @@
 
     const v$ = useVuelidate(rules, { userComment });
 
+    const showAllTags = () => {
+        isShowAllTags.value = true;
+        tags.value.classList.add('article__tags-show');
+        hiddenTags.value = [];
+    }
+
     const sendComment = obj => {
         obj.article_id = currentArticle.value.id;
         articleCommentStore.createArticleComment(obj);
     }
 
     const sendNewComment = async() => {
-        if (isAuth.value) {
+        if ($api.isAuth.value) {
             const validated = await v$.value.userComment.$validate();
             if (validated) {
                 sendComment({comment: userComment.value});
@@ -121,7 +141,24 @@
                 v$.value.$reset();
             }
         } else {
-            authStore.setIsShowAuthModal(true);
+            $api.setIsShowAuthModal(true);
+        }
+    }
+
+    const setTagsContainer = () => {
+        if (tags.value) {
+            const containerEndX = tags.value.getBoundingClientRect().left + tags.value.clientWidth;
+
+            currentArticle.value.tags.forEach(tag => {
+                const currentDom = document.getElementById(tag);
+                const currentDomEndX = currentDom.getBoundingClientRect().left + currentDom.clientWidth;
+                if (currentDomEndX > containerEndX) {
+                    hiddenTags.value.push(currentDom.id);
+                    if (isShowAllTags.value) {
+                        isShowAllTags.value = false;
+                    }
+                }
+            })
         }
     }
 
@@ -152,6 +189,7 @@
     //     { deep: true}
     // );
 
+    watch(tags, value => setTagsContainer());
 
     watch(currentArticle, value => {
         if (value && value.title) {
@@ -162,6 +200,9 @@
     if (currentArticle.value && currentArticle.value.title) {
         setSEO(currentArticle.value.title)
     }
+
+    onMounted(() => setTagsContainer());
+
 
 
     useAsyncData(async() => {
@@ -284,7 +325,7 @@
         }
 
         &__body {
-            font-size: 20px;
+            font-size: 18px;
             line-height: 1.5;
         }
         & .image {
@@ -293,10 +334,16 @@
             object-fit: cover;
         }
         &__tags {
+            position: relative;
             display: flex;
+            align-items: center;
             flex-wrap: nowrap;
-            overflow-x: auto;
+            overflow: hidden;
             margin-bottom:30px;
+            &-show {
+                flex-wrap: wrap;
+                overflow: visible;
+            }
         }
         &__tag {
             font-size: .875rem;
@@ -306,17 +353,61 @@
             background: #faf7ef;
             border-radius: 50rem !important;
             margin-right: .25rem !important;
+            margin-bottom: .25rem !important;
             white-space: normal;
             flex: 0 0 auto;
             position: relative;
             text-decoration: none;
             transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+            &-hide {
+                visibility: hidden;
+            }
         }
         &__comments {
             border-top: 1px solid #dee2e6;
             padding: 15px 0 0;
         }
     }
+    .layer {
+        &__item {
+            align-items: center;
+            background-color: initial;
+            border: 0;
+            border-radius: 6px;
+            color: var(--color-fg-default);
+            cursor: pointer;
+            display: flex;
+            font-size: 14px;
+            line-height: 30px;
+            padding: 0 8px;
+            position: relative;
+            text-align: center;
+            white-space: nowrap;
+            &:before {
+                content: "";
+                height: 100%;
+                left: 50%;
+                min-height: 48px;
+                position: absolute;
+                top: 50%;
+                transform: translateX(-50%) translateY(-50%);
+                width: 100%;
+            }
+        }
+        position: absolute;
+        right: 0 !important;
+        &-hide {
+            visibility: hidden;
+        }
+    }
+
+    .octicon {
+        display: inline-block;
+        overflow: visible !important;
+        vertical-align: text-bottom;
+        fill: rgb(36, 41, 47);
+    }
+
     .add-comment__form {
         margin-top:15px;
         display:flex;

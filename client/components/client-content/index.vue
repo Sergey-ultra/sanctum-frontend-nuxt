@@ -2,10 +2,10 @@
     <article class="client-content">
         <h3 class="client-content__title">
             Фотографии и видео покупателей
-            <span v-if="total && reviewImages.length">({{ reviewImages.length }})</span>
+            <span v-if="additionalInfo.length">({{ additionalInfo.length }})</span>
         </h3>
 
-        <div v-if="!(total && reviewImages.length)">
+        <div v-if="!(additionalInfo.length)">
             <div>Их пока нет — станьте первым, кто покажет товар в жизни</div>
             <button class="client-content__btn" @click="showImageLoadingForm">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
@@ -22,7 +22,7 @@
         </div>
         <div v-else class="client-content__images" >
             <div class="client-content__inner" @click="showImageLoadingForm">
-                <button class="client-content__image__btn client-content__image__btn-icon" type="button">
+                <button class="client-content__item__btn client-content__item__btn-icon" type="button">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
                          xmlns="http://www.w3.org/2000/svg">
                         <path d="M21.5986 5.00005L18.2363 5.00295L16.6 1.99805H9.3857L7.8008 5.00295H4.3994C4.02825 5.00348 3.67246 5.15122 3.41011 5.41376C3.14775 5.6763 3.00026 6.03219 3 6.40335V12.998H5V7.00295H9.0078L10.5928 3.99805H15.4121L17.0488 7.00295L21 7.00005L20.999 17.999H9.999V19.999H21.599C21.9701 19.9987 22.3259 19.8511 22.5883 19.5888C22.8508 19.3265 22.9985 18.9707 22.999 18.5996L23 6.40005C22.9995 6.02865 22.8517 5.67262 22.5889 5.41013C22.3262 5.14764 21.97 5.00015 21.5986 5.00005Z"
@@ -35,19 +35,25 @@
                 </button>
             </div>
             <div
-                    class="client-content__inner"
-                    v-for="image in reviewImages"
-                    :key="image"
+                    class="client-content__inner "
+                    v-for="(item, index) in additionalInfo"
+                    :key="index"
             >
-                <button class="client-content__image__btn" type="button">
-                    <div class="client-content__image">
-                        <img :src="`${$config.APP_URL}/${image}`"/>
+                <button class="client-content__item__btn client-content__item__btn-common" type="button">
+                    <div class="client-content__item">
+                        <img :src="`${$config.APP_URL}/${item.url}`"/>
+                    </div>
+                    <div v-if="item.type === 'video'" class="client-content__arrow">
+                        <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Включить видео">
+                            <path d="M31.2561 15.8244C31.2561 24.0086 24.4384 30.6658 16 30.6658C7.56163 30.6658 0.743896 24.0086 0.743896 15.8244C0.743896 7.64015 7.56163 0.98291 16 0.98291C24.4384 0.98291 31.2561 7.64015 31.2561 15.8244Z" fill="white" stroke="#F5F5F5"></path>
+                            <path d="M21.8049 16.239L13.7196 21.2661L13.7196 11.2118L21.8049 16.239Z" fill="#212121"></path>
+                        </svg>
                     </div>
                 </button>
             </div>
         </div>
 
-        <add-photos-modal
+        <add-client-content-modal
                 v-if="isShowImageLoadingForm"
                 v-model:isShowImageLoadingForm="isShowImageLoadingForm"
         />
@@ -55,7 +61,7 @@
 </template>
 
 <script setup>
-    import addPhotosModal from "../review-list/add-photos-modal";
+    import addClientContentModal from "./add-client-content-modal";
     import {useReviewStore} from "../../store/review";
     import {useCurrentSkuStore} from "../../store/currentSku";
     import {storeToRefs} from "pinia";
@@ -65,7 +71,7 @@
     const reviewStore = useReviewStore();
     const currentSkuStore = useCurrentSkuStore();
 
-    const { total, reviewImages, isLoadingReviewImages } = storeToRefs(reviewStore);
+    const { additionalInfo, isLoadingSkuAdditionalInfo } = storeToRefs(reviewStore);
     const { currentSkuId } = storeToRefs(currentSkuStore);
 
     const showImageLoadingForm = () => isShowImageLoadingForm.value = true;
@@ -113,16 +119,23 @@
             box-sizing: border-box;
             vertical-align: top;
         }
-        &__image__btn {
+        &__item__btn {
+            border:none;
             width: auto;
             margin: 0;
             padding: 0;
-            position: relative;
-            border: 2px solid #fff;
-            border-radius: 6px;
-            cursor: pointer;
             outline: none;
             outline-offset: 2px;
+            &-common {
+                position: relative;
+                border: 2px solid #fff;
+                border-radius: 6px;
+                cursor: pointer;
+                &:hover {
+                    border: 2px solid #fc0;
+                }
+            }
+
             &-icon {
                 background-color: #fff;
                 border-radius: 8px;
@@ -137,7 +150,7 @@
                 }
             }
         }
-        &__image {
+        &__item {
             width: 68px;
             padding-top: 68px;
             position: relative;
@@ -151,6 +164,12 @@
                 background-position: 50%;
                 background-repeat: no-repeat;
             }
+        }
+        &__arrow {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translateY(-50%) translateX(-50%);
         }
     }
 </style>

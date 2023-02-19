@@ -36,7 +36,7 @@
                         <div class="sku__row">
                             <div v-if="currentSkuLocal.reviews_count === 0" class="sku__url">
                                 <nuxt-link
-                                    v-if="'reviews' !==  $route.name"
+                                    v-if="'reviews-product_code' !==  $route.name"
                                     :to="`/reviews/${currentSkuProductCode}`"
                                     class="sku__link sku__link-active"
                                 >
@@ -48,7 +48,7 @@
                             <div v-else class="sku__url" >
                                 <span class="sku__rating">{{ currentSkuLocal.rating }}</span>
                                 <nuxt-link
-                                    v-if="'reviews' !==  $route.name"
+                                    v-if="'reviews-product_code' !==  $route.name"
                                     :to="`/product/${currentSkuProductCode}`"
                                     class="sku__link sku__link-active"
                                 >
@@ -125,6 +125,8 @@
         switch(true) {
             case route.name.includes('add-review'):
                 return `Добавить отзыв`;
+            case route.name.includes('add-video'):
+                return 'Добавить видео';
             case route.name.includes('add-photos'):
                 return 'Добавить фото';
             case route.name.includes('reviews'):

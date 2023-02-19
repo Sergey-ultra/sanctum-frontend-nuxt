@@ -7,9 +7,10 @@
 </template>
 
 <script setup>
-    import {useAuthStore} from "../../store/auth";
     import {useCommentStore} from "../../store/comments";
-    import { storeToRefs } from "pinia";
+    import { useNuxtApp } from '#app'
+    const { $api } = useNuxtApp();
+
 
     const commentField = ref('');
 
@@ -19,14 +20,14 @@
         }
     });
 
-    const authStore = useAuthStore();
+
     const commentStore = useCommentStore();
-    const { isAuth } = storeToRefs(authStore);
+
 
     const send = () => {
         if (commentField.value) {
-            if (!isAuth.value) {
-                authStore.setIsShowAuthModal(true);
+            if (!$api.isAuth.value) {
+                $api.setIsShowAuthModal(true);
             } else {
                 commentStore.sendComment({
                     comment: commentField.value,

@@ -1,0 +1,10 @@
+User-agent: *
+Disallow: /admin/*
+Disallow: /edit-profile
+Disallow: /comparison
+Disallow: /profile/*
+Disallow: /add-video/*
+Disallow: /add-photos/*
+Disallow: /add-review/*
+Disallow: /to/*
+Sitemap:https://smart-beautiful.ru/sitemap.xml

@@ -66,7 +66,9 @@
     import btn from "../btn";
     import useVuelidate from '@vuelidate/core'
     import { required, email, minLength, helpers } from '@vuelidate/validators'
-    import {useAuthStore} from "../../store/auth";
+    import { useNuxtApp } from '#app'
+    const { $api } = useNuxtApp();
+
 
     const registrationForm = ref({
         name: '',
@@ -98,7 +100,7 @@
 
     const v$ = useVuelidate(rules, registrationForm);
 
-    const authStore = useAuthStore();
+
 
     const props = defineProps({
         isLoginShow: {
@@ -114,7 +116,7 @@
         const validated = await v$.registrationForm.value.$validate();
 
         if (validated) {
-            await authStore.register(registrationForm.value);
+            await $api.register(registrationForm.value);
             registrationForm.value = {
                 name: '',
                 email: '',

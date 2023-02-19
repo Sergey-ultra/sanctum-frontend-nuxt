@@ -1,12 +1,12 @@
 <template>
     <my-published
-            @showEditForm="showEditForm"
-            @showDeleteForm="showDeleteForm"
+        @showEditForm="showEditForm"
+        @showDeleteForm="showDeleteForm"
     >
         <template v-slot:status v-if="item.status && ['moderated', 'rejected'].includes(item.status)">
             <div
-                    v-if="item.status === 'moderated'"
-                    class="status status-moderated"
+                v-if="item.status === 'moderated'"
+                class="status status-moderated"
             >
                 <span class="status__icon">
                     <svg><use xlink:href="#icons_question-circle">
@@ -18,124 +18,107 @@
                 <span>Ожидает публикации</span>
             </div>
             <div
-                    v-else-if="item.status === 'rejected'"
-                    class="status status-rejected"
+                v-else-if="item.status === 'rejected'"
+                class="status status-rejected"
             >
-                <span>Отзыв отклонен</span>
+                <span>Не опубликовано</span>
             </div>
         </template>
 
         <template v-slot:title>
             <nuxt-link
-                    :to="`/product/${productCode}`"
-                    class="review__sku"
+                :to="`/product/${productCode}`"
+                class="element__sku"
             >
-                <div class="review__img">
+                <div class="element__img">
                     <img :src="item.sku_image" :alt="item.sku_image"/>
                 </div>
-                <div class="review__sku-name">{{ item.sku_name }}, {{ item.volume }}</div>
+                <div class="element__sku-name">{{ item.sku_name }}, {{ item.volume }}</div>
             </nuxt-link>
         </template>
 
+        <div class="element__title">
+            <div class="element__avatar element__avatar-is-right">
+                <div class="element__avatar-img">
+                    <img :src="`${$config.APP_URL}/${item.user_avatar}`" alt="avatar"/>
+                </div>
+            </div>
+            <div>
+                <span class="element__user">{{ item.user_name }}</span>
+                <span class="element__date">{{ item.created_at }}</span>
+            </div>
+        </div>
+
+        <div class="video__description">{{ item.description }}</div>
+
+        <div class="video__video">
+            <div class="video__thumbnail" :style="`background-image: url(${$config.APP_URL}/${item.thumbnail})`"></div>
+            <button type="button" class="large-play-button">
+                <svg height="100%" version="1.1" viewBox="0 0 68 48" width="100%">
+                    <path d="M 45,24 27,14 27,34" fill="#fff"></path>
+                </svg>
+            </button>
+        </div>
+
         <div
-                class="review"
-                :class="{'review-filter': item.status === 'moderated'}"
+            class="element"
+            :class="{'element-filter': item.status === 'moderated'}"
         >
 
-           <review-common
-                   :review="item"
-                   :isRight="true"
-           />
+
 
         </div>
-        <div class="review__bottom" v-if="item.status === 'rejected'">
+        <div class="element__bottom" v-if="item.status === 'rejected'">
             <h3>Причина отклонения</h3>
-            <div class="review__text">Ваш отзыв не соответствует требованиям к публикациям.</div>
+            <div class="element__text">Ваш видео не соответствует требованиям к публикациям.</div>
             <nuxt-link
-                    class="review__action"
-                    :to="`/add-review/${productCode}`"
+                class="element__action"
+                :to="`/add-review/${productCode}`"
             >
-                <span>Редактировать отзыв</span>
+                <span>Редактировать</span>
             </nuxt-link>
         </div>
-        <div class="review__bottom" v-else-if="!item.comment && !item.plus && !item.minus">
-            <h3> Расскажите поподробнее</h3>
-            <div class="review__text">Будет здорово, если вы напишете свои впечатления о товаре. Это поможет другим
-                покупателям
-            </div>
-            <nuxt-link
-                    class="review__action"
-                    :to="`/add-review/${productCode}`"
-            >
-                <span>Оставить отзыв</span>
-            </nuxt-link>
-        </div>
-        <div class="review__bottom" v-else-if="Array.isArray(item.images) && !item.images.length">
-                <div class="review__text">
-                    Будет здорово, если вы дополните отзыв фотографиями — это поможет другим покупателям узнать о товаре
-                    больше.
-                </div>
-                <nuxt-link
-                        class="review__action"
-                        :to="`/add-review/${productCode}`"
-                >
-                    <div class="icon">
-                        <div class="icon-inner">
-                            <svg><use xlink:href="#icons_attachment">
-                                <symbol viewBox="0 0 24 24" id="icons_attachment">
-                                    <path fill-rule="evenodd" d="M10.63 23.024L9.216 21.61l9.4-9.4c1.748-1.748 1.86-4.698.25-6.577l-.17-.197c-.754-.882-1.781-1.39-2.89-1.433-1.09-.04-2.17.387-2.992 1.208L4.76 13.264c-.49.49-.76 1.143-.761 1.838-.001.63.22 1.225.627 1.696a2.608 2.608 0 0 0 3.533-.143l8.27-8.27L17.844 9.8l-8.27 8.27a4.613 4.613 0 0 1-6.215.276l-.012.012-.275-.274-.006-.007h-.001l-.001-.002.012-.012A4.566 4.566 0 0 1 2 15.102a4.574 4.574 0 0 1 1.347-3.252L11.4 3.797c1.219-1.22 2.81-1.859 4.484-1.793 1.67.064 3.21.821 4.332 2.13l.17.198c2.274 2.653 2.115 6.822-.356 9.292l-9.4 9.4z"></path>
-                                </symbol>
-                            </use></svg>
-                        </div>
-                    </div>
-                    <span>Добавить фото</span>
-                </nuxt-link>
-            </div>
+
+
 
     </my-published>
 
     <delete-form
-            :selectedName="`Отзыв на ${item.sku_name}`"
-            v-if="isShowDeleteForm"
-            v-model:isShowDeleteForm="isShowDeleteForm"
-            @delete="deleteCurrentReview"
+        :selectedName="`Видео на ${video.sku_name}`"
+        v-if="isShowDeleteForm"
+        v-model:isShowDeleteForm="isShowDeleteForm"
+        @delete="deleteCurrent"
     />
 </template>
 
 <script setup>
     import deleteForm from '../delete-form'
     import myPublished from "./my-published";
-    import reviewCommon from '../review-common'
-    import {useReviewStore} from "../../store/review";
 
-    const reviewStore = useReviewStore();
-
-
-    const isShowDeleteForm = ref(false);
-
+    const emit = defineEmits(['deleteItem']);
     const props = defineProps({
         item: {
             type: Object
         }
     });
 
+    const isShowDeleteForm = ref(false);
+
     const productCode = computed(() =>  props.item.product_code + '-' + props.item.sku_id);
 
     const showDeleteForm = () => isShowDeleteForm.value = true;
 
-    const deleteCurrentReview = () => {
-        if (props.item.sku_rating_id) {
-            reviewStore.deleteReview(this.props.item.sku_rating_id);
-        }
+    const deleteCurrent = () => {
+        emit('deleteItem');
         isShowDeleteForm.value = false;
     };
 
     const showEditForm = () => {
-       navigateTo({ name: 'add-review', params: { product_code:productCode.value }})
+        navigateTo({ name: 'add-review', params: { product_code:productCode.value }})
     };
 </script>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
     a {
         text-decoration: none;
     }
@@ -179,7 +162,7 @@
             }
         }
     }
-    .review {
+    .element {
         color: #222;
         &__sku {
             display: flex;
@@ -237,6 +220,84 @@
                 line-height: 20px;
             }
         }
+        &__title {
+            display: flex;
+            align-items: center;
+        }
+        &__avatar {
+            position: absolute;
+            transform: translateX(-100%);
+            display: inline-block;
+            vertical-align: top;
+            width: 48px;
+            &-is-right {
+                position: static;
+                transform: translateX(0);
+            }
+            &-img {
+                overflow: hidden;
+                border-radius: 50%;
+                height: 36px;
+                width: 36px;
+                & img {
+                    object-fit: cover;
+                    width: 100%;
+                    height:100%;
+                }
+            }
+        }
+        &__user {
+            font-weight: 700;
+        }
+
+        &__date {
+            font-size: 16px;
+            color: #878787;
+            margin-left: 10px;
+        }
+    }
+
+    .video {
+        &__description {
+            margin-top: 12px;
+            font-weight: 700;
+            font-style: normal;
+            font-stretch: normal;
+            font-size: 16px;
+            line-height: 20px;
+            margin-bottom: 12px;
+        }
+        &__video {
+            height: 324px;
+            margin: 28px auto 0 auto;
+            width: 100%;
+            position: relative;
+            background-size: auto 100%;
+            background-position: 50%;
+            background-repeat: no-repeat;
+            background-color: #000;
+            & .large-play-button {
+                cursor: pointer;
+                position: absolute;
+                left: 50%;
+                top: 50%;
+                width: 68px;
+                height: 68px;
+                transform: translate(-50%, -50%);
+                transition: opacity .25s cubic-bezier(0,0,0.2,1);
+                z-index: 63;
+            }
+        }
+
+        &__thumbnail {
+            background-size: cover;
+            left: 0;
+            right: 0;
+            top:0;
+            bottom:0;
+            position: absolute;
+            z-index: 60;
+        }
     }
     .icon {
         vertical-align: middle;
@@ -256,6 +317,14 @@
                 transform: translate(-50%,-50%);
                 width: 20px;
                 height: 20px;
+            }
+        }
+    }
+    @media (max-width: 700px) {
+        .element {
+            &__avatar {
+                position: static;
+                transform: translateX(0);
             }
         }
     }

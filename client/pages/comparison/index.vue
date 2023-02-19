@@ -206,8 +206,9 @@
     import loader from "../../components/loader";
     import { storeToRefs } from "pinia";
     import {useComparisonStore} from "../../store/comparison";
-    import {useAuthStore} from "../../store/auth";
     import {useFavoritesStore} from "../../store/favorites";
+    import { useNuxtApp } from '#app'
+    const { $api } = useNuxtApp();
 
     let comparisonContainer = ref(null);
     let left = ref(0);
@@ -218,10 +219,8 @@
     const itemWidth = 200;
 
     const comparisonStore = useComparisonStore();
-    const authStore = useAuthStore();
     const favoritesStore = useFavoritesStore();
     const { compared, isExtractingCompared, comparedSkus, isLoadingComparedSkus, currentCategoryId } = storeToRefs(comparisonStore);
-    const { isAuth } = storeToRefs(authStore);
     const { favorites } = storeToRefs(favoritesStore);
 
 
@@ -240,8 +239,8 @@
     };
 
     const addToFav = id => {
-        if (!isAuth.value) {
-            authStore.setIsShowAuthModal(true);
+        if (!$api.isAuth.value) {
+            $api.setIsShowAuthModal(true);
         } else {
             if (!favorites.value.includes(id)) {
                 favoritesStore.addToFavorites(id);

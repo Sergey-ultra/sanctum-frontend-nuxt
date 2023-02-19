@@ -200,19 +200,18 @@
     import imageSlider from '../image-slider'
     import {storeToRefs} from "pinia";
     import {useProductStore} from "../../store/product";
-    import {useAuthStore} from "../../store/auth";
     import {useFavoritesStore} from "../../store/favorites";
     import {useComparisonStore} from "../../store/comparison";
+    import { useNuxtApp } from '#app'
+    const { $api } = useNuxtApp();
 
     const productStore = useProductStore();
-    const authStore = useAuthStore();
     const favoritesStore = useFavoritesStore();
     const comparisonStore = useComparisonStore();
     const {
         isLoadingProductsWithPagination, productsWithPagination, currentCategory,
         lastPage, currentPage, filterOptions, sortOption, viewMode, isLoadMore, isEmptyFilterOptions
     } = storeToRefs(productStore);
-    const {isAuth} = storeToRefs(authStore);
     const {favorites} = storeToRefs(favoritesStore);
     const {allComparedSkuIds} = storeToRefs(comparisonStore);
 
@@ -261,8 +260,8 @@
     };
 
     const addToFav = id => {
-        if (!isAuth.value) {
-            authStore.setIsShowAuthModal(true);
+        if (!$api.isAuth.value) {
+            $api.setIsShowAuthModal(true);
         } else {
             if (!favorites.value.includes(id)) {
                 favoritesStore.addToFavorites(id);

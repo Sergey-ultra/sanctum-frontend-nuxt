@@ -1,6 +1,4 @@
 import {useNuxtApp} from "#app";
-import {useAuthStore} from "./auth";
-
 
 export const useFavoritesStore = defineStore({
     id: 'favorites',
@@ -12,23 +10,27 @@ export const useFavoritesStore = defineStore({
     }),
     actions: {
         async loadFavoriteSkus() {
-            this.isLoadingFavoriteSkus = true;
+            const { $api } = useNuxtApp();
+            if ($api.isAuth.value) {
+                this.isLoadingFavoriteSkus = true;
 
-            const { $api } = useNuxtApp()
-            const { data } = await $api.get('show-favorite-skus');
-            if (data) {
-                this.favoriteSkus = [ ...data.data ];
-                this.lastPage = data.last_page;
+                const { data } = await $api.get('show-favorite-skus');
+                if (data) {
+                    this.favoriteSkus = [ ...data.data ];
+                    this.lastPage = data.last_page;
+                }
+
+                this.isLoadingFavoriteSkus = false;
+            } else {
+                this.favoriteSkus = [];
+                this.lastPage = 0;
             }
-            this.isLoadingFavoriteSkus = false;
         },
         async getFavoriteSkuIds() {
-            const authStore = useAuthStore();
-            if (authStore.isAuth) {
-
-                const { $api } = useNuxtApp()
+            const { $api } = useNuxtApp();
+            if ($api.isAuth.value) {
                 const { data } = await $api.get('favorites');
-                if (data) {
+                if (data && Array.isArray(data)) {
                     this.favorites = [...data];
                 }
             } else {
@@ -36,17 +38,17 @@ export const useFavoritesStore = defineStore({
             }
         },
         async addToFavorites(id)  {
-            const $api = useNuxtApp();
-            const { data } = await $api.post('favorites', { id })
+            const { $api } = useNuxtApp();
+            const { data } = await $api.post('favorites', { id });
             if (data.status) {
                 if (!this.favorites.includes(id)) {
-                    this.favorites.push(id)
+                    this.favorites.push(id);
                 }
             }
         },
         async removeFromFavorites(id) {
-            const $api = useNuxtApp();
-            const { data } = await $api.delete(`favorites/${id}`)
+            const { $api } = useNuxtApp();
+            const { data } = await $api.delete(`favorites/${id}`);
             if (data.status) {
                 const index = this.favoriteSkus.findIndex(el => el.id === id);
                 if (index !== -1) {

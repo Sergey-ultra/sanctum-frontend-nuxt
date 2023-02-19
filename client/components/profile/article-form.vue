@@ -17,6 +17,9 @@
                         </option>
                     </select>
                 </label>
+                <div class="invalid-feedback" v-for="error of v$.editedArticle.article_category_id.$errors" :key="error.$uid">
+                    {{ error.$message }}
+                </div>
             </div>
 
 
@@ -54,6 +57,9 @@
                     Заголовок
                     <input v-model.trim="editedArticle.title" type="text" class="form-control input">
                 </label>
+                <div class="invalid-feedback" v-for="error of v$.editedArticle.body.$errors" :key="error.$uid">
+                    {{ error.$message }}
+                </div>
             </div>
 
 
@@ -69,14 +75,17 @@
                     class="form-control textarea"
                     v-model.trim="editedArticle.body"
                 >
-            </textarea>
+                </textarea>
+                <div class="invalid-feedback" v-for="error of v$.editedArticle.body.$errors" :key="error.$uid">
+                    {{ error.$message }}
+                </div>
             </div>
 
 
             <div class="buttons">
-                <btn class="button" @click="save">{{ $route.params.id ? 'Сохранить' : 'Создать' }}</btn>
-                <nuxt-link :to="{name: 'profile-index-my-articles'}" class="button">
-                    <btn>Назад</btn>
+                <button class="btn" @click="save">{{ $route.params.id ? 'Сохранить' : 'Создать' }}</button>
+                <nuxt-link :to="{name: 'profile-index-my-articles'}" class="btn">
+                    <span>Назад</span>
                 </nuxt-link>
             </div>
         </form>
@@ -84,63 +93,91 @@
 </template>
 
 <script setup>
-import selectElement from "../../components/select-element";
-import {storeToRefs} from "pinia";
-import {useArticleStore} from "../../store/article";
+    import selectElement from "../../components/select-element";
+    import {storeToRefs} from "pinia";
+    import {useArticleStore} from "../../store/article";
+    import {helpers, minLength, required} from "@vuelidate/validators";
+    import useVuelidate from "@vuelidate/core";
 
-const articleStore = useArticleStore();
-const {articleCategories, availableArticleTags} = storeToRefs(articleStore);
+    const articleStore = useArticleStore();
+    const {articleCategories, availableArticleTags} = storeToRefs(articleStore);
 
-const editedArticle = ref({
-    article_category_id: null,
-    tag_ids: []
-});
+    const editedArticle = ref({
+        article_category_id: null,
+        tag_ids: []
+    });
 
-const route = useRoute();
+    const rules = {
+        editedArticle: {
+            article_category_id: {
+                required: helpers.withMessage('Поле должно быть заполнено', required),
+            },
+            title: {
+                required: helpers.withMessage('Поле должно быть заполнено', required),
+                minLength: helpers.withMessage('Поле должно быть не меньше 8 символов', minLength(8))
+            },
+            preview: {
+                required: helpers.withMessage('Поле должно быть заполнено', required),
+            },
+            body: {
+                required: helpers.withMessage('Поле должно быть заполнено', required),
+                minLength: helpers.withMessage('Поле должно быть не меньше 8 символов', minLength(8))
+            },
+        }
+    };
 
-let articleCategoriesLocal = computed(() => {
-    return [{
-        id: null,
-        name: 'Выберите категорию статьи'
-    }].concat(articleCategories.value);
-});
+    const v$ = useVuelidate(rules, { editedArticle });
 
-const selectedTagIds = computed({
-    get() {
-        return editedArticle.value.tag_ids;
-    },
-    set(value) {
-        editedArticle.value.tag_ids = [...value];
-    }
-});
+    const route = useRoute();
 
-let selectedTags = computed(() => availableArticleTags.value.filter(el => editedArticle.value.tag_ids.includes(el.id)));
-const initEditedObject = () => {
-    editedArticle.value = {
-        ...currentArticle.value,
-        tag_ids: currentArticle.value.tag_ids
-            ? [...currentArticle.value.tag_ids]
-            : []
-    }
-};
+    let articleCategoriesLocal = computed(() => {
+        return [{
+            id: null,
+            name: 'Выберите категорию статьи'
+        }].concat(articleCategories.value);
+    });
 
-const save = async () => {
-    if (!route.params.id) {
-        await articleStore.createItem(editedArticle.value)
-    } else {
-        await articleStore.updateItem(editedArticle.value)
-    }
-};
+    const selectedTagIds = computed({
+        get() {
+            return editedArticle.value.tag_ids;
+        },
+        set(value) {
+            editedArticle.value.tag_ids = [...value];
+        }
+    });
+
+    let selectedTags = computed(() => availableArticleTags.value.filter(el => editedArticle.value.tag_ids.includes(el.id)));
+    const initEditedObject = () => {
+        editedArticle.value = {
+            ...currentArticle.value,
+            tag_ids: currentArticle.value.tag_ids
+                ? [...currentArticle.value.tag_ids]
+                : []
+        }
+    };
+
+    const save = async () => {
+        const validated = await v$.value.$validate();
+        if (validated) {
+            if (!route.params.id) {
+                await articleStore.createItem(editedArticle.value)
+            } else {
+                await articleStore.updateItem(editedArticle.value)
+            }
+            v$.value.$reset();
+        }
+    };
 
 
-onMounted(() => {
-    articleStore.loadArticleCategories();
-    articleStore.loadAvailableArticleTags();
-});
+    onMounted(() => {
+        articleStore.loadArticleCategories();
+        articleStore.loadAvailableArticleTags();
+    });
 </script>
 
 <style lang="scss" scoped>
 .form {
+    width: 100%;
     max-width: 1000px;
     background: inherit;
     margin-bottom: 50px;
@@ -148,6 +185,9 @@ onMounted(() => {
 
 .cke_inner {
     width: 100%;
+}
+a {
+    text-decoration: none;
 }
 
 .input {
@@ -203,10 +243,19 @@ onMounted(() => {
     align-items: center;
     display: flex;
     justify-content: flex-end;
-    padding: 0 25px;
+}
+.btn {
+    margin-top: 15px;
+    color: #fff;
+    background-color: #42b983;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    line-height: 36px;
+    padding: 0 20px;
 }
 
-.button:not(:last-child) {
+.btn:not(:last-child) {
     margin-right: 15px;
 }
 
@@ -220,6 +269,7 @@ onMounted(() => {
 
 .select {
     display: flex;
+    flex-wrap: wrap;
     min-height: 36px;
     outline: #000 none medium;
     overflow: visible;

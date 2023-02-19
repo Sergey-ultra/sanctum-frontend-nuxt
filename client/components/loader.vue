@@ -29,8 +29,8 @@ const props = defineProps({
 
 <style scoped lang="scss">
 .loading svg {
-    /*width: 40px;*/
-    /*height: 40px;*/
+    width: 100%;
+    height: 100%;
     display: inline-block;
 }
 </style>

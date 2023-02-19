@@ -26,15 +26,15 @@
                 </ul>
 
                 <ul class="menu__list-mobile">
-                    <li class="menu__item menu__item-padding" v-if="isAuth"  @click="closeMobileMenuInternal">
+                    <li class="menu__item menu__item-padding" v-if="$api.isAuth"  @click="closeMobileMenuInternal">
                         <nuxt-link :to="'/edit-profile'">
-                            <img class="avatar" v-if="userAvatar" :src="`${$config.APP_URL}/${userAvatar}`" :alt="userAvatar"/>
+                            <img class="avatar" v-if="$api.$user.avatar" :src="`${$config.APP_URL}/${$api.$user.avatar}`" :alt="$api.$user.avatar"/>
                             <img class="avatar" v-else :src="`${$config.APP_URL}/storage/icons/user_avatar.png`" alt="avatar"/>
-                            <span>{{ userName }}</span>
+                            <span>{{ $api.$user.name }}</span>
                         </nuxt-link>
 
                     </li>
-                    <li class="menu__item" v-if="isAuth"  @click="closeMobileMenuInternal">
+                    <li class="menu__item" v-if="$api.isAuth"  @click="closeMobileMenuInternal">
                         <nuxt-link :to="'/favorites'">
                             <svg class="menu__item-icon" height="24" width="24" viewBox="0 0 24 24">
                                 <path d="M12 4.367C10.675 3.28 9.245 2.72 7.73 2.72A5.73 5.73 0 0 0 2 8.45c0 4.329 3.197 8.531 9.448 12.664l.552.365.551-.365C18.803 16.981 22 12.778 22 8.45a5.73 5.73 0 0 0-5.73-5.73c-1.515 0-2.945.56-4.27 1.648zM4 8.449a3.73 3.73 0 0 1 3.73-3.73c1.223 0 2.402.551 3.566 1.705l.704.698.704-.698c1.164-1.154 2.343-1.704 3.567-1.704A3.73 3.73 0 0 1 20 8.45c0 3.397-2.623 6.956-8 10.626-5.377-3.67-8-7.23-8-10.627z"></path>
@@ -43,7 +43,7 @@
                             <span class="menu__item-count" v-if="favorites.length"> {{ favorites.length }}</span>
                         </nuxt-link>
                     </li>
-                    <li class="menu__item" v-if="isAuth"  @click="closeMobileMenuInternal">
+                    <li class="menu__item" v-if="$api.isAuth"  @click="closeMobileMenuInternal">
                         <nuxt-link :to="'/profile/my-reviews'">
                             <svg class="menu__item-icon" height="24" width="24" viewBox="0 0 24 24">
                                 <path d="M4.4 23h12.2a1.4 1.4 0 0 0 1.4-1.4V19h2.6a1.4 1.4 0 0 0 1.4-1.4V2.4A1.4 1.4 0 0 0 20.6 1H8.4A1.4 1.4 0 0 0 7 2.4V5H4.4A1.4 1.4 0 0 0 3 6.4v15.2A1.4 1.4 0 0 0 4.4 23zM5 7h11v14H5V7zm4-4h11v14h-2V6.4A1.4 1.4 0 0 0 16.6 5H9V3z"></path>
@@ -54,10 +54,10 @@
                     </li>
 
 
-                    <li  class="menu__auth" v-if="!isAuth">
+                    <li  class="menu__auth" v-if="!$api.isAuth">
                         <div class="menu__auth-title">Войти в свой аккаунт</div>
                         <div class="menu__auth-description">Вы можете оставлять отзывы о товарах, сохранять товары и отслеживать их цены</div>
-                        <button class="menu__auth-button" @click="authStore.setIsShowAuthModal(true)">Войти</button>
+                        <button class="menu__auth-button" @click="$api.setIsShowAuthModal(true)">Войти</button>
                     </li>
 
                     <li class="menu__item"   @click="closeMobileMenuInternal">
@@ -83,7 +83,7 @@
                               {{menuItem.title}}
                           </nuxt-link>
                     </li>
-                    <li class="menu__item" @click="exit" v-if="isAuth">
+                    <li class="menu__item" @click="exit" v-if="$api.isAuth">
                         <svg class="menu__item-icon" width="24" height="24" viewBox="0 0 24 24">
                             <path d="M7 11h8.987v2H7v2.964l-4-4 4-4V11zm2-6V3h7a5 5 0 0 1 5 5v8a5 5 0 0 1-5 5H9v-2h7a3 3 0 0 0 3-3V8a3 3 0 0 0-3-3H9z"
                                   fill="#222"></path>
@@ -98,15 +98,14 @@
 
 <script setup>
     import {storeToRefs} from "pinia";
-    import {useAuthStore} from "../../store/auth";
     import {useFavoritesStore} from "../../store/favorites";
     import {useComparisonStore} from "../../store/comparison";
+    import { useNuxtApp } from '#app'
+    const { $api } = useNuxtApp();
 
-
-    const authStore = useAuthStore();
     const favoritesStore = useFavoritesStore();
     const comparisonStore = useComparisonStore();
-    const { isAuth, userName, userAvatar } = storeToRefs(authStore);
+
     const { favorites } = storeToRefs(favoritesStore);
     const { allComparedSkuIdsCount } = storeToRefs(comparisonStore);
 
@@ -120,6 +119,7 @@
         {title: 'Скраб', url:'/category/scrab'},
         {title: 'Средства для умывания', url: '/category/umjivanie'},
         {title: 'Маски', url: '/category/maski'},
+        {title: 'Статьи', url: '/article'},
     ];
 
     const emit = defineEmits(['update:isShowMobileMenu']);
@@ -142,11 +142,14 @@
         }
     });
 
-    watch(isAuth, (value, oldValue) => {
-        if (value === true && oldValue === false) {
-           closeMobileMenuInternal();
+    watch(
+        $api.isAuth,
+        (value, oldValue) => {
+            if (value === true && oldValue === false) {
+                closeMobileMenuInternal();
+            }
         }
-    });
+    );
 
 
     const closeMobileMenu = event => {
@@ -162,7 +165,7 @@
 
     const exit = () => {
         emit('update:isShowMobileMenu' , false);
-        authStore.logout();
+        $api.logout();
     };
 
 </script>

@@ -15,13 +15,20 @@ export const useReviewStore = defineStore({
         },
         total: 0,
         lastPage: 1,
-        reviewImages:[],
+        additionalInfo: [],
         ratingFilter: {},
-        isLoadingReviewImages: false,
+        isLoadingSkuAdditionalInfo: false,
         existingReview: null,
         isCheckingExistingReview: false,
         myReviews:[],
+        myReviewTotal:0,
+        myReviewsLastPage: 1,
+        myReviewsOptions: {
+            currentPage: 1,
+            rating: []
+        },
         isLoadingMyReviews: false,
+        isUploadingVideo: false
     }),
     getters: {
         reviewsByRating: state => {
@@ -50,6 +57,16 @@ export const useReviewStore = defineStore({
                     this.tableOptions.currentPage = Number(value);
                 } else if (key === 'rating' && value) {
                     this.tableOptions.rating = [...value];
+                }
+            }
+        },
+        setMyReviewsOptionsByQuery(query) {
+            this.myReviewsOptions.currentPage = 1;
+            for (let [key, value] of Object.entries(query)) {
+                if (key === 'page') {
+                    this.myReviewsOptions.currentPage = Number(value);
+                } else if (key === 'rating' && value) {
+                    this.myReviewsOptions.rating = [...value];
                 }
             }
         },
@@ -104,23 +121,30 @@ export const useReviewStore = defineStore({
             const skuId = currentSkuStore.currentSkuId;
 
             if (skuId) {
-                this.isLoadingReviewImages = true;
+                this.isLoadingSkuAdditionalInfo = true;
                 const { $api } = useNuxtApp()
                 const { data }  = await $api.get(`/reviews/additional-info-by-sku-id/${skuId}`)
 
                 if (data) {
-                    this.reviewImages = [...data.images];
+                    this.additionalInfo = [...data.info];
                     this.ratingFilter = {...data.rating_filter};
                 }
-                this.isLoadingReviewImages = false;
+                this.isLoadingSkuAdditionalInfo = false;
             }
         },
         async loadMyRatingsWithReviews() {
             this.isLoadingMyReviews = true;
-            const { $api } = useNuxtApp()
-            const { data } = await $api.get('/reviews/my');
+            const params = { page: this.myReviewsOptions.currentPage };
+            if (this.myReviewsOptions.rating.length) {
+                params['filter[rating]'] = this.myReviewsOptions.rating;
+            }
+
+            const { $api } = useNuxtApp();
+            const data = await $api.get('/reviews/my', { params });
             if (data) {
-                this.myReviews = [...data];
+                this.myReviews = [...data.data];
+                this.myReviewsTotal = data.meta.total;
+                this.myReviewsLastPage = data.meta.last_page;
             }
             this.isLoadingMyReviews = false;
         },
@@ -139,6 +163,22 @@ export const useReviewStore = defineStore({
                     this.setExistingReview(null);
                 }
                 this.isCheckingExistingReview = false;
+            }
+        },
+        async addOrUpdateVideo(obj) {
+            const currentSkuStore = useCurrentSkuStore();
+            const skuId = currentSkuStore.currentSkuId;
+            if (skuId) {
+                obj.sku_id = skuId;
+                const { $api } = useNuxtApp();
+                this.isUploadingVideo = true;
+                const { data } = await $api.post('/reviews/add-video', obj);
+
+                if (data.status === 'success') {
+                    const notificationStore = useNotificationStore();
+                    notificationStore.setSuccess('Видео успешно загружено и будет опубликовано после модерации');
+                }
+                this.isUploadingVideo = false;
             }
         },
         async updateOrCreateReview(obj) {

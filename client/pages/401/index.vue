@@ -5,14 +5,15 @@
       <button class="btn">
          <nuxt-link :to="route.query.from">Назад</nuxt-link>
       </button>
-      <button class="btn btn-login" @click="authStore.setIsShowAuthModal(true)">
+      <button class="btn btn-login" @click="$api.setIsShowAuthModal(true)">
          <span>Войти</span>
       </button>
    </div>
 </template>
 
 <script setup>
-    import {useAuthStore} from "../../store/auth";
+    import { useNuxtApp } from '#app'
+    const { $api } = useNuxtApp();
 
     const route = useRoute();
     
@@ -27,7 +28,7 @@
         }
     });
 
-    const authStore = useAuthStore();
+
 
     const setSEO = (text) => {
         const metaName = `Smart-Beautiful - агрегатор цен косметических товаров ${text}`;

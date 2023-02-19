@@ -1,42 +1,41 @@
 <template>
     <div>
         <reviewsAnswersNav></reviewsAnswersNav>
-        <div class="loader__wrapper" v-if="isLoadingMyComments">
+
+        <div class="loader__wrapper" v-if="isLoadingMyVideos">
             <loader class="loader"></loader>
         </div>
-        <div v-else>
-            <h4 v-if="!myComments.length">
-                У вас пока нет комментариев
-            </h4>
-            <my-comment
-                @deleteItem="commentStore.deleteItem(comment.id)"
-                v-for="comment in myComments"
-                :key="comment.id"
-                :comment="comment"
-            />
 
-            <pagination
-                v-if="myComments.length && myCommentLastPage > 1"
-                v-model:currentPage="currentPageLocal"
-                :lastPage="lastPage"
-            />
-        </div>
+        <my-video
+            @deleteItem="videoStore.deleteItem(item.id)"
+            :item="item"
+            class="item"
+            v-for="(item, index) in myVideos"
+            :key="index"
+        />
+
+        <pagination
+            v-if="myVideos.length && myVideosLastPage > 1"
+            v-model:currentPage="currentPageLocal"
+            :lastPage="myVideosLastPage"
+        />
     </div>
 </template>
 
 <script setup>
-    import reviewsAnswersNav from "~/components/profile/reviewsAnswersNav";
     import pagination from '../../../components/pagination'
-    import myComment from "~/components/profile/my-comment";
+    import reviewsAnswersNav from "~/components/profile/reviewsAnswersNav";
     import loader from "~/components/loader";
+    import myVideo from "~/components/profile/my-video";
     import { storeToRefs } from "pinia";
-    import {useCommentStore} from "~/store/comments";
+    import {useVideoStore} from "~/store/video";
 
-    const commentStore = useCommentStore();
-    const { isLoadingMyComments, myComments, myCommentOptions, myCommentLastPage } = storeToRefs(commentStore);
+    const videoStore = useVideoStore();
+    const { isLoadingMyVideos, myVideos, myVideosOptions, myVideosLastPage } = storeToRefs(videoStore);
 
     let router =  useRouter();
     let route =  useRoute();
+
     const setPageQuery = value => {
         const query = {...route.query}
 
@@ -50,7 +49,7 @@
 
     const currentPageLocal = computed({
         get() {
-            return myCommentOptions.value.currentPage;
+            return myVideosOptions.value.currentPage;
         },
         set(value) {
             setPageQuery(value);
@@ -58,16 +57,16 @@
     });
 
     watch(
-        () => ({params: route.query}),
+        () => ({ params: route.query }),
         async (value) => {
-            commentStore.setMyCommentsOptionsByQuery(value.query);
-            await commentStore.loadMyComments();
+            videoStore.setMyVideosOptionsByQuery(value.query);
+            await videoStore.loadMyVideos();
         },
         {deep: true}
     );
 
     const setSEO = () => {
-        const title = `Мои комменты`;
+        const title = `Мои видео`;
         const metaName = `${title} Smart-Beautiful - агрегатор цен косметических товаров`;
         useHead({
             title,
@@ -80,13 +79,15 @@
 
     setSEO();
 
+
     onMounted(async () => {
-        commentStore.setMyCommentsOptionsByQuery(route.query);
-        await commentStore.loadMyComments();
+        videoStore.setMyVideosOptionsByQuery(route.query);
+        await videoStore.loadMyVideos();
     });
+
 </script>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
     .loader {
         width: 100px;
         height: 100px;

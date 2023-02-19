@@ -2,14 +2,14 @@
     <h2 class="title">{{ $route.meta.title }}</h2>
     <div class="edit">
         <div class="edit__item edit__photo">
-            <img v-if="userAvatar"  :src="`${$config.APP_URL}/${userAvatar}`" :alt="userAvatar"/>
+            <img v-if="$api.$user.avatar"  :src="`${$config.APP_URL}/${$api.$user.avatar}`" :alt="$api.$user.avatar"/>
             <img v-else :src="`${$config.APP_URL}/storage/icons/user-mf.svg`" alt="user-mf.svg"/>
 
             <fa class="edit__photo-icon icon" icon="camera"></fa>
             <input @change="loadImages($event)" type="file" id="formFileMultiple" multiple accept="image/jpeg, image/png">
-
         </div>
-        <form class="edit__item edit__form">
+
+        <form class="edit__item edit__form"  @submit.prevent="save">
             <div class="edit__form-row">
                 <label for="user_name">Ваше имя</label>
                 <input id="user_name" class="input" type="text" v-model="editedUserInfo.name">
@@ -38,24 +38,28 @@
                     Назад
                 </nuxt-link>
             </btn>
-            <btn @click="save($event)">Сохранить</btn>
+            <btn type="submit">Сохранить</btn>
         </form>
     </div>
 </template>
 
 <script setup>
     import btn from "../../components/btn";
-    import { onMounted, computed, reactive, watch } from 'vue';
     import { storeToRefs } from "pinia";
     import {useUserStore} from "../../store/user";
-    import {useAuthStore} from "../../store/auth";
+    import {helpers, numeric} from "@vuelidate/validators";
+    import useVuelidate from "@vuelidate/core";
+    import { useNuxtApp } from '#app'
+    const { $api } = useNuxtApp();
 
     const userStore = useUserStore;
-    const authStore = useAuthStore;
     const { userInfo } = storeToRefs(userStore);
-    const { userAvatar } = storeToRefs(authStore);
 
-    const editedUserInfo = reactive({
+    definePageMeta({
+        middleware: ["auth"]
+    });
+
+    const editedUserInfo = ref({
         birthday_year: 'null'
     });
 
@@ -67,18 +71,18 @@
         return res
     });
 
-    const save = (event) => {
-        event.preventDefault();
-        userStore.updateUser(editedUserInfo.value);
+
+    let rules = {
+        editedUserInfo: {
+            birthday_year: {
+                numeric:  helpers.withMessage('Поле должно быть годом', numeric),
+            },
+        },
     }
 
+    const v$ = useVuelidate(rules, { editedUserInfo });
 
-    watch(userInfo, value => {
-        if (Object.keys(userInfo.value).length) {
-            editedUserInfo.value = {...value}
-        }
-    });
-
+    const save = () => userStore.updateProfile(editedUserInfo.value);
     const setSEO = () => {
         const title = `Редактирование профиля`;
         const metaName = `${title} Smart-Beautiful - агрегатор цен косметических товаров`;
@@ -90,6 +94,14 @@
             ],
         });
     }
+
+    watch(userInfo, value => {
+        if (Object.keys(userInfo.value).length) {
+            editedUserInfo.value = {...value}
+        }
+    });
+
+
     setSEO();
 
     onMounted(async () => {

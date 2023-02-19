@@ -90,8 +90,8 @@
 <script setup>
     import dropMenu from '../drop-menu'
     import modal from '../modal'
-    import { storeToRefs } from "pinia";
-    import {useAuthStore} from "../../store/auth";
+    import { useNuxtApp } from '#app'
+    const { $api } = useNuxtApp();
 
     const emit = defineEmits(['toggleAnswerForm', 'sendComment']);
 
@@ -103,14 +103,11 @@
     const isShowComplaintForm = ref(false);
 
 
-    const authStore = useAuthStore();
-    const { isAuth } = storeToRefs(authStore);
-
 
     const sendComment = () => {
         if (commentField.value) {
-            if (!isAuth.value) {
-                authStore.setIsShowAuthModal(true);
+            if (!$api.isAuth.value) {
+                $api.setIsShowAuthModal(true);
             } else {
                 emit('sendComment',{
                     comment: commentField.value,

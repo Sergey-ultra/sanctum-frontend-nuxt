@@ -19,7 +19,7 @@
             </div>
             <div class="reviews__actions">
                 <router-link  class="reviews__add" :to="`/add-review/${$route.params.product_code}`">
-                    <span v-if="!isAuth || (isAuth && !existingReview)">Добавить</span>
+                    <span v-if="!$api.isAuth || ($api.isAuth && !existingReview)">Добавить</span>
                     <span v-else>Изменить</span>
                 </router-link>
                 <filter-by-rating
@@ -37,18 +37,19 @@
     import compactSku from '../../components/compact-sku'
     import filterByRating from "../../components/review-list/filter-by-rating";
     import pagination from "../../components/pagination";
-    import { onMounted, computed, watch } from 'vue';
     import { storeToRefs } from "pinia";
     import {useReviewStore} from "../../store/review";
-    import {useAuthStore} from "../../store/auth";
     import {useCurrentSkuStore} from "../../store/currentSku";
+    import { useNuxtApp } from '#app'
+    const { $api } = useNuxtApp();
+
+
     import {useRoute, useRouter} from "vue-router";
 
     const reviewStore = useReviewStore();
-    const authStore = useAuthStore();
+
     const currentSkuStore = useCurrentSkuStore();
     const { reviewsWithPagination, existingReview, lastPage, tableOptions } = storeToRefs(reviewStore);
-    const { isAuth } = storeToRefs(authStore);
     const { currentSkuId  } = storeToRefs(currentSkuStore);
 
     const route = useRoute();
@@ -77,7 +78,7 @@
 
 
     watch(currentSkuId, value => {
-        if (value && isAuth.value) {
+        if (value && $api.isAuth.value) {
             reviewStore.checkExistingReview();
         }
     });
@@ -96,7 +97,7 @@
 
 
     useAsyncData(() => {
-        if (isAuth.value) {
+        if ($api.isAuth.value) {
             reviewStore.checkExistingReview()
         }
         reviewStore.setTableOptionsByQuery(route.query);

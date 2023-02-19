@@ -1,18 +1,20 @@
 <template>
-    <div  class="product-page__title">
-        <h2 class="title">
-            {{ $route.query.search ? `Поиск по "${ $route.query.search }"` : 'Поисковое слово не выбрано'}}
-        </h2>
-        <span v-if="$route.query.search" class="product-page__count">{{ totalCount }} товаров</span>
+    <div>
+        <div  class="product-page__title">
+            <h2 class="title">
+                {{ $route.query.search ? `Поиск по "${ $route.query.search }"` : 'Поисковое слово не выбрано'}}
+            </h2>
+            <span v-if="$route.query.search" class="product-page__count">{{ totalCount }} товаров</span>
+        </div>
+
+
+        <div v-if="$route.query.search" class="product-page__wrapper">
+            <filter-block class="product-page__filter"/>
+            <product-list class="product-page__items"/>
+        </div>
+
+        <viewed-products/>
     </div>
-
-
-    <div v-if="$route.query.search" class="product-page__wrapper">
-        <filter-block class="product-page__filter"/>
-        <product-list class="product-page__items"/>
-    </div>
-
-    <viewed-products/>
 </template>
 
 <script setup>

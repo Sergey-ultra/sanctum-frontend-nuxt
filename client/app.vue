@@ -1,5 +1,5 @@
 <template>
-    <div class="app">
+    <div class="app" :class="{'body-dark': isDarkBackground }">
 
         <section class="top-menu">
             <div class="container">
@@ -36,10 +36,15 @@
                         </div>
 
 
-                        <div class="header__item header__search-input">
-                            <input placeholder="Поиск товаров" v-model.trim="search" @keyup.enter="searchProduct">
+                        <form class="header__item header__search-input">
+                            <input
+                                placeholder="Поиск товаров"
+                                v-model.trim="search"
+                                @keyup.enter="searchProduct"
+                                @input="getSuggests"
+                            >
 
-                            <div v-if="search" class="close" @click="clearSearch">
+                            <div v-if="search" class="close" @click="clearSearchValue">
                                 <svg>
                                     <use xlink:href="#icons_clear">
                                         <symbol viewBox="0 0 24 24" id="icons_clear">
@@ -58,7 +63,11 @@
                                         d="M10,18c1.846,0,3.543-0.635,4.897-1.688l4.396,4.396l1.414-1.414l-4.396-4.396C17.365,13.543,18,11.846,18,10 c0-4.411-3.589-8-8-8s-8,3.589-8,8S5.589,18,10,18z M10,4c3.309,0,6,2.691,6,6s-2.691,6-6,6s-6-2.691-6-6S6.691,4,10,4z"></path>
                                 </svg>
                             </button>
-                        </div>
+                            <mini-suggest
+                                v-model:isShow="isDarkBackground"
+                            />
+                        </form>
+                        <div class="mini-suggest__overlay"></div>
 
 
                         <nuxt-link class="header__item header__item-comparison" :to="{ name: 'comparison' }">
@@ -73,28 +82,28 @@
                             <span class="header__item-text">Сравнить</span>
                         </nuxt-link>
 
-                        <a class="header__item header__item-favorite" @click="showFavorites">
+                        <nuxt-link class="header__item header__item-favorite" :to="{ name: 'favorites' }">
                                   <span v-if="favorites.length" class="header__item-badge">
                                       {{ favorites.length }}
                                   </span>
                             <fa class="icon" icon="heart"></fa>
                             <span class="header__item-text">Избранное</span>
-                        </a>
+                        </nuxt-link>
 
 
-                        <dropdown v-if="isAuth" class="header__item header__item-account">
+                        <dropdown v-if="$api.isAuth.value" class="header__item header__item-account">
                             <template v-slot:activator="{ on }">
                                 <div class="dropdown__wrapper" @click="on">
                                     <div class="header__item-text auth-button" color="#6c757d">
-                                        {{ userName }}
+                                        {{ $api.$user.name }}
                                     </div>
                                 </div>
                             </template>
 
 
                             <nuxt-link class="dropdown__el dropdown__el-username" :to="'/edit-profile'">
-                                <img class="dropdown__avatar" :src="userAvatar" :alt="userAvatar">
-                                <span class="dropdown__username">{{ userName }}</span>
+                                <img class="dropdown__avatar" :src="$api.$user.avatar" :alt="$api.$user.avatar">
+                                <span class="dropdown__username">{{ $api.$user.name }}</span>
                             </nuxt-link>
                             <nuxt-link class="dropdown__el" :to="'/favorites'">
                                 <svg class="dropdown__icon" viewBox="0 0 24 24">
@@ -110,9 +119,7 @@
                                         d="M3 7V4h2v3l3 .001v2H5V12H3V9H0V7h3zm5 6.004v-2h13v2H8zM10 7v2h11V7H10zM3 17.002v-2h18v2H3zM3 19v2h18v-2H3z"></path>
                                 </svg>
                                 <span>Списки сравнения</span>
-                                <span class="dropdown__count" v-if="allComparedSkuIdsCount">{{
-                                        allComparedSkuIdsCount
-                                    }}</span>
+                                <span class="dropdown__count" v-if="allComparedSkuIdsCount">{{ allComparedSkuIdsCount }}</span>
                             </nuxt-link>
                             <nuxt-link class="dropdown__el" :to="{name: 'profile-index-my-reviews'}">
                                 <svg class="dropdown__icon" viewBox="0 0 24 24">
@@ -133,12 +140,13 @@
                         </dropdown>
 
 
-                        <div v-else class="dropdown__wrapper header__item-account" @click="setIsShowAuthModal(true)">
+                        <div v-else class="dropdown__wrapper header__item-account" @click="$api.setIsShowAuthModal(true)">
                             <div class="header__item-text auth-button">
                                 Войти
                             </div>
                         </div>
                     </div>
+
                     <div class="search">
                         <div class="search__wrapper">
                             <input class="search__input" placeholder="Поиск товаров" v-model.trim="search"
@@ -154,6 +162,7 @@
                             </button>
                         </div>
                     </div>
+
                 </div>
             </div>
 
@@ -194,77 +203,87 @@
     import menuList from './components/menu'
     import cityChoice from './components/city'
     import footerBlock from './components/footer'
+    import miniSuggest from './components/mini-suggest'
+
     import {storeToRefs} from "pinia";
-    import {useAuthStore} from './store/auth';
     import {useFavoritesStore} from './store/favorites';
     import {useComparisonStore} from './store/comparison';
+    import {useSuggestStore} from './store/suggest';
     import {useFilterStore} from './store/filter';
+    import { useNuxtApp } from '#app'
+    const { $api } = useNuxtApp();
 
 
     let isShowDropdown = ref(false);
     let isShowScrollUp = ref(false);
     let isShowMobileMenu = ref(false);
+    let isDarkBackground = ref(false);
     let search = ref('');
 
     const route = useRoute();
     const router = useRouter();
 
-    const authStore = useAuthStore();
+
     const favoritesStore = useFavoritesStore();
     const comparisonStore = useComparisonStore();
+    const suggestStore = useSuggestStore();
     const filterStore = useFilterStore();
-    const {isAuth, userName, userAvatar} = storeToRefs(authStore);
+
     const {favorites} = storeToRefs(favoritesStore);
     const {allComparedSkuIdsCount} = storeToRefs(comparisonStore);
 
-    const setIsShowAuthModal = authStore.setIsShowAuthModal;
 
     const scrollTop = () => window.scrollTo(0, 0);
-    const showFavorites = () => {
-        if (!isAuth.value) {
-            setIsShowAuthModal(true);
-        } else {
-            router.push({name: 'favorites'});
-        }
-    };
+
+
     const toggleMenu = () => isShowMobileMenu.value = !isShowMobileMenu.value;
     const showDropdown = () => isShowDropdown.value = true;
+    const darkenTheBackground = () => isDarkBackground.value = true;
+    const hideDarkBackground = () => {
+        setTimeout(() =>  isDarkBackground.value = false, 100);
+    }
+
 
     const exit = () => {
         router.push('/');
-        authStore.logout();
+        $api.logout();
         isShowDropdown.value = false;
     };
 
-    const clearSearch = () => search.value = '';
-
-    const searchProduct = () => router.push({name: 'search', query: {search: search.value}});
-
-
-    watch(() => isAuth, () => {
-        favoritesStore.getFavoriteSkuIds()
-    });
-
-    watch(() => route.query.search, (value) => {
+    const clearSearchValue = () => search.value = '';
+    const setSearchValue = value => {
         if (![undefined, null].includes(value)) {
             search.value = value;
         } else {
             search.value = '';
         }
-    });
+    };
+
+    const getSuggests = () => {
+        isDarkBackground.value = true;
+
+        if (search.value) {
+            suggestStore.getSuggests(search.value);
+        } else {
+            suggestStore.setSuggestsToDefault();
+        }
+    }
+
+    const searchProduct = () => router.push({ name: 'search', query: { search: search.value } });
+
+
+    watch($api.isAuth, () => favoritesStore.getFavoriteSkuIds());
+
+    watch(() => route.query.search, value => setSearchValue(value));
 
 
     onMounted(() => {
         // window.onscroll = () => {
         //     isShowScrollUp.value = window.scrollY > 33;
         //
-        //     const productList = document.getElementById('productList');
-        //     if (productList) {
-        //         filterStore.setProductDom(productList);
-        //     }
         // }
-
-        authStore.checkAuth();
+        setSearchValue(route.query.search);
+        $api.checkAuth();
         comparisonStore.checkCompared();
     });
 </script>
@@ -276,6 +295,9 @@
     flex-direction: column;
     min-height: 100%;
 }
+.body-dark {
+
+}
 
 
 a {
@@ -284,7 +306,7 @@ a {
 }
 
 .top-menu {
-    z-index: 100;
+    z-index: 80;
     color: gray;
     height: 33px;
     //background-color: #ffedea;
@@ -388,13 +410,15 @@ a {
     &__search {
         &-input {
             position: relative;
+            z-index: 109;
             height: 38px;
             white-space: nowrap;
             display: inline-block;
             flex: 2 2 550px;
-            overflow: hidden;
+            //overflow: hidden;
             box-sizing: content-box;
             border-radius: 8px;
+            background-color: #fff;
             border: 1px solid #d9d9d9;
 
             & > input {
@@ -426,12 +450,33 @@ a {
             display: flex;
             justify-content: center;
             align-items: center;
+            border-top-right-radius: 8px;
+            border-bottom-right-radius: 8px;
         }
 
         &-mobile {
             display: none;
         }
     }
+}
+.body-dark .mini-suggest__overlay {
+    opacity: 0.8;
+    visibility: visible;
+
+}
+.mini-suggest__overlay {
+    background-color: rgba(31,31,32,.22);
+    cursor: pointer;
+    height: 100vh;
+    position: fixed;
+    z-index:1;
+    left: 0;
+    opacity: 0;
+    top: 0;
+    -webkit-transition: opacity .2s ease-out;
+    transition: opacity .2s ease-out;
+    visibility: hidden;
+    width: 100%;
 }
 
 
@@ -454,6 +499,7 @@ a {
     line-height: 36px;
     border-radius: .5rem;
     border: 1px solid #d9d9d9;
+    padding: 0 10px;
     cursor: pointer;
     background-color: #e8e8e8;
     transition: all .12s ease-out;

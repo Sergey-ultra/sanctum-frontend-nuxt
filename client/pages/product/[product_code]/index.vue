@@ -89,7 +89,7 @@
                 <div class="reviews__actions">
                     <button class="reviews__button reviews__button-full reviews__button-transform">
                         <nuxt-link  :to="`/add-review/${currentSkuProductCode}`">
-                            <span v-if="!isAuth || (isAuth && !existingReview)">Добавить</span>
+                            <span v-if="!$api.isAuth || ($api.isAuth && !existingReview)">Добавить</span>
                             <span v-else>Изменить</span>
                         </nuxt-link>
                     </button>
@@ -134,7 +134,7 @@
             </div>
             <button class="reviews__button  reviews__button-full">
                 <nuxt-link :to="`/add-review/${currentSkuProductCode }`">
-                    <span v-if="!isAuth || (isAuth && !existingReview)">Оставить отзыв</span>
+                    <span v-if="!$api.isAuth || ($api.isAuth && !existingReview)">Оставить отзыв</span>
                     <span v-else>Изменить</span>
                 </nuxt-link>
             </button>
@@ -153,16 +153,16 @@
     import {useCurrentSkuStore} from "../../../store/currentSku";
     import {usePriceHistoryStore} from "../../../store/pricehistory";
     import {useReviewStore} from "../../../store/review";
-    import {useAuthStore} from "../../../store/auth";
+    import { useNuxtApp } from '#app'
+    const { $api } = useNuxtApp();
 
     const currentSkuStore = useCurrentSkuStore();
     const priceHistoryStore = usePriceHistoryStore();
     const reviewStore = useReviewStore();
-    const authSkuStore = useAuthStore();
     const { currentSku, isLoadingCurrentSku } = storeToRefs(currentSkuStore);
     const { priceHistory } = storeToRefs(priceHistoryStore);
     const { existingReview, selectedRating } = storeToRefs(reviewStore);
-    const { isAuth } = storeToRefs(authSkuStore);
+
 
 
     const route = useRoute();
@@ -235,7 +235,7 @@
     onMounted(() => {
         loadCurrentPriceDynamics();
 
-        if (isAuth.value) {
+        if ($api.isAuth.value) {
             reviewStore.checkExistingReview();
         }
     });

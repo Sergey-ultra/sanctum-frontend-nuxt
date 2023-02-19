@@ -1,9 +1,11 @@
 <template>
-    <section class="journal" v-if="articles.length">
-        <h2 class="title">Новости и секреты красоты</h2>
+    <section class="journal" v-if="lastArticles.length">
+        <nuxt-link class="title" :to="'/article'">
+            Новости и секреты красоты
+        </nuxt-link>
 
         <slider
-            :sliderItems="articles"
+            :sliderItems="lastArticles"
             class="journal__slider"
         >
             <template v-slot:item="{ item }">
@@ -49,9 +51,9 @@
     import {useArticleStore} from "../../store/article";
     import {storeToRefs} from "pinia";
     const articleStore = useArticleStore();
-    const { articles } = storeToRefs(articleStore);
+    const { lastArticles } = storeToRefs(articleStore);
 
-    useAsyncData(async() => await articleStore.loadArticles());
+    useAsyncData(async() => await articleStore.loadLastArticles());
 
 </script>
 
@@ -64,8 +66,8 @@
         line-height: 32px;
         font-size: 26px;
         color: #222;
-        padding-bottom: 20px;
-        margin:0;
+        margin-bottom:20px;
+        display:block;
     }
     .journal {
         width: 100%;

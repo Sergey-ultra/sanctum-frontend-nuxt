@@ -50,10 +50,51 @@
     import dropMenu from '../drop-menu'
     import ratingView from "../ratingView";
 
+    const emit = defineEmits(['showDeleteForm', 'showEditForm']);
     const dropMenuItems = ['edit', 'delete'];
 </script>
 
 <style scoped lang="scss">
+.status {
+    margin: -16px -16px 16px;
+    padding: 14px 16px 14px 20px;
+    font-size: 15px;
+    line-height: 18px;
+    &__icon svg{
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%,-50%);
+        width: 20px;
+        height: 20px;
+    }
+    &-moderated {
+        background-color: #fff8d9;
+        & .status__icon {
+            display: inline;
+            color: #ffa300;
+            margin: 8px;
+            position: relative;
+            & svg {
+                fill: #ffa300 !important;
+            }
+
+        }
+        & span {
+            display: inline;
+            margin: 8px;
+            color: #ffa300;
+        }
+    }
+    &-rejected {
+        background-color: #ffe1e1;
+        & span {
+            display: inline;
+            color: #c70000;
+            margin: 8px;
+        }
+    }
+}
     a {
         text-decoration: none;
     }

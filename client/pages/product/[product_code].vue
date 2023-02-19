@@ -244,15 +244,15 @@
     import {storeToRefs} from "pinia";
     import {useCurrentSkuStore} from "../../store/currentSku";
     import {useComparisonStore} from "../../store/comparison";
-    import {useAuthStore} from "../../store/auth";
     import {useFavoritesStore} from "../../store/favorites";
     import {useTrackingStore} from "../../store/tracking";
     import {useViewedSkuStore} from "../../store/viewedSku";
     import {useReviewStore} from "../../store/review";
+    import { useNuxtApp } from '#app'
+    const { $api } = useNuxtApp();
 
     const currentSkuStore = useCurrentSkuStore();
     const comparisonStore = useComparisonStore();
-    const authStore = useAuthStore();
     const favoritesStore = useFavoritesStore();
     const trackingStore = useTrackingStore();
     const viewedSkuStore = useViewedSkuStore();
@@ -260,7 +260,6 @@
 
     const {currentSku, isLoadingCurrentSku} = storeToRefs(currentSkuStore);
     const {allComparedSkuIds} = storeToRefs(comparisonStore);
-    const {isAuth} = storeToRefs(authStore);
     const {favorites} = storeToRefs(favoritesStore);
     const {trackingSkuIds} = storeToRefs(trackingStore);
 
@@ -352,8 +351,8 @@
     const selectPhotoIndex = index => selectedPhotoIndex.value = index;
 
     const addToFav = id => {
-        if (!isAuth.value) {
-            authStore.setIsShowAuthModal(true)
+        if (!$api.isAuth.value) {
+            $api.setIsShowAuthModal(true)
         } else {
             if (!favorites.value.includes(id)) {
                 favoritesStore.addToFavorites(id)

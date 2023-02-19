@@ -1,20 +1,20 @@
 <template>
-  <div>
-    <div class="product-page__top">
-        <div class="product-page__title">
-            <h1 class="title">{{ currentCategory ? currentCategory.name : '' }}</h1>
-            <span class="product-page__count">{{  totalCount }} товаров</span>
+    <div>
+        <div class="product-page__top">
+            <div class="product-page__title">
+                <h1 class="title">{{ currentCategory ? currentCategory.name : '' }}</h1>
+                <span class="product-page__count">{{ totalCount }} товаров</span>
+            </div>
         </div>
-    </div>
 
-    <div class="product-page__wrapper">
-        <filter-block class="product-page__filter"/>
-        <product-list class="product-page__items"/>
-    </div>
+        <div class="product-page__wrapper">
+            <filter-block class="product-page__filter"/>
+            <product-list class="product-page__items"/>
+        </div>
 
-    <viewed-products/>
-    <popular-brands></popular-brands>
-  </div>
+        <viewed-products/>
+        <popular-brands></popular-brands>
+    </div>
 </template>
 
 <script setup>

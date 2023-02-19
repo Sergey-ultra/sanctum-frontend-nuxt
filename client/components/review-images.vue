@@ -27,7 +27,7 @@
         }
     });
 
-    const photoMainIndex = ref(0);
+    let photoMainIndex = ref(0);
 </script>
 
 <style scoped lang="scss">

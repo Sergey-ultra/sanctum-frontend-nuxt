@@ -1,12 +1,12 @@
 <template>
     <my-published
-            @showEditForm="showEditForm"
-            @showDeleteForm="showDeleteForm"
+        @showEditForm="showEditForm"
+        @showDeleteForm="showDeleteForm"
     >
-        <template v-slot:status v-if="item.status && ['moderated', 'rejected'].includes(item.status)">
+        <template v-slot:status v-if="question.status && ['moderated', 'rejected'].includes(question.status)">
             <div
-                    v-if="item.status === 'moderated'"
-                    class="status status-moderated"
+                v-if="question.status === 'moderated'"
+                class="status status-moderated"
             >
                 <span class="status__icon">
                     <svg><use xlink:href="#icons_question-circle">
@@ -15,123 +15,89 @@
                         </symbol>
                     </use></svg>
                 </span>
-                <span>Ожидает публикации</span>
+                <span >Ожидает публикации</span>
             </div>
             <div
-                    v-else-if="item.status === 'rejected'"
-                    class="status status-rejected"
+                v-else-if="question.status === 'rejected'"
+                class="status status-rejected"
             >
-                <span>Отзыв отклонен</span>
+                <span >Отзыв отклонен</span>
             </div>
         </template>
 
         <template v-slot:title>
             <nuxt-link
-                    :to="`/product/${productCode}`"
-                    class="review__sku"
+                :to="`/product/${productCode}`"
+                class="element__sku"
             >
-                <div class="review__img">
-                    <img :src="item.sku_image" :alt="item.sku_image"/>
+                <div class="element__img">
+                    <img :src="question.sku_image" :alt="question.sku_image"/>
                 </div>
-                <div class="review__sku-name">{{ item.sku_name }}, {{ item.volume }}</div>
+                <div class="element__sku-name">{{ question.sku_name }}, {{ question.volume }}</div>
             </nuxt-link>
         </template>
 
         <div
-                class="review"
-                :class="{'review-filter': item.status === 'moderated'}"
+            class="element"
+            :class="{'element-filter': question.status === 'moderated'}"
         >
+            {{ question.body }}
+        </div>
 
-           <review-common
-                   :review="item"
-                   :isRight="true"
-           />
 
-        </div>
-        <div class="review__bottom" v-if="item.status === 'rejected'">
-            <h3>Причина отклонения</h3>
-            <div class="review__text">Ваш отзыв не соответствует требованиям к публикациям.</div>
-            <nuxt-link
-                    class="review__action"
-                    :to="`/add-review/${productCode}`"
-            >
-                <span>Редактировать отзыв</span>
-            </nuxt-link>
-        </div>
-        <div class="review__bottom" v-else-if="!item.comment && !item.plus && !item.minus">
-            <h3> Расскажите поподробнее</h3>
-            <div class="review__text">Будет здорово, если вы напишете свои впечатления о товаре. Это поможет другим
-                покупателям
-            </div>
-            <nuxt-link
-                    class="review__action"
-                    :to="`/add-review/${productCode}`"
-            >
-                <span>Оставить отзыв</span>
-            </nuxt-link>
-        </div>
-        <div class="review__bottom" v-else-if="Array.isArray(item.images) && !item.images.length">
-                <div class="review__text">
-                    Будет здорово, если вы дополните отзыв фотографиями — это поможет другим покупателям узнать о товаре
-                    больше.
-                </div>
-                <nuxt-link
-                        class="review__action"
-                        :to="`/add-review/${productCode}`"
-                >
-                    <div class="icon">
-                        <div class="icon-inner">
-                            <svg><use xlink:href="#icons_attachment">
-                                <symbol viewBox="0 0 24 24" id="icons_attachment">
-                                    <path fill-rule="evenodd" d="M10.63 23.024L9.216 21.61l9.4-9.4c1.748-1.748 1.86-4.698.25-6.577l-.17-.197c-.754-.882-1.781-1.39-2.89-1.433-1.09-.04-2.17.387-2.992 1.208L4.76 13.264c-.49.49-.76 1.143-.761 1.838-.001.63.22 1.225.627 1.696a2.608 2.608 0 0 0 3.533-.143l8.27-8.27L17.844 9.8l-8.27 8.27a4.613 4.613 0 0 1-6.215.276l-.012.012-.275-.274-.006-.007h-.001l-.001-.002.012-.012A4.566 4.566 0 0 1 2 15.102a4.574 4.574 0 0 1 1.347-3.252L11.4 3.797c1.219-1.22 2.81-1.859 4.484-1.793 1.67.064 3.21.821 4.332 2.13l.17.198c2.274 2.653 2.115 6.822-.356 9.292l-9.4 9.4z"></path>
-                                </symbol>
-                            </use></svg>
-                        </div>
-                    </div>
-                    <span>Добавить фото</span>
-                </nuxt-link>
-            </div>
+<!--        <div class="element__bottom" v-if="review.status === 'rejected'">-->
+<!--            <h3>Причина отклонения</h3>-->
+<!--            <div class="element__text">Ваш отзыв не соответствует требованиям к публикациям.</div>-->
+<!--            <nuxt-link-->
+<!--                class="element__action"-->
+<!--                :to="`/add-review/${productCode}`"-->
+<!--            >-->
+<!--                <span>Редактировать отзыв</span>-->
+<!--            </nuxt-link>-->
+<!--        </div>-->
+
+
 
     </my-published>
 
     <delete-form
-            :selectedName="`Отзыв на ${item.sku_name}`"
-            v-if="isShowDeleteForm"
-            v-model:isShowDeleteForm="isShowDeleteForm"
-            @delete="deleteCurrentReview"
+        :selectedName="`Ответ на ${question.sku_name}`"
+        v-if="isShowDeleteForm"
+        v-model:isShowDeleteForm="isShowDeleteForm"
+        @delete="deleteCurrent"
     />
 </template>
 
 <script setup>
     import deleteForm from '../delete-form'
     import myPublished from "./my-published";
-    import reviewCommon from '../review-common'
-    import {useReviewStore} from "../../store/review";
+    import {useQuestionStore} from "../../store/question";
 
-    const reviewStore = useReviewStore();
+    const questionStore = useQuestionStore();
 
 
     const isShowDeleteForm = ref(false);
 
+
+    const router = useRouter();
     const props = defineProps({
-        item: {
+        question: {
             type: Object
         }
     });
 
-    const productCode = computed(() =>  props.item.product_code + '-' + props.item.sku_id);
+    const productCode = computed(() => props.question.product_code + '-' + props.question.sku_id);
 
     const showDeleteForm = () => isShowDeleteForm.value = true;
 
-    const deleteCurrentReview = () => {
-        if (props.item.sku_rating_id) {
-            reviewStore.deleteReview(this.props.item.sku_rating_id);
-        }
+    const deleteCurrent = () => {
+        emit('deleteItem');
         isShowDeleteForm.value = false;
     };
 
+
     const showEditForm = () => {
-       navigateTo({ name: 'add-review', params: { product_code:productCode.value }})
+        // router.push({ name: 'add-review', params: { product_code:productCode.value }})
     };
 </script>
 
@@ -179,7 +145,7 @@
             }
         }
     }
-    .review {
+    .element {
         color: #222;
         &__sku {
             display: flex;

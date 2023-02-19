@@ -1,12 +1,8 @@
 import { FetchError, FetchOptions, SearchParams, $fetch } from 'ohmyfetch'
 import { Router } from 'vue-router'
+import {useNotificationStore} from "~/store/notification";
 
-export interface UserData {
-    token: string
-    userName: string
-    avatar: string
-    role: string
-}
+
 
 export interface ApiConfig {
     fetchOptions: FetchOptions<'json'>
@@ -17,43 +13,126 @@ export interface ApiConfig {
 
 
 export default class Api {
-    public userData = useCookie('userData', { path: '/', maxAge: 60*60*24*30 })
+    public token = useCookie('token', { path: '/', maxAge: 60*60*24*30 })
     public config: ApiConfig
+    public $user = reactive<models.User>({
+        role: '',
+        name: '',
+        avatar: ''
+    })
+
+    public mailVerification = reactive({
+        isRequired: true,
+        email: '',
+        after: ''
+    })
+
+    public isAuth = ref(false)
+    public isShowAuthModal = ref(false)
 
     constructor(config: ApiConfig) {
         this.config = { ...config }
     }
+    public async login(object) {
+        const result = await this.post('/login', object);
+        if (result.status) {
+            if (!result.isRequiredEmailVerification) {
+                const { name, token, avatar, role } = result;
+                this.isAuth.value = true;
+                this.token.value = token;
+                Object.assign(this.$user, { avatar, role, name })
+                this.setIsShowAuthModal(false);
+            } else {
+                this.setEmailVerification({ email: result.email, after: 'login' });
+            }
 
-    public setUserData(userData: UserData) {
-        console.log(userData)
-        this.userData.value = JSON.stringify(userData);
-        console.log(userData);
-    }
-
-    public async getUserData() {
-        if (this.userData.value) {
-            return this.userData.value
+        } else {
+            const notificationStore = useNotificationStore();
+            notificationStore.setSuccess(result.message);
         }
-        return undefined
     }
 
-    public removeUserData() {
-        this.userData.value = undefined
+    public setEmailVerification({ after, email }) {
+        this.mailVerification = { isRequired: true, after, email };
+    }
+
+    public verifyEmail() {
+        this.mailVerification = {
+            isRequired: false,
+            after: '',
+            email: ''
+        };
+    }
+
+    public async loginWithService(service) {
+        const { url } = await this.get(`/login/${service}`);
+        if (url) {
+            window.location.href = url;
+        }
+    }
+
+    public async loginViaSocialServices(obj) {
+        const { user_name, token, avatar, role } = obj;
+        this.isAuth.value = true;
+        this.token.value = token;
+        Object.assign(this.$user, {  avatar, role, name: user_name })
+        this.setIsShowAuthModal(false);
+    }
+
+    public async register(object) {
+        const res = await this.post('/register', object);
+
+        if (res.isRequiredEmailVerification) {
+            this.setEmailVerification({ email: res.email, after: 'register' });
+        }
+    }
+
+    public async resendVerificationEmail() {
+        const { message } = await this.post('/email/verification-notification', {email: this.mailVerification.email});
+        if (message) {
+            const notificationStore = useNotificationStore();
+            notificationStore.setSuccess(message);
+        }
+    }
+
+    public async checkAuth() {
+        if (this.token.value) {
+            try {
+                this.isAuth.value = true;
+                const {data} = await this.get('/me');
+                Object.assign(this.$user, data);
+            } catch (e) {
+                await this.logout();
+            }
+        } else {
+            this.isAuth.value = false;
+        }
+    }
+
+    public async logout() {
+        await this.post('/logout');
+        this.token.value = undefined;
+        this.isAuth.value = false;
+        this.resetUser();
+    }
+
+    public resetUser() {
+        this.$user.name = '';
+        this.$user.avatar = '';
+        this.$user.role = '';
+    }
+
+    public setIsShowAuthModal(payload) {
+        this.isShowAuthModal.value = payload;
     }
 
     private async fetchOptions(params?: SearchParams, method = 'GET') {
         const fetchOptions = {...this.config.fetchOptions}
         fetchOptions.headers = {
             Accept: 'application/json',
+            Authorization: `Bearer ${this.token.value}`,
             Referer: this.config.webURL,
         }
-
-        const userData = await this.getUserData()
-
-        if (userData && userData.token) {
-            fetchOptions.headers.Authorization = `Bearer ${userData.token}`
-        }
-
 
         fetchOptions.method = method
 

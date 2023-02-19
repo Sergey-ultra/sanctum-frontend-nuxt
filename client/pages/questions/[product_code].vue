@@ -64,15 +64,15 @@
     import useVuelidate from "@vuelidate/core";
     import {helpers, minLength, required} from "@vuelidate/validators";
     import {useQuestionStore} from "../../store/question";
-    import {useAuthStore} from "../../store/auth";
     import {useCurrentSkuStore} from "../../store/currentSku";
+    import { useNuxtApp } from '#app'
+    const { $api } = useNuxtApp();
+
     import {useRoute, useRouter} from "vue-router";
 
     const questionStore = useQuestionStore();
-    const authStore = useAuthStore();
     const currentSkuStore = useCurrentSkuStore();
     const { questionWithPagination, isLoadingQuestions, tableOptions, total , lastPage } = storeToRefs(questionStore);
-    const { isAuth } = storeToRefs(authStore);
     const { currentSkuId } = storeToRefs(currentSkuStore);
 
     let rules = {
@@ -129,8 +129,8 @@
     };
 
     const sendQuestion = async () => {
-        if (!isAuth.value) {
-            authStore.setIsShowAuthModal(true);
+        if (!$api.isAuth.value) {
+            $api.setIsShowAuthModal(true);
         } else {
             const validated = await v$.value.$validate();
             if (validated) {

@@ -3,16 +3,15 @@
 </template>
 
 <script setup>
-    import {useAuthStore} from "../../store/auth";
-
-    const authStore = useAuthStore();
+    import { useNuxtApp } from '#app'
+    const { $api } = useNuxtApp();
 
     const route = useRoute();
     const router = useRouter();
 
     onMounted(() => {
         const {token, user_name, avatar} = route.query
-        authStore.loginViaSocialServices({ user_name, token, avatar })
+        $api.loginViaSocialServices({ user_name, token, avatar })
         router.push('/')
     });
 </script>

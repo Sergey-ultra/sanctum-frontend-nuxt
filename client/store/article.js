@@ -7,15 +7,23 @@ export const useArticleStore = defineStore({
         availableArticleTags: [],
         isLoadingMyArticles: false,
         myArticles: [],
-        isLoadingArticles: false,
-        articles:[],
+        myArticlesTotal: 0,
+        myArticlesLastPage: 1,
+        myArticlesOptions: {
+            currentPage: 1
+        },
+        isLoadingLastArticles: false,
+        lastArticles:[],
         isLoadingArticlesByTag: false,
         articlesByTag: {
             data:[],
             tag: {}
         },
         isLoadingCurrentArticle: false,
-        currentArticle: null
+        currentArticle: null,
+        isLoadingArticlesWithPagination: false,
+        articlesWithPagination: [],
+        currentPage: 1
     }),
     actions: {
         async loadArticleCategories() {
@@ -32,30 +40,49 @@ export const useArticleStore = defineStore({
                 this.availableArticleTags = [...data];
             }
         },
+        setMyArticleOptionsByQuery(query) {
+            this.myArticlesOptions.currentPage = 1;
+            for (let [key, value] of Object.entries(query)) {
+                if (key === 'page') {
+                    this.myArticlesOptions.currentPage = Number(value);
+                }
+            }
+        },
         async loadMyArticles() {
             this.isLoadingMyArticles = true;
-            const { $api } = useNuxtApp()
-            const { data } = await $api.get('/articles/my');
+            const { $api } = useNuxtApp();
+            const { data } = await $api.get('/articles/my', {params: { page: this.myArticlesOptions.currentPage }});
 
             if (data.data !== null) {
                 this.myArticles = [...data.data];
+                this.myArticlesTotal = data.total;
+                this.myArticlesLastPage = data.last_page;
             }
             this.isLoadingMyArticles = false;
         },
-        async loadArticles() {
-            this.isLoadingArticles = true;
+        async loadArticlesWithPagination() {
+            this.isLoadingArticlesWithPagination = true;
+            const { $api } = useNuxtApp();
+            const { data } = await $api.get('/articles', { params: {  page: this.currentPage }});
+            if (data && Array.isArray(data)) {
+                this.articlesWithPagination = [...data];
+            }
+            this.isLoadingArticlesWithPagination = false;
+        },
+        async loadLastArticles() {
+            this.isLoadingLastArticles = true;
             const { $api } = useNuxtApp()
-            const { data } = await $api.get('/articles');
+            const { data } = await $api.get('/articles/last');
 
             if (data !== null) {
-                this.articles = [...data];
+                this.lastArticles = [...data];
             }
-            this.isLoadingArticles = false;
+            this.isLoadingLastArticles = false;
         },
         async loadArticlesByTag(tag) {
             this.isLoadingArticlesByTag = true;
             const { $api } = useNuxtApp()
-            const { data } = await $api.get(`/articles/by-tag/${tag}`);
+            const data = await $api.get(`/articles/by-tag/${tag}`);
 
             if (data !== null) {
                 this.articlesByTag = {...data};
@@ -73,10 +100,11 @@ export const useArticleStore = defineStore({
             }
             this.isLoadingCurrentArticle = false;
         },
-        async createItem() {
-
+        async createItem(obj) {
+            const { $api } = useNuxtApp();
+            const { data } = await $api.post(`/articles`, obj);
         },
-        async updateItem () {
+        async updateItem (obj) {
 
         },
     }

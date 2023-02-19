@@ -77,22 +77,22 @@
     import ratingForm from "~/components/rating-form";
     import compactSku from '~/components/compact-sku'
     import loader from "~/components/loader";
+    import { useNuxtApp } from '#app'
+    const { $api } = useNuxtApp();
     import useVuelidate from '@vuelidate/core'
     import { required, minLength, helpers } from '@vuelidate/validators';
     import { storeToRefs } from "pinia";
     import {useReviewStore} from "~/store/review";
-    import {useAuthStore} from "~/store/auth";
     import {useCurrentSkuStore} from "~/store/currentSku";
 
-    const mustBeRating = value => value > 0;
+
 
     const reviewStore = useReviewStore();
-    const authStore = useAuthStore();
     const currentSkuStore = useCurrentSkuStore();
-
     const { isUploadingReview, existingReview, selectedRating, isCheckingExistingReview } = storeToRefs(reviewStore);
-    const { isAuth } = storeToRefs(authStore);
     const { currentSkuId } = storeToRefs(currentSkuStore);
+
+
 
     let rating = ref(0);
 
@@ -103,7 +103,7 @@
         images:[],
         anonymously: 0
     });
-
+    const mustBeRating = value => value > 0;
     let rules = {
         rating: {
             mustBeRating:  helpers.withMessage('Нужно оценить товар', mustBeRating)
@@ -142,7 +142,7 @@
     watch(selectedRating, value => rating.value = value);
 
     watch(currentSkuId, async (value) => {
-            if (value && isAuth.value) {
+            if (value && $api.isAuth.value) {
                 await reviewStore.checkExistingReview();
             }
         }
@@ -161,8 +161,8 @@
     let route =  useRoute();
 
     const saveReview = async () => {
-        if (!isAuth.value) {
-            authStore.setIsShowAuthModal(true);
+        if (!$api.isAuth.value) {
+            $api.setIsShowAuthModal(true);
         } else {
             const validated = await v$.value.$validate();
 
@@ -187,7 +187,7 @@
 
     onMounted(async () => {
         rating.value = selectedRating.value;
-        if (isAuth.value && currentSkuId) {
+        if ($api.isAuth.value && currentSkuId) {
             await reviewStore.checkExistingReview();
         }
     });
