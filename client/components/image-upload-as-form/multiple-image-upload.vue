@@ -39,17 +39,23 @@
 
 <script setup>
     import ProgressBar from '../progress-bar'
-    import {useImageStore} from "../../store/image";
-    import {storeToRefs} from "pinia";
+    import { useFileStore } from "../../store/file";
+    import { storeToRefs } from "pinia";
 
-    const imageStore = useImageStore();
-    const { progress, isUploading, uploadingImageUrls } = storeToRefs(imageStore);
+    const fileStore = useFileStore();
+    const { progress, isUploading, uploadingFileUrls } = storeToRefs(fileStore);
 
     const emit = defineEmits(['update:initialImageUrls']);
 
     const props = defineProps({
-        folder: String,
+        entity: {
+          type: String
+        },
         initialImageUrls: Array,
+        fileName: {
+          type: String,
+          default: ''
+        }
     });
 
     const previewImages = ref([]);
@@ -75,7 +81,8 @@
             reader.onload = e => previewImages.value.push(e.target.result)
         }
 
-        imageStore.loadSelectedToBackend({ files, folder: props.folder })
+
+        fileStore.loadSelectedFilesToBackend({ files, entity: props.entity, type: 'image' })
     };
 
     const deletePhoto = index => {
@@ -90,13 +97,18 @@
         }
     });
 
-    watch(uploadingImageUrls, value => {
-        if (value.length) {
+    watch(
+        uploadingFileUrls,
+        value => {
+          if (value.length) {
             initialImageUrlsLocal.value = initialImageUrlsLocal.value.concat(value);
+          }
         }
-    });
+    );
 
-    onMounted(() => previewImages.value = [...props.initialImageUrls]);
+    onMounted(() => {
+      previewImages.value = [...props.initialImageUrls];
+    });
 </script>
 
 <style lang="scss" scoped>

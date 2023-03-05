@@ -43,7 +43,7 @@
 
                 <multiple-image-upload
                     class="image-upload"
-                    :folder="'premoderatedReviews'"
+                    :entity="`review`"
                     v-model:initialImageUrls="editedReview.images"
                 />
 
