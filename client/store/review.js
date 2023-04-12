@@ -20,6 +20,8 @@ export const useReviewStore = defineStore({
         isLoadingSkuAdditionalInfo: false,
         existingReview: null,
         isCheckingExistingReview: false,
+        lastReviews: [],
+        isLoadingLastReviews: false,
         myReviews:[],
         myReviewTotal:0,
         myReviewsLastPage: 1,
@@ -28,7 +30,7 @@ export const useReviewStore = defineStore({
             rating: []
         },
         isLoadingMyReviews: false,
-        isUploadingVideo: false
+        isUploadingFormWithVideo: false
     }),
     getters: {
         reviewsByRating: state => {
@@ -116,6 +118,15 @@ export const useReviewStore = defineStore({
                 this.isLoadingReviews = false;
             }
         },
+        async loadLastReviews() {
+            this.isLoadingLastReviews = true;
+            const { $api } = useNuxtApp()
+            const { data } = await $api.get(`/reviews/last`);
+            if (data) {
+                this.lastPage = [...data];
+            }
+            this.isLoadingLastReviews = false;
+        },
         async loadReviewAdditionalInfo() {
             const currentSkuStore = useCurrentSkuStore();
             const skuId = currentSkuStore.currentSkuId;
@@ -171,14 +182,14 @@ export const useReviewStore = defineStore({
             if (skuId) {
                 obj.sku_id = skuId;
                 const { $api } = useNuxtApp();
-                this.isUploadingVideo = true;
+                this.isUploadingFormWithVideo = true;
                 const { data } = await $api.post('/reviews/add-video', obj);
 
                 if (data.status === 'success') {
                     const notificationStore = useNotificationStore();
                     notificationStore.setSuccess('Видео успешно загружено и будет опубликовано после модерации');
                 }
-                this.isUploadingVideo = false;
+                this.isUploadingFormWithVideo = false;
             }
         },
         async updateOrCreateReview(obj) {

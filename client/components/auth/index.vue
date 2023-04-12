@@ -2,20 +2,20 @@
     <!--    <transition name="pop"  mode="out-in">-->
     <modal v-model:isShowModal="isShowAuthModalLocal">
         <template v-slot:header>
-            <h3>{{ isLoginShow ? 'Войдите с помощью' : 'Регистрация'}}</h3>
+            <h3>{{ authHeader }}</h3>
         </template>
 
-        <div v-if="$api.mailVerification.isRequired && $api.mailVerification.after === 'register'">Необходимо подтвердить e-mail</div>
-
-        <div v-else-if="$api.mailVerification.isRequired && $api.mailVerification.after === 'login'" class="row">
-            На ваш email {{ $api.mailVerification.email }} выслано подтверждение аккаунта
-            <btn class="btn" :height="35" :color="'grey'" @click="$api.resendVerificationEmail">Выслать повторно</btn>
+        <div v-if="$api.mailVerification.isRequired">
+            <span>{{ $api.mailVerification.message }}</span>
+            <btn class="btn" :height="35" :color="'grey'" @click="$api.resendVerificationEmail()">
+                Повторно выслать подтверждение аккаунта
+            </btn>
             <btn class="btn" :height="35" @click="$api.setIsShowAuthModal(false)">Понятно</btn>
         </div>
 
-        <div v-else>
-            <div v-if="isLoginShow">
-                <div class="auth">
+        <div v-else class="auth">
+            <div v-if="showMode === 'login'" class="auth__login">
+                <div class="auth__choice">
                     <div class="auth__wrap">
                         <div class="auth__wrap-el auth__with-g" @click="$api.loginWithService('google')">
                             <div class="icon">
@@ -74,19 +74,33 @@
                         <div class="invalid-feedback" v-for="error of v$.loginForm.password.$errors" :key="error.$uid">
                             {{ error.$message }}
                         </div>
-                        <a class="form-forget">Забыли пароль?</a>
+
                     </div>
 
+                    <button class="btn login form-group" type="submit">Войти</button>
 
-                    <button class="btn login" type="submit">Войти</button>
-                    <div class="btn reg" @click="showRegistration"><span>Регистрация</span></div>
+                    <button class="t-link form-group block" type="button" @click="showRecover">
+                      <span>Забыли пароль?</span>
+                    </button>
+
+
+                    <button class="t-link form-group" type="button" @click="showRegistration">
+                        <span>Регистрация</span>
+                    </button>
                 </form>
             </div>
 
 
             <register
-                    v-else
-                    v-model:isLoginShow="isLoginShow"
+                v-else-if="showMode === 'registration'"
+                class="auth__register"
+                v-model:showMode="showMode"
+            />
+
+            <recover
+                v-else-if="showMode === 'recover'"
+                class="auth__recover"
+                v-model:showMode="showMode"
             />
         </div>
 
@@ -97,6 +111,7 @@
 
 <script setup>
     import register from "./register";
+    import recover from "./recover";
     import modal from '../modal'
     import btn from "../btn";
     import useVuelidate from '@vuelidate/core'
@@ -110,7 +125,7 @@
         email: '',
     });
 
-    let isLoginShow = ref(true);
+    let showMode = ref('login');
 
     const rules = {
         loginForm: {
@@ -127,6 +142,17 @@
 
     const v$ = useVuelidate(rules, {loginForm});
 
+    let authHeader = computed(() => {
+        switch (showMode.value) {
+            case 'login':
+               return 'Войдите с помощью';
+            case 'registration':
+               return 'Регистрация';
+            case 'recover':
+               return 'Восстановить пароль';
+            }
+        }
+    );
 
     let isShowAuthModalLocal = computed({
         get() {
@@ -137,7 +163,8 @@
         }
     });
 
-    const showRegistration = () => isLoginShow.value = false;
+    const showRegistration = () => showMode.value = 'registration';
+    const showRecover = () => showMode.value = 'recover';
 
     const signIn =  async() => {
         const validated = await v$.value.loginForm.$validate();
@@ -154,11 +181,14 @@
     };
 
 
-    watch($api.isShowAuthModal, value => {
-        if (!value) {
-            isLoginShow.value = true;
+    watch(
+        $api.isShowAuthModal,
+        value => {
+            if (!value) {
+              showMode.value = 'login';
+            }
         }
-    });
+    );
 </script>
 
 <style lang="scss" scoped>
@@ -181,7 +211,18 @@
             width: 34px;
         }
     }
-    .auth{
+    .auth {
+        min-width: 300px;
+        min-height: 340px;
+        &__recover {
+          margin-top: 35px;
+        }
+        &__register {
+          margin-top: 15px;
+        }
+        &__choice {
+
+        }
         &__wrap {
             height: 44px;
             display: flex;
@@ -260,27 +301,49 @@
        }
 
     }
-    .form-group {
-        margin-bottom: 20px;
-        height:100%;
+    .form {
+        &-group {
+          margin-bottom: 16px;
+          height:100%;
+        }
+        &-control {
+            outline: medium none #000;
+            border: 1px solid #ccc;
+            padding: 6px 12px;
+            font-size: 16px;
+            font-weight: 300;
+            width: 100%;
+            border-radius: 4px;
+            height: 35px;
+            &:hover {
+              border-color: #878585;
+              transition: background-color .3s ease 0s,border-color .3s ease 0s;
+            }
+            &:focus {
+              border-color: #595858;
+            }
+        }
     }
 
-    .form-control {
-        outline: medium none #000;
-        border: 1px solid #ccc;
-        padding: 6px 12px;
-        font-size: 16px;
-        font-weight: 300;
-        width: 100%;
-        border-radius: 4px;
-        height: 35px;
-    }
-    .form-forget {
-        margin-left: auto;
-    }
+
     .row {
         display: flex;
         justify-content: space-between;
+    }
+
+    button {
+        background: 0 0;
+        font-size: inherit;
+        margin: 0;
+        padding: 0;
+        border: 0;
+    }
+    .t-link {
+        color: #3766a9;
+        cursor: pointer;
+        &:hover {
+          color: #cd192e;
+        }
     }
     .btn {
         cursor: pointer;
@@ -306,10 +369,12 @@
     }
 
     .reg {
-        margin-top: 16px;
         background-color: transparent;
         &:hover {
             background-color: #f7f7f7;
         }
+    }
+    .block {
+       display:block;
     }
 </style>

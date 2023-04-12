@@ -1,9 +1,10 @@
 <template>
-    <form  id="reg-form" @submit.prevent="signUp">
+    <form @submit.prevent="signUp">
         <div class="form-group">
             <input
                     v-model.trim="registrationForm.name"
-                    id="name" type="text"
+                    id="name"
+                    type="text"
                     name="name"
                     autofocus
                     placeholder="Имя"
@@ -14,10 +15,11 @@
             </div>
         </div>
 
-        <div class="form-group  mb-1">
+        <div class="form-group">
             <input
                     v-model.trim="registrationForm.email"
-                    id="email" name="email"
+                    id="email"
+                    name="email"
                     type="email"
                     placeholder="E-Mail"
                     class="form-control"
@@ -27,7 +29,7 @@
             </div>
         </div>
 
-        <div class="form-group  mb-1">
+        <div class="form-group">
             <input
                     v-model.trim="registrationForm.password"
                     id="password"
@@ -42,7 +44,7 @@
             </div>
         </div>
 
-        <div class="form-group  mb-4">
+        <div class="form-group">
             <input
                     v-model.trim="registrationForm.password_confirmation"
                     id="password-confirmation"
@@ -57,8 +59,12 @@
         </div>
 
 
-        <button class="btn btn-register"  type="submit" >Зарегистрироваться</button>
-        <button class="btn btn-back" @click="showLogin">Войти</button>
+        <button class="form-group btn btn-register" type="submit">Зарегистрироваться</button>
+
+        <div class="form-group form__hint-text">
+            <span>Есть аккаунт? </span>
+            <button class="t-link" type="button" @click="showLogin">Войти</button>
+        </div>
     </form>
 </template>
 
@@ -98,22 +104,22 @@
         },
     };
 
-    const v$ = useVuelidate(rules, registrationForm);
+    const v$ = useVuelidate(rules, { registrationForm });
 
 
 
     const props = defineProps({
-        isLoginShow: {
-            type:Boolean,
-            default: true
+        showMode: {
+            type: String,
+            default: 'login'
         }
     })
-    const emit = defineEmits(['update:isLoginShow']);
+    const emit = defineEmits(['update:showMode']);
 
-    const showLogin = () => emit('update:isLoginShow', true);
+    const showLogin = () => emit('update:showMode', 'login');
 
     const signUp = async () => {
-        const validated = await v$.registrationForm.value.$validate();
+        const validated = await v$.value.registrationForm.$validate();
 
         if (validated) {
             await $api.register(registrationForm.value);
@@ -123,28 +129,36 @@
                 password: '',
                 password_confirmation: ''
             }
-            emit('update:isLoginShow', true);
+            showLogin();
             v$.value.$reset()
         }
     }
 </script>
 
 <style lang="scss" scoped>
-    .form-group {
-        margin-bottom: 20px;
+    .form {
+        &-group {
+          margin-bottom: 20px;
+        }
+        &-control {
+            border: 1px solid #ccc;
+            padding: 6px 12px;
+            font-size: 16px;
+            font-weight: 300;
+            width: 100%;
+            border-radius: 4px;
+            height: 35px;
+            outline: medium none #000;
+            &:hover {
+              border-color: #878585;
+              transition: background-color .3s ease 0s,border-color .3s ease 0s;
+            }
+        }
+        &__hint-text {
+          color: #595959;
+          margin-right: 1px;
+        }
     }
-
-    .form-control {
-        border: 1px solid #ccc;
-        padding: 6px 12px;
-        font-size: 16px;
-        font-weight: 300;
-        width: 100%;
-        border-radius: 4px;
-        height: 35px;
-        outline: medium none #000;
-    }
-
 
     .btn {
         cursor: pointer;
@@ -181,5 +195,19 @@
     }
     .invalid-feedback {
         color: #fc675c;
+    }
+    button {
+        background: 0 0;
+        font-size: inherit;
+        margin: 0;
+        padding: 0;
+        border: 0;
+    }
+    .t-link {
+        color: #3766a9;
+        cursor: pointer;
+        &:hover {
+          color: #cd192e;
+        }
     }
 </style>

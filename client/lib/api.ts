@@ -22,9 +22,10 @@ export default class Api {
     })
 
     public mailVerification = reactive({
-        isRequired: true,
+        isRequired: false,
         email: '',
-        after: ''
+        after: '',
+        message: ''
     })
 
     public isAuth = ref(false)
@@ -34,33 +35,34 @@ export default class Api {
         this.config = { ...config }
     }
     public async login(object) {
-        const result = await this.post('/login', object);
-        if (result.status) {
-            if (!result.isRequiredEmailVerification) {
-                const { name, token, avatar, role } = result;
+        const response = await this.post('/login', object);
+        if (response.status) {
+            if (!response.isRequiredEmailVerification) {
+                const { name, token, avatar, role } = response;
                 this.isAuth.value = true;
                 this.token.value = token;
                 Object.assign(this.$user, { avatar, role, name })
                 this.setIsShowAuthModal(false);
             } else {
-                this.setEmailVerification({ email: result.email, after: 'login' });
+                this.setEmailVerification({ email: response.email, after: 'login', message: response.message });
             }
 
-        } else {
-            const notificationStore = useNotificationStore();
-            notificationStore.setSuccess(result.message);
         }
+
+        const notificationStore = useNotificationStore();
+        notificationStore.setSuccess('Вы удачно авторизировались');
     }
 
-    public setEmailVerification({ after, email }) {
-        this.mailVerification = { isRequired: true, after, email };
+    public setEmailVerification({ after, email, message }) {
+        this.mailVerification = { isRequired: true, after, email, message };
     }
 
     public verifyEmail() {
         this.mailVerification = {
             isRequired: false,
             after: '',
-            email: ''
+            email: '',
+            message: ''
         };
     }
 
@@ -80,19 +82,28 @@ export default class Api {
     }
 
     public async register(object) {
-        const res = await this.post('/register', object);
+        const response = await this.post('/register', object);
 
-        if (res.isRequiredEmailVerification) {
-            this.setEmailVerification({ email: res.email, after: 'register' });
+        if (response.isRequiredEmailVerification) {
+            this.setEmailVerification({ email: response.email, after: 'register', message: response.message });
+        } else {
+            const notificationStore = useNotificationStore();
+            notificationStore.setSuccess(response.message);
         }
     }
 
     public async resendVerificationEmail() {
-        const { message } = await this.post('/email/verification-notification', {email: this.mailVerification.email});
+        const { message } = await this.post('/email/verification-notification', { email: this.mailVerification.email });
         if (message) {
             const notificationStore = useNotificationStore();
             notificationStore.setSuccess(message);
         }
+    }
+
+    public async recover(email) {
+        const { message } = await this.post('/forgot-password', { email });
+        const notificationStore = useNotificationStore();
+        notificationStore.setSuccess(message);
     }
 
     public async checkAuth() {

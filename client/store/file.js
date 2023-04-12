@@ -8,7 +8,7 @@ export const useFileStore = defineStore({
         uploadingFileUrls:[]
     }),
     actions: {
-        async loadSelectedFilesToBackend({ files, entity, type, fileName }) {
+        async loadFilesAsForm({ files, entity, type, fileName }) {
             this.isUploading = true;
             if (['image', 'video'].includes(type)) {
 
@@ -36,8 +36,10 @@ export const useFileStore = defineStore({
                         }
                     }
                 });
-                if (data) {
-                    this.uploadingFileUrls = [...data];
+                if (data && Array.isArray(data)) {
+                    this.uploadingFileUrls = data
+                        .filter(item => item.status !== false)
+                        .map(item => item.saved_name)
                 }
             }
             this.isUploading = false;

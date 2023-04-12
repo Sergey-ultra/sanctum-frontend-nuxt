@@ -19,7 +19,7 @@
 
 <script setup>
     import journal from "../components/journal";
-    import {useCategoryStore} from "../store/category";
+    import {useCategoryStore} from "~/store/category";
     import { storeToRefs } from "pinia";
 
     const categoryStore = useCategoryStore();
@@ -39,7 +39,7 @@
         if (!categories.length) {
             await categoryStore.loadNestedCategories()
         }
-    })
+    });
 </script>
 
 <style lang="scss" scoped>

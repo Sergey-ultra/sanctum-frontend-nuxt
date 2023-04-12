@@ -82,7 +82,7 @@
         }
 
 
-        fileStore.loadSelectedFilesToBackend({ files, entity: props.entity, type: 'image' })
+        fileStore.loadFilesAsForm({ files, entity: props.entity, type: 'image' })
     };
 
     const deletePhoto = index => {

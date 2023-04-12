@@ -54,7 +54,6 @@
     const { lastArticles } = storeToRefs(articleStore);
 
     useAsyncData(async() => await articleStore.loadLastArticles());
-
 </script>
 
 <style lang="scss" scoped>

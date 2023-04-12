@@ -4,7 +4,7 @@
         <section class="top-menu">
             <div class="container">
                 <div class="top-menu__wrapper">
-                    <city-choice class="city-choice"/>
+                    <location class="location-choice"/>
                 </div>
             </div>
         </section>
@@ -201,7 +201,7 @@
     import dropdown from './components/dropdown'
     import authWrapper from './components/auth'
     import menuList from './components/menu'
-    import cityChoice from './components/city'
+    import location from './components/location'
     import footerBlock from './components/footer'
     import miniSuggest from './components/mini-suggest'
 
@@ -319,7 +319,7 @@ a {
     }
 }
 
-.city-choice {
+.location-choice {
     cursor: pointer;
 }
 

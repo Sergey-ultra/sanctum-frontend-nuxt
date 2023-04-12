@@ -47,7 +47,7 @@
                     type="submit"
                 >
                     Отправить
-                    <loader class="btn-loader" v-if="isUploadingVideo"/>
+                    <loader class="btn-loader" v-if="isUploadingFormWithVideo"/>
                 </button>
 
                 <div class="agreement">
@@ -67,12 +67,15 @@
     import loader from '../../components/loader'
     import compactSku from '../../components/compact-sku'
     import {useReviewStore} from "../../store/review";
+    import {useFileStore} from "../../store/file";
     import {helpers, minLength, required} from "@vuelidate/validators";
     import useVuelidate from "@vuelidate/core";
     import {storeToRefs} from "pinia";
 
     const reviewStore = useReviewStore();
-    const { isUploadingVideo } = storeToRefs(reviewStore);
+    const fileStore = useFileStore();
+    const { isUploadingFormWithVideo } = storeToRefs(reviewStore);
+    const { uploadingFileUrls } = storeToRefs(fileStore);
 
 
     let route =  useRoute();
@@ -81,6 +84,7 @@
         file: '',
         description: ''
     });
+
 
     let rules = {
         form: {
@@ -103,10 +107,10 @@
     }
 
     const setVideo = event => {
-        const file  = event.target.files[0] || event.dataTransfer.files[0];
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = e => form.value.file = e.target.result;
+      form.value.file = event.target.files[0] || event.dataTransfer.files[0];
+        // const reader = new FileReader();
+        // reader.readAsDataURL(file);
+        // reader.onload = e => form.value.file = e.target.result;
     }
 
 
@@ -114,11 +118,22 @@
         const validated = await v$.value.form.$validate();
 
         if (validated) {
-            await reviewStore.addOrUpdateVideo(form.value);
-            clearForm();
-            v$.value.$reset();
+            await fileStore.loadFilesAsForm({
+              files: [form.value.file],
+              entity: 'sku',
+              type: 'video'
+            });
 
-            router.push({ name: 'reviews-product_code', params: { ...route.params }});
+            if (uploadingFileUrls.value.length) {
+                await reviewStore.addOrUpdateVideo({
+                  file: uploadingFileUrls.value[0],
+                  description: form.value.description
+                });
+                clearForm();
+                v$.value.$reset();
+
+                router.push({ name: 'reviews-product_code', params: { ...route.params } });
+            }
         }
     }
 </script>
