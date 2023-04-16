@@ -25,7 +25,7 @@
         <form class="form" @submit.prevent="sendComment">
             <div>Добавить сообщение</div>
 
-            <textarea class="textarea margin-top" placeholder="Комментарий"></textarea>
+            <textareaComponent class="margin-top" placeholder="Комментарий"></textareaComponent>
 
             <div class="form__row">
                 <input class="form__item input" type="text" placeholder="Ваше имя">
@@ -39,6 +39,7 @@
 </template>
 
 <script setup>
+    import textareaComponent from '../../components/textareaComponent'
     const sendComment = () => {
 
     }
@@ -60,26 +61,6 @@
 <style lang="scss" scoped>
     .margin-top {
         margin-top: 15px;
-    }
-    .textarea {
-        width: 100%;
-        resize: vertical;
-        outline: none;
-        overflow: visible;
-        transition: background-color 0.3s ease 0s, border-color 0.3s ease 0s;
-        border: 1px solid transparent;
-        border-radius: 8px;
-        padding: 8px;
-        background-color: rgb(240, 242, 252);
-        &:hover {
-            border-color: rgb(192, 201, 240);
-            transition: border-color 0.3s ease 0s;
-        }
-        &:focus {
-            background-color: white;
-            border-color: rgb(59, 87, 208);
-            transition: background-color 0.3s ease 0s, border-color 0.3s ease 0s;
-        }
     }
     .input {
         height: 38px;

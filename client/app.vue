@@ -191,6 +191,7 @@
             <comparison-notification/>
         </top-notification>
         <notification/>
+        <img src="https://mc.yandex.ru/watch/87589913" style="position:absolute; left:-9999px;" alt="ya" />
     </div>
 </template>
 
@@ -285,6 +286,15 @@
         setSearchValue(route.query.search);
         $api.checkAuth();
         comparisonStore.checkCompared();
+
+        setTimeout(() => {
+            document.querySelector('img[alt="ya"]')?.remove();
+
+            router.afterEach(to => {
+                ym(87589913, 'hit', to.fullPath);
+            });
+
+        }, 5000);
     });
 </script>
 

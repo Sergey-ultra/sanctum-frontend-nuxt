@@ -32,7 +32,7 @@
             <h3>Напишите, о чём оно</h3>
             <div class="form__item">
                 <div class="form__item-description">
-                    <textarea v-model.trim="form.description" placeholder="Максимум 100 символов" rows="1"></textarea>
+                    <textareaComponent v-model="form.description" placeholder="Максимум 100 символов" rows="1"></textareaComponent>
                 </div>
                 <div class="invalid-feedback" v-for="error of v$.form.description.$errors" :key="error.$uid">
                     {{ error.$message }}
@@ -64,6 +64,7 @@
 </template>
 
 <script setup>
+    import textareaComponent from '../../components/textareaComponent'
     import loader from '../../components/loader'
     import compactSku from '../../components/compact-sku'
     import {useReviewStore} from "../../store/review";

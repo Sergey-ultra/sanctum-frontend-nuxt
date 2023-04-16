@@ -27,22 +27,19 @@
             </picture>
         </nuxt-link>
 
-        <div class="article__tags">
-            <nuxt-link
-                :to="`/article/tag/${tag}`"
-                class="article__tag"
-                v-for="tag in article.tags.filter((item, index) => index < 2)"
-                :key="tag"
-            >
-                {{tag}}
-            </nuxt-link>
-            <div class="article__tag">...</div>
-        </div>
+        <tags :tags="article.tags"></tags>
+
 
         <div class="article__meta">
             <div class="article__comments">
-                <fa  icon="comments"></fa>
-                {{ article.comments_count }}
+                <nuxt-link :to="`/article/${article.slug}#comments`">
+                    <fa  icon="comments"></fa>
+                    {{ article.comments_count }}
+                </nuxt-link>
+            </div>
+            <div class="article__likes">
+                <likeUp :likesUp="article.likes ?? 0"></likeUp>
+                <likeDown :likesDown="article.dislikes ?? 0"></likeDown>
             </div>
         </div>
 
@@ -53,6 +50,9 @@
 </template>
 
 <script setup>
+    import tags from '../tagsComponent'
+    import likeUp from '../likes/like-up'
+    import likeDown from '../likes/like-down'
     const props = defineProps({
         article: Object
     });
@@ -62,7 +62,7 @@
     h2 {
         font-size: 2rem;
         line-height: 2.4rem;
-        margin: 0 0 .8rem;
+        margin: 0.4rem 0 .8rem 0;
         & a {
             text-decoration: none;
         }
@@ -99,43 +99,39 @@
                 width: 100%;
             }
         }
+        &__viewsIcon {
+            display:flex;
+            align-items: center;
+        }
         &__image {
+            background: #f8f9fa;
             width: 100%;
             display:inline-flex;
             justify-content: center;
             max-height: 640px;
+            margin-bottom:10px;
             & img {
                 height: 100%;
                 object-fit: cover;
                 width: 100%;
             }
         }
-        &__tags {
-            display: flex;
-            flex-wrap: nowrap;
-            overflow-x: auto;
-            margin: .5rem 0;
-        }
-        &__tag {
-            font-size: .875rem;
-            line-height: 1.5;
-            padding: .25rem .5rem;
-            color: #555;
-            background: #faf7ef;
-            border-radius: 50rem !important;
-            margin-right: .25rem !important;
-            white-space: normal;
-            flex: 0 0 auto;
-            position: relative;
-            text-decoration: none;
-            transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
-        }
         &__meta {
             display:flex;
+            justify-content: space-between;
             align-items: center;
         }
         &__comments {
+            cursor: pointer;
             padding: 10px 0;
+            & a {
+                color: #212529 !important;
+                text-decoration: none;
+            }
+        }
+        &__likes {
+            display: flex;
+            white-space: nowrap;
         }
     }
 </style>

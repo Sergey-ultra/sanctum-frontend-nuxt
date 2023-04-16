@@ -34,6 +34,11 @@ export default defineNuxtConfig({
                 {
                     rel: "mask-icon", href: "/favicon/safari-pinned-tab.svg", color: "#5bbad5"
                 }
+            ],
+            script: [
+                {
+                    src: 'ym.js',
+                }
             ]
         }
     },
@@ -74,6 +79,17 @@ export default defineNuxtConfig({
     // ],
     modules: [
         '@funken-studio/sitemap-nuxt-3',
+        // [
+        //     '@nuxtjs/yandex-metrika',
+        //     {
+        //         id: '87589913',
+        //         webvisor: true,
+        //         // clickmap: true,
+        //         // useCDN: false,
+        //         // trackLinks: true,
+        //         // accurateTrackBounce: true,
+        //     }
+        // ]
     ],
     sitemap: {
         hostname: 'https://smart-beautiful.ru',

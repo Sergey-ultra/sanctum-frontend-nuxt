@@ -9,6 +9,7 @@
             'button--icon': icon,
             'button--outline': outline,
             'button--round': round,
+            'button--radius': radius
         }"
     >
         <slot></slot>
@@ -59,7 +60,10 @@ export default {
             type: Boolean,
             default: false,
         },
-
+        radius: {
+            type: Boolean,
+            default: false
+        }
     },
     computed: {
 
@@ -68,6 +72,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+    $lightGreenColor: #42b983;
     .button {
         transition: all 0.12s ease-out;
         min-width: 35px;
@@ -81,6 +86,7 @@ export default {
         color: #fff;
         background: rgb(24, 103, 192) none repeat scroll 0% 0%;
         border: 0 solid #616469 !important;
+        font-size: 16px;
         & a {
             text-decoration: none;
             color: inherit;
@@ -119,6 +125,9 @@ export default {
         }
         &.button--round {
             border-radius: 50%;
+        }
+        &.button--radius {
+            border-radius: 8px;
         }
         &.button--outline {
             background: hsla(220,4%,50%,.05) !important;
@@ -192,8 +201,11 @@ export default {
                 }
             }
         }
+        &--green-light {
+            color: #fff;
+            background-color: $lightGreenColor;
+        }
     }
-
 
     .loader {
         position: absolute;

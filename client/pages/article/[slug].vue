@@ -42,31 +42,9 @@
             </div>
             <div class="article__body" v-html="currentArticle.body"></div>
 
-            <div class="article__tags" id="article_tags" ref="tags">
-                <nuxt-link
-                    :to="`/article/tag/${tag}`"
-                    class="article__tag"
-                    :class="{'article__tag-hide': hiddenTags.includes(tag)}"
-                    v-for="tag in currentArticle.tags"
-                    :key="tag"
-                    :id="tag"
-                >
-                    {{tag}}
-                </nuxt-link>
-                <div class="article__tag layer" id="layer" @click="showAllTags" :class="{'layer-hide': isShowAllTags}">
-                    <details>
-                        <summary role="button">
-                            <div class="layer__item">
-                                <svg aria-hidden="true" height="16" viewBox="0 0 16 16" version="1.1" width="16" data-view-component="true" class="octicon">
-                                    <path d="M8 9a1.5 1.5 0 100-3 1.5 1.5 0 000 3zM1.5 9a1.5 1.5 0 100-3 1.5 1.5 0 000 3zm13 0a1.5 1.5 0 100-3 1.5 1.5 0 000 3z"></path>
-                                </svg>
-                            </div>
-                        </summary>
-                    </details>
-                </div>
-            </div>
+            <tags :tags="currentArticle.tags"></tags>
 
-            <div class="article__block">
+            <div class="article__block" id="comments">
                 <h4>Комментарии</h4>
                 <comment-list
                     class="article__comments"
@@ -77,20 +55,24 @@
                 />
 
                 <form class="add-comment__form" @submit.prevent="sendNewComment">
-                    <textarea class="textarea" v-model.trim="userComment" name="comment" placeholder="Написать комментарий"></textarea>
+                    <textareaComponent  v-model="userComment" name="comment" placeholder="Написать комментарий"></textareaComponent>
                     <div class="invalid-feedback" v-for="error of v$.userComment.$errors" :key="error.$uid">
                         {{ error.$message }}
                     </div>
 
-                    <button type="submit" class="btn">Отправить комментарий</button>
+                    <buttonComponent class="comment-btn" :color="'green-light'" :radius="true" type="submit">
+                        Отправить комментарий
+                    </buttonComponent>
                 </form>
-
             </div>
         </div>
     </div>
 </template>
 
 <script setup>
+    import tags from '../../components/tagsComponent'
+    import textareaComponent from '../../components/textareaComponent'
+    import buttonComponent from '../../components/button-component'
     import loader from '../../components/loader'
     import commentList from '../../components/comment-list'
     import {useArticleStore} from "../../store/article";
@@ -108,9 +90,6 @@
     const { currentArticle, isLoadingCurrentArticle } = storeToRefs(articleStore);
 
     let userComment = ref('');
-    let tags = ref('');
-    let isShowAllTags = ref(true);
-    let hiddenTags = ref([]);
 
     const rules = {
         userComment: {
@@ -120,12 +99,6 @@
     };
 
     const v$ = useVuelidate(rules, { userComment });
-
-    const showAllTags = () => {
-        isShowAllTags.value = true;
-        tags.value.classList.add('article__tags-show');
-        hiddenTags.value = [];
-    }
 
     const sendComment = obj => {
         obj.article_id = currentArticle.value.id;
@@ -142,23 +115,6 @@
             }
         } else {
             $api.setIsShowAuthModal(true);
-        }
-    }
-
-    const setTagsContainer = () => {
-        if (tags.value) {
-            const containerEndX = tags.value.getBoundingClientRect().left + tags.value.clientWidth;
-
-            currentArticle.value.tags.forEach(tag => {
-                const currentDom = document.getElementById(tag);
-                const currentDomEndX = currentDom.getBoundingClientRect().left + currentDom.clientWidth;
-                if (currentDomEndX > containerEndX) {
-                    hiddenTags.value.push(currentDom.id);
-                    if (isShowAllTags.value) {
-                        isShowAllTags.value = false;
-                    }
-                }
-            })
         }
     }
 
@@ -189,7 +145,7 @@
     //     { deep: true}
     // );
 
-    watch(tags, value => setTagsContainer());
+
 
     watch(currentArticle, value => {
         if (value && value.title) {
@@ -200,10 +156,6 @@
     if (currentArticle.value && currentArticle.value.title) {
         setSEO(currentArticle.value.title)
     }
-
-    onMounted(() => setTagsContainer());
-
-
 
     useAsyncData(async() => {
         await articleStore.loadCurrentArticle(route.params.slug);
@@ -333,79 +285,10 @@
             height: 300px;
             object-fit: cover;
         }
-        &__tags {
-            position: relative;
-            display: flex;
-            align-items: center;
-            flex-wrap: nowrap;
-            overflow: hidden;
-            margin-bottom:30px;
-            &-show {
-                flex-wrap: wrap;
-                overflow: visible;
-            }
-        }
-        &__tag {
-            font-size: .875rem;
-            line-height: 1.5;
-            padding: .25rem .5rem;
-            color: #555;
-            background: #faf7ef;
-            border-radius: 50rem !important;
-            margin-right: .25rem !important;
-            margin-bottom: .25rem !important;
-            white-space: normal;
-            flex: 0 0 auto;
-            position: relative;
-            text-decoration: none;
-            transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
-            &-hide {
-                visibility: hidden;
-            }
-        }
         &__comments {
             border-top: 1px solid #dee2e6;
             padding: 15px 0 0;
         }
-    }
-    .layer {
-        &__item {
-            align-items: center;
-            background-color: initial;
-            border: 0;
-            border-radius: 6px;
-            color: var(--color-fg-default);
-            cursor: pointer;
-            display: flex;
-            font-size: 14px;
-            line-height: 30px;
-            padding: 0 8px;
-            position: relative;
-            text-align: center;
-            white-space: nowrap;
-            &:before {
-                content: "";
-                height: 100%;
-                left: 50%;
-                min-height: 48px;
-                position: absolute;
-                top: 50%;
-                transform: translateX(-50%) translateY(-50%);
-                width: 100%;
-            }
-        }
-        position: absolute;
-        right: 0 !important;
-        &-hide {
-            visibility: hidden;
-        }
-    }
-
-    .octicon {
-        display: inline-block;
-        overflow: visible !important;
-        vertical-align: text-bottom;
-        fill: rgb(36, 41, 47);
     }
 
     .add-comment__form {
@@ -414,35 +297,7 @@
         flex-direction: column;
         align-items:flex-end;
     }
-    .textarea {
-        width: 100%;
-        resize: vertical;
-        outline: #000 none medium;
-        overflow: visible;
-        transition: background-color 0.3s ease 0s, border-color 0.3s ease 0s;
-        border: 1px solid transparent;
-        border-radius: 8px;
-        padding: 8px;
-        background-color: rgb(240, 242, 252);
-        &:hover {
-            border-color: rgb(192, 201, 240);
-            transition: border-color 0.3s ease 0s;
-        }
-        &:focus {
-            background-color: white;
-            border-color: rgb(59, 87, 208);
-            transition: background-color 0.3s ease 0s, border-color 0.3s ease 0s;
-        }
-    }
-
-    .btn {
-        margin-top: 15px;
-        color: #fff;
-        background-color: #42b983;
-        border: none;
-        border-radius: 8px;
-        font-size: 16px;
-        line-height: 36px;
-        padding:0 20px;
+    .comment-btn {
+        margin-top:15px;
     }
 </style>

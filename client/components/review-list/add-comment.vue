@@ -1,12 +1,13 @@
 <template>
-    <form class="add-comment__form" @submit.prevent="send">
-        <textarea class="textarea" v-model="commentField" name="comment" placeholder="Написать комментарий"></textarea>
-
-        <button type="submit" class="btn">Добавьте коммент</button>
+    <form class="add-comment" @submit.prevent="send">
+        <textareaComponent v-model="commentField" placeholder="Написать комментарий"></textareaComponent>
+        <buttonComponent type="submit" :color="'green-light'" :radius="true" class="btn">Добавьте коммент</buttonComponent>
     </form>
 </template>
 
 <script setup>
+    import textareaComponent from '../../components/textareaComponent'
+    import buttonComponent from '../../components/button-component.vue'
     import {useCommentStore} from "../../store/comments";
     import { useNuxtApp } from '#app'
     const { $api } = useNuxtApp();
@@ -40,41 +41,14 @@
 </script>
 
 <style scoped lang="scss">
-    .add-comment__form {
+    .add-comment {
         margin-top:15px;
         display:flex;
         flex-direction: column;
         align-items:flex-end;
     }
-    .textarea {
-        width: 100%;
-        resize: vertical;
-        outline: #000 none medium;
-        overflow: visible;
-        transition: background-color 0.3s ease 0s, border-color 0.3s ease 0s;
-        border: 1px solid transparent;
-        border-radius: 8px;
-        padding: 8px;
-        background-color: rgb(240, 242, 252);
-        &:hover {
-            border-color: rgb(192, 201, 240);
-            transition: border-color 0.3s ease 0s;
-        }
-        &:focus {
-            background-color: white;
-            border-color: rgb(59, 87, 208);
-            transition: background-color 0.3s ease 0s, border-color 0.3s ease 0s;
-        }
-    }
 
     .btn {
         margin-top: 15px;
-        color: #fff;
-        background-color: #42b983;
-        border: none;
-        border-radius: 8px;
-        font-size: 16px;
-        line-height: 36px;
-        padding:0 20px;
     }
 </style>

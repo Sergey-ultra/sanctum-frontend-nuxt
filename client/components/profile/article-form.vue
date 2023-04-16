@@ -66,16 +66,12 @@
             <div class="input-group">
                 <label>
                     Превью
-                    <textarea v-model.trim="editedArticle.preview" class="form-control textarea"></textarea>
+                    <textareaComponent v-model.trim="editedArticle.preview" class="form-control"></textareaComponent>
                 </label>
             </div>
             <div class="input-group">
                 Статья
-                <textarea
-                    class="form-control textarea"
-                    v-model.trim="editedArticle.body"
-                >
-                </textarea>
+                <textareaComponent class="form-control" v-model.trim="editedArticle.body"></textareaComponent>
                 <div class="invalid-feedback" v-for="error of v$.editedArticle.body.$errors" :key="error.$uid">
                     {{ error.$message }}
                 </div>
@@ -93,6 +89,7 @@
 </template>
 
 <script setup>
+    import textareaComponent from '../../components/textareaComponent'
     import selectElement from "../../components/select-element";
     import {storeToRefs} from "pinia";
     import {useArticleStore} from "../../store/article";
@@ -213,28 +210,7 @@ a {
     }
 }
 
-.textarea {
-    width: 100%;
-    resize: vertical;
-    outline: #000 none medium;
-    overflow: visible;
-    transition: background-color 0.3s ease 0s, border-color 0.3s ease 0s;
-    border: 1px solid transparent;
-    border-radius: 8px;
-    padding: 8px;
-    background-color: rgb(240, 242, 252);
 
-    &:hover {
-        border-color: rgb(192, 201, 240);
-        transition: border-color 0.3s ease 0s;
-    }
-
-    &:focus {
-        background-color: white;
-        border-color: rgb(59, 87, 208);
-        transition: background-color 0.3s ease 0s, border-color 0.3s ease 0s;
-    }
-}
 
 .buttons {
     height: 35px;
