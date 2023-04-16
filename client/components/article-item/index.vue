@@ -60,7 +60,7 @@
 
 <style scoped lang="scss">
     h2 {
-        font-size: 2rem;
+        font-size: 1.6rem;
         line-height: 2.4rem;
         margin: 0.4rem 0 .8rem 0;
         & a {

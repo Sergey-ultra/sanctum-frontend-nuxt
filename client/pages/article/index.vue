@@ -1,16 +1,18 @@
 <template>
-    <div class="articles">
+    <div>
         <h1>Статьи</h1>
-        <div class="article__row article__row-flex" v-if="isLoadingArticlesByTag">
-            <loader class="loader"/>
-        </div>
+        <div class="articles">
+            <div class="article__row article__row-flex" v-if="isLoadingArticlesByTag">
+                <loader class="loader"/>
+            </div>
 
-        <article-item
-            v-for="article in articlesWithPagination"
-            :key="article.id"
-            :article="article"
-        >
-        </article-item>
+            <article-item
+                v-for="article in articlesWithPagination"
+                :key="article.id"
+                :article="article"
+            >
+            </article-item>
+        </div>
     </div>
 </template>
 
@@ -30,11 +32,14 @@
 </script>
 
 <style scoped lang="scss">
-.articles {
-    width: 100%;
-    background-color: #fff;
-    padding:25px;
-    border-radius: 8px;
-    margin-top: 60px;
-}
+    .articles {
+        width: 100%;
+        background-color: #fff;
+        padding:25px;
+        border-radius: 8px;
+    }
+    h1 {
+        color: #2c509a;
+        margin: 50px 0 10px;
+    }
 </style>
