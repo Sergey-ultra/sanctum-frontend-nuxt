@@ -121,6 +121,14 @@
                                 <span>Списки сравнения</span>
                                 <span class="dropdown__count" v-if="allComparedSkuIdsCount">{{ allComparedSkuIdsCount }}</span>
                             </nuxt-link>
+                            <nuxt-link class="dropdown__el" :to="{name: 'profile-index-write'}">
+                                <svg class="dropdown__icon" viewBox="0 0 24 24">
+                                    <path
+                                            d="M4.4 23h12.2a1.4 1.4 0 0 0 1.4-1.4V19h2.6a1.4 1.4 0 0 0 1.4-1.4V2.4A1.4 1.4 0 0 0 20.6 1H8.4A1.4 1.4 0 0 0 7 2.4V5H4.4A1.4 1.4 0 0 0 3 6.4v15.2A1.4 1.4 0 0 0 4.4 23zM5 7h11v14H5V7zm4-4h11v14h-2V6.4A1.4 1.4 0 0 0 16.6 5H9V3z"></path>
+                                    <path d="M14 9H7v2h7V9zM14 13H7v2h7v-2z"></path>
+                                </svg>
+                                <span>Написать</span>
+                            </nuxt-link>
                             <nuxt-link class="dropdown__el" :to="{name: 'profile-index-my-reviews'}">
                                 <svg class="dropdown__icon" viewBox="0 0 24 24">
                                     <path

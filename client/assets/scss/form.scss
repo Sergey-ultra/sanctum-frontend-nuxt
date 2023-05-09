@@ -1,0 +1,21 @@
+a {
+    text-decoration: none;
+}
+.invalid-feedback {
+    color: #fc675c;
+}
+.label {
+    margin-bottom: 8px;
+    & .gray {
+        color: #83899f;
+    }
+}
+.buttons {
+    margin-top: 15px;
+    margin-bottom: 25px;
+    align-items: center;
+    display: flex;
+    justify-content: flex-end;
+}
+
+

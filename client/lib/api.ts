@@ -110,7 +110,7 @@ export default class Api {
         if (this.token.value) {
             try {
                 this.isAuth.value = true;
-                const {data} = await this.get('/me');
+                const { data } = await this.get('/me');
                 Object.assign(this.$user, data);
             } catch (e) {
                 await this.logout();

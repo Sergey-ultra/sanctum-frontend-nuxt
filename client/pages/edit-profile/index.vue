@@ -29,12 +29,12 @@
                                 </div>
                                 <div>
                                     <label class="custom-label">
-                                        <input v-model="editedUserInfo.sex" id="male" type="radio" value=0 class="">
+                                        <input v-model="editedUserInfo.sex" id="male" type="radio" value="0">
                                         <span class="custom-radio-button"></span>
                                         <span>М</span>
                                     </label>
                                     <label class="custom-label">
-                                        <input v-model="editedUserInfo.sex" id="female" type="radio" value=1 class="">
+                                        <input v-model="editedUserInfo.sex" id="female" type="radio" value="1">
                                         <span class="custom-radio-button"></span>
                                         <span>Ж</span>
                                     </label>
@@ -51,8 +51,9 @@
                                     </select>
                                 </label>
                             </div>
-
-                            <buttonComponent :color="'blue'" type="submit">Сохранить</buttonComponent>
+                            <div class="buttons">
+                                <buttonComponent :color="'blue'" type="submit">Сохранить</buttonComponent>
+                            </div>
                         </form>
                     </div>
                 </template>
@@ -92,8 +93,8 @@
 
     const years = computed(() => {
         let res = []
-        for (let current_year = 1940; current_year <= new Date().getFullYear(); current_year++) {
-            res.push(current_year)
+        for (let currentYear = 1940; currentYear <= new Date().getFullYear(); currentYear++) {
+            res.push(currentYear)
         }
         return res
     });
@@ -121,7 +122,12 @@
       fileStore.loadFilesAsForm({ files, entity: 'image', type: 'image' })
     };
 
-    const save = () => userStore.updateProfile(editedUserInfo.value);
+    const save = () => {
+        if (editedUserInfo.value.birthday_year === 'null') {
+            editedUserInfo.value.birthday_year = null;
+        }
+        userStore.updateProfile(editedUserInfo.value);
+    }
     const setSEO = () => {
         const title = `Редактирование профиля`;
         const metaName = `${title} Smart-Beautiful - агрегатор цен косметических товаров`;
@@ -144,6 +150,7 @@
     setSEO();
 
     onMounted(async () => {
+        await userStore.loadProfile();
         if (Object.keys(userInfo.value).length) {
             editedUserInfo.value = {...userInfo.value}
         }
@@ -198,9 +205,7 @@
         font-weight: 600;
     }
 
-    .label {
-        margin-bottom: 8px;
-    }
+
 
     .custom-label {
         display:inline-flex;
@@ -252,9 +257,7 @@
     }
 
 
-    .gray {
-        color: #83899f;
-    }
+
     .profile {
         margin-top: 20px;
         padding: 20px;

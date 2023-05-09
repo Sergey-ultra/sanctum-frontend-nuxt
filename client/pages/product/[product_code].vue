@@ -64,18 +64,23 @@
                 <div class="header">
                     <div class="header__item header__item-sku">
                         <div class="header__images">
-                            <div class="photos" v-if="smallPhotos.length > 1">
-                                <div
-                                    class="photos__item"
-                                    :class="{'photos__item-selected': selectedPhotoIndex === index}"
-                                    v-for="(img, index) in smallPhotos"
-                                    :key="index"
-                                    @click="selectPhotoIndex(index)"
-                                >
-                                    <img :src="`${$config.APP_URL}/${img}`" :alt="img"/>
+                            <div class="photos__inner">
+                                <div class="photos__gallery" v-if="smallPhotos.length > 1">
+                                    <div
+                                        class="photos__item"
+                                        :class="{'photos__item-selected': selectedPhotoIndex === index}"
+                                        v-for="(img, index) in smallPhotos.slice(0, 6)"
+                                        :key="index"
+                                        @click="selectPhotoIndex(index)"
+                                    >
+                                        <img :src="`${$config.APP_URL}/${img}`" :alt="img"/>
+                                    </div>
                                 </div>
+                                <button class="photos__more" v-if="smallPhotos.length > 6" @click="showLightBox">
+                                    Еще {{ smallPhotos.length - 6 }}
+                                </button>
                             </div>
-                            <div class="main__photo" @click="showLightBox">
+                            <div class="photos__main" @click="showLightBox">
                                 <img :src="`${$config.APP_URL}/${mainPhotos[selectedPhotoIndex]}`" alt="mainPhoto"/>
                             </div>
                         </div>
@@ -89,10 +94,19 @@
 
                         <div class="header__info">
                             <h3>Коротко о товаре</h3>
-                            <div class="header__info-item">Активный ингредиент</div>
+                            <div class="header__info-item" v-if="currentSku.active_ingredients && currentSku.active_ingredients.length">
+                                <div class="header__el">
+                                    <span>Активный ингредиент</span>
+                                </div>
+                                <div class="header__el header__el-ul">
+                                    <nuxt-link :to="`/ingredient/${ingredient.id}`" v-for="ingredient in currentSku.active_ingredients" :key="ingredient.id">
+                                        {{ ingredient.name }}
+                                    </nuxt-link>
+                                </div>
+                            </div>
                             <div class="header__info-item" v-if="currentSku.country">
-                                <span class="header__info-el">Страна</span>
-                                <span class="header__info-el">{{ currentSku.country }}</span>
+                                <div class="header__el"><span>Страна бренда</span></div>
+                                <div class="header__el">{{ currentSku.country }}</div>
                             </div>
                             <div class="header__info-item">
                                 <a href="#description">Подробней</a>
@@ -405,7 +419,7 @@
 
     // setSEO(currentSku.value.name);
 
-    await useAsyncData(async () => {
+    await onMounted(async () => {
         if (currentSkuId.value !== null) {
             currentSkuStore.setCurrentSkuId(currentSkuId.value);
             await loadCurrentSkuAndAddItToViewed();
@@ -540,7 +554,7 @@
             &-right {
                 flex-shrink: 1;
                 min-width: 340px;
-                margin-left: 48px;
+                margin-left: 24px;
 
             }
 
@@ -558,33 +572,51 @@
 
         &__info {
             display:block;
-            width: 260px;
+            width: 284px;
             margin-left: 16px;
             flex-shrink: 0;
 
             &-item {
+                display:flex;
                 margin-top: 10px;
                 width: 100%;
                 line-height: 15px;
                 font-size: 14px;
             }
+        }
+        &__el {
+            background: #fff;
+            position: relative;
+            display: flex;
+            width: 50%;
+            z-index: 1;
+            overflow:hidden;
 
-            &-el {
-                background: #fff;
+            &-ul {
+                flex-direction: column;
+            }
+
+            & span {
                 position: relative;
-                display: inline-block;
-                width: 50%;
+                padding-right: 4px;
+                background: inherit;
                 z-index: 1;
+                white-space: nowrap;
+                display: inline-block;
+                color: grey;
 
-                &:first-child:after {
-                    content: "";
-                    position: absolute;
-                    left: 0;
-                    right: 0;
-                    margin-top: .85em;
-                    height: 1px;
-                    background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAMAAAABCAAAAAA+i0toAAAAAnRSTlMA/1uRIrUAAAAMSURBVHheY7j1/z8ABY8C2UtBe8oAAAAASUVORK5CYII=) 0 0 repeat-x;
-                }
+            }
+            &:first-child::after {
+                content: "";
+                position: absolute;
+                left: 0;
+                right: 0;
+                margin-top: .85em;
+                height: 1px;
+                background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAMAAAABCAAAAAA+i0toAAAAAnRSTlMA/1uRIrUAAAAMSURBVHheY7j1/z8ABY8C2UtBe8oAAAAASUVORK5CYII=) 0 0 repeat-x;
+            }
+            &:last-child {
+                padding-left: 4px;
             }
         }
     }
@@ -596,32 +628,40 @@
         padding: 20px;
     }
 
-    .main__photo {
-        cursor: pointer;
-        max-width: 400px;
-        max-height: 400px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        margin-right: 20px;
-        transition: all;
-        transition-duration: .4s;
-
-        & img {
-            max-width: 100%;
-            max-height: 100%;
-        }
-    }
 
     .photos {
-        margin-right: 16px;
-        display: grid;
-        grid-template-rows: repeat(5, 50px);
-        grid-gap: 5px;
-        grid-template-columns: repeat(auto-fill, 50px);
-        grid-auto-flow: column;
+        &__inner {
+            display:flex;
+            flex-direction: column;
+            margin-right: 16px;
+        }
+        &__gallery {
+            display: grid;
+            grid-template-rows: repeat(6, 50px);
+            grid-gap: 5px;
+            grid-auto-flow: column;
+        }
+
+        &__main {
+            cursor: pointer;
+            max-width: 400px;
+            max-height: 400px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-right: 20px;
+            transition: all;
+            transition-duration: .4s;
+
+            & img {
+                max-width: 100%;
+                max-height: 100%;
+            }
+        }
 
         &__item {
+            width: 50px;
+            height: 50px;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -644,6 +684,25 @@
                 transform: scale(1.2);
                 border: 3px solid #42b983;
             }
+        }
+        &__more {
+            border: none;
+            width: 100%;
+            padding: 7px 0;
+            text-align: center;
+            text-transform: uppercase;
+            color: #33c;
+            font-size: 10px;
+            outline: none;
+            outline-offset: 2px;
+            margin: 0;
+            overflow: visible;
+            cursor: pointer;
+            background: transparent;
+            line-height: inherit;
+            text-rendering: inherit;
+            letter-spacing: inherit;
+            word-spacing: inherit;
         }
     }
 

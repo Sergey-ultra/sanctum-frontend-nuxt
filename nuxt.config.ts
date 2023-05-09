@@ -10,7 +10,9 @@ export default defineNuxtConfig({
         "@/assets/css/normalize.css",
         "@/assets/css/app.css",
         "@/assets/css/style.css",
-        '@fortawesome/fontawesome-svg-core/styles.css'
+        '@fortawesome/fontawesome-svg-core/styles.css',
+        '@/assets/scss/colors.scss',
+        '@/assets/scss/form.scss',
     ],
     meta: {
         title: 'Smart-Beautiful - агрегатор цен косметических товаров',
@@ -45,10 +47,13 @@ export default defineNuxtConfig({
     runtimeConfig: {
         public: {
             webURL: process.env.WEB_URL || 'http://localhost:3000',
-            APP_URL: process.env.APP_URL || 'http://localhost:80',
-            apiURL: process.env.API_URL || 'http://localhost:80/api',
+            APP_URL: process.env.APP_URL || 'http://localhost:8000',
+            apiURL: process.env.API_URL || 'http://localhost:8000/api',
         },
     },
+    plugins:[
+            // { src: '~/plugins/ckeditorComponent.client.js'},
+    ],
     vite: {
         server: {
             proxy: {
@@ -60,6 +65,13 @@ export default defineNuxtConfig({
                 },
             },
         },
+        // css: {
+        //     preprocessorOptions: {
+        //         scss: {
+        //             additionalData: '@import "@/assets/scss/colors.scss";'
+        //         }
+        //     }
+        // }
     },
     // proxy: {
     //     '/api': 'http://sanctum/api/'

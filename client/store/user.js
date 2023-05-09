@@ -7,14 +7,14 @@ export const useUserStore = defineStore({
     }),
     actions: {
         async loadProfile() {
-            const { $api } = useNuxtApp()
+            const { $api } = useNuxtApp();
             const { data } = await $api.get('/me?is_expand=true');
             if (data) {
                 this.userInfo = {...data};
             }
         },
         async updateProfile(obj) {
-            const { $api } = useNuxtApp()
+            const { $api } = useNuxtApp();
             const { data } = await $api.post('/users/me', obj)
         }
     }

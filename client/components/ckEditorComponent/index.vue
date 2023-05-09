@@ -1,0 +1,57 @@
+<template>
+    <client-only>
+        <ckeditor
+                :editor="editor"
+                v-model.trim="text"
+                :config="editorConfig">
+        </ckeditor>
+    </client-only>
+</template>
+
+<script>
+    import UploadAdapter from '../../utils/customCKEditorUploader';
+    const uploader = function (editor) {
+        editor.plugins.get('FileRepository').createUploadAdapter = (loader) =>
+            new UploadAdapter(loader, '/');
+    };
+    // let editor = reactive({});
+    let CKEditor;
+    let ClassicEditor;
+
+    if (process.client) {
+        ClassicEditor = await import("@ckeditor/ckeditor5-build-classic");
+        CKEditor = (await import('@ckeditor/ckeditor5-vue')).component;
+        //editor = ClassicEditor;
+        console.log(ClassicEditor);
+    } else {
+        CKEditor = { component: { template: '<div></div>' } }
+    }
+
+    // //import classicEditor from "@ckeditor/ckeditor5-build-classic";
+    // const props = defineProps({
+    //     text: {
+    //         type: String,
+    //         default: ''
+    //     }
+    // });
+    //
+    // const editorConfig = { extraPlugins: [ uploader ] };
+
+    export default {
+        components: {
+            ckeditor: CKEditor
+        },
+        data() {
+            return {
+                editor:  () => ClassicEditor,
+                editorConfig: { extraPlugins: [ uploader ] }
+            }
+        },
+        props: {
+            text: {
+                type: String,
+                default: ''
+            }
+        }
+    }
+</script>
