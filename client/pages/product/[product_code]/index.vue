@@ -150,9 +150,9 @@
     import clientContent from "../../../components/client-content";
     import filterByRating from "../../../components/review-list/filter-by-rating";
     import { storeToRefs } from "pinia";
-    import {useCurrentSkuStore} from "../../../store/currentSku";
-    import {usePriceHistoryStore} from "../../../store/pricehistory";
-    import {useReviewStore} from "../../../store/review";
+    import {useCurrentSkuStore} from "~/store/currentSku";
+    import {usePriceHistoryStore} from "~/store/pricehistory";
+    import {useReviewStore} from "~/store/review";
     import { useNuxtApp } from '#app'
     const { $api } = useNuxtApp();
 

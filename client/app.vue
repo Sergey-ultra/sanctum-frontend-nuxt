@@ -105,14 +105,6 @@
                                 <img class="dropdown__avatar" :src="$api.$user.avatar" :alt="$api.$user.avatar">
                                 <span class="dropdown__username">{{ $api.$user.name }}</span>
                             </nuxt-link>
-                            <nuxt-link class="dropdown__el" :to="'/favorites'">
-                                <svg class="dropdown__icon" viewBox="0 0 24 24">
-                                    <path
-                                        d="M12 4.367C10.675 3.28 9.245 2.72 7.73 2.72A5.73 5.73 0 0 0 2 8.45c0 4.329 3.197 8.531 9.448 12.664l.552.365.551-.365C18.803 16.981 22 12.778 22 8.45a5.73 5.73 0 0 0-5.73-5.73c-1.515 0-2.945.56-4.27 1.648zM4 8.449a3.73 3.73 0 0 1 3.73-3.73c1.223 0 2.402.551 3.566 1.705l.704.698.704-.698c1.164-1.154 2.343-1.704 3.567-1.704A3.73 3.73 0 0 1 20 8.45c0 3.397-2.623 6.956-8 10.626-5.377-3.67-8-7.23-8-10.627z"></path>
-                                </svg>
-                                <span>Избранное</span>
-                                <span class="dropdown__count" v-if="favorites.length">{{ favorites.length }}</span>
-                            </nuxt-link>
                             <nuxt-link class="dropdown__el" :to="'/comparison'">
                                 <svg class="dropdown__icon" viewBox="0 0 24 24">
                                     <path
@@ -136,6 +128,14 @@
                                     <path d="M14 9H7v2h7V9zM14 13H7v2h7v-2z"></path>
                                 </svg>
                                 <span>Мои публикации</span>
+                            </nuxt-link>
+                            <nuxt-link class="dropdown__el" :to="'/favorites'">
+                                <svg class="dropdown__icon" viewBox="0 0 24 24">
+                                    <path
+                                            d="M12 4.367C10.675 3.28 9.245 2.72 7.73 2.72A5.73 5.73 0 0 0 2 8.45c0 4.329 3.197 8.531 9.448 12.664l.552.365.551-.365C18.803 16.981 22 12.778 22 8.45a5.73 5.73 0 0 0-5.73-5.73c-1.515 0-2.945.56-4.27 1.648zM4 8.449a3.73 3.73 0 0 1 3.73-3.73c1.223 0 2.402.551 3.566 1.705l.704.698.704-.698c1.164-1.154 2.343-1.704 3.567-1.704A3.73 3.73 0 0 1 20 8.45c0 3.397-2.623 6.956-8 10.626-5.377-3.67-8-7.23-8-10.627z"></path>
+                                </svg>
+                                <span>Избранное</span>
+                                <span class="dropdown__count" v-if="favorites.length">{{ favorites.length }}</span>
                             </nuxt-link>
                             <div class="dropdown__el" @click="exit">
                                 <svg class="dropdown__icon" viewBox="0 0 24 24">

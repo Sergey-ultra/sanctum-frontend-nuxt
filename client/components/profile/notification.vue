@@ -15,13 +15,15 @@
             </div>
             <buttonComponent :color="'blue'" type="submit">Подключить</buttonComponent>
         </div>
+        <notificationModal v-model:is-show-notification-modal="isShowNotificationModal"/>
     </form>
 </template>
 <script setup>
     import buttonComponent from "~/components/button-component.vue";
-    const connect = () => {
+    import notificationModal from "~/components/profile/notification-modal.vue"
+    let isShowNotificationModal = ref(false)
+    const connect = () => isShowNotificationModal.value = true;
 
-    }
 </script>
 <style scoped lang="scss">
     .notification {
