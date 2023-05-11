@@ -130,7 +130,7 @@
                 password_confirmation: ''
             }
             showLogin();
-            v$.value.$reset()
+            v$.value.$reset();
         }
     }
 </script>

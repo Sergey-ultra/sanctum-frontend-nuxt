@@ -92,6 +92,14 @@ export default class Api {
         }
     }
 
+    public async changePassword(object) {
+        const { message } = await this.post('/change-password', object);
+        if (message) {
+            const notificationStore = useNotificationStore();
+            notificationStore.setSuccess(message);
+        }
+    }
+
     public async resendVerificationEmail() {
         const { message } = await this.post('/email/verification-notification', { email: this.mailVerification.email });
         if (message) {

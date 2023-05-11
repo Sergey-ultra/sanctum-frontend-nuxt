@@ -8,60 +8,17 @@
                 <img v-else :src="`${$config.APP_URL}/storage/icons/user-mf.svg`" alt="user-mf.svg"/>
 
                 <fa class="profile__photo-icon icon" icon="camera"></fa>
-                <input @change="loadImages($event)" type="file" id="formFileMultiple" accept="image/jpeg, image/png">
+                <input @change="loadImages($event)" type="file" accept="image/*">
             </div>
-            <tabsComponent :tabList="['Личные данные', 'Уведомления']" >
+            <tabsComponent :tabList="['Личные данные', 'Смена пароля', 'Уведомления']">
                 <template v-slot:tabPanel-1>
-                    <div class="profile__item profile__item-form">
-                        <form class="form" @submit.prevent="save">
-                            <div class="form__title">Личные данные</div>
-                            <div class="form__row">
-                                <label>
-                                    <div class="label">
-                                        <span class="gray">Ваше имя</span>
-                                    </div>
-                                    <input class="input" type="text" v-model="editedUserInfo.name">
-                                </label>
-                            </div>
-                            <div class="form__row">
-                                <div class="label">
-                                    <span class="gray">Пол</span>
-                                </div>
-                                <div>
-                                    <label class="custom-label">
-                                        <input v-model="editedUserInfo.sex" id="male" type="radio" value="0">
-                                        <span class="custom-radio-button"></span>
-                                        <span>М</span>
-                                    </label>
-                                    <label class="custom-label">
-                                        <input v-model="editedUserInfo.sex" id="female" type="radio" value="1">
-                                        <span class="custom-radio-button"></span>
-                                        <span>Ж</span>
-                                    </label>
-                                </div>
-                            </div>
-                            <div class="form__row">
-                                <label>
-                                    <div class="label">
-                                        <span class="gray">Год рождения</span>
-                                    </div>
-                                    <select class="select" v-model="editedUserInfo.birthday_year">
-                                        <option value="null">Выберите год рождения</option>
-                                        <option v-for="year  in years" :value="year">{{ year }}</option>
-                                    </select>
-                                </label>
-                            </div>
-                            <div class="buttons">
-                                <buttonComponent :color="'blue'" type="submit">Сохранить</buttonComponent>
-                            </div>
-                        </form>
-                    </div>
+                    <edit-profile/>
                 </template>
                 <template v-slot:tabPanel-2>
-                    <form class="form" @submit.prevent="()=>{}">
-                        <div class="form__title">Управление</div>
-                        Получайте уведомления в мессенджер
-                    </form>
+                    <changePassword></changePassword>
+                </template>
+                <template v-slot:tabPanel-3>
+                    <notification></notification>
                 </template>
             </tabsComponent>
         </div>
@@ -69,46 +26,18 @@
 </template>
 
 <script setup>
+    import changePassword from '~/components/profile/change-password.vue'
+    import notification from '~/components/profile/notification.vue'
     import tabsComponent from "~/components/tabsComponent.vue";
-    import buttonComponent from "~/components/button-component.vue";
-    import { storeToRefs } from "pinia";
-    import {useUserStore} from "../../store/user";
-    import {helpers, numeric} from "@vuelidate/validators";
-    import useVuelidate from "@vuelidate/core";
+    import editProfile from "~/components/profile/edit-profile.vue";
     import { useNuxtApp } from '#app'
     import {useFileStore} from "~/store/file";
     const { $api } = useNuxtApp();
-
-    const userStore = useUserStore();
     const fileStore = useFileStore();
-    const { userInfo } = storeToRefs(userStore);
 
     definePageMeta({
         middleware: ["auth"]
     });
-
-    const editedUserInfo = ref({
-        birthday_year: 'null'
-    });
-
-    const years = computed(() => {
-        let res = []
-        for (let currentYear = 1940; currentYear <= new Date().getFullYear(); currentYear++) {
-            res.push(currentYear)
-        }
-        return res
-    });
-
-
-    let rules = {
-        editedUserInfo: {
-            birthday_year: {
-                numeric:  helpers.withMessage('Поле должно быть годом', numeric),
-            },
-        },
-    }
-
-    const v$ = useVuelidate(rules, { editedUserInfo });
 
     const loadImages = event => {
         const files = event.target.files || event.dataTransfer.files
@@ -119,15 +48,9 @@
         // }
 
 
-      fileStore.loadFilesAsForm({ files, entity: 'image', type: 'image' })
+        fileStore.loadFilesAsForm({ files, entity: 'image', type: 'image' })
     };
 
-    const save = () => {
-        if (editedUserInfo.value.birthday_year === 'null') {
-            editedUserInfo.value.birthday_year = null;
-        }
-        userStore.updateProfile(editedUserInfo.value);
-    }
     const setSEO = () => {
         const title = `Редактирование профиля`;
         const metaName = `${title} Smart-Beautiful - агрегатор цен косметических товаров`;
@@ -140,22 +63,8 @@
         });
     }
 
-    watch(userInfo, value => {
-        if (Object.keys(userInfo.value).length) {
-            editedUserInfo.value = {...value}
-        }
-    });
-
 
     setSEO();
-
-    onMounted(async () => {
-        await userStore.loadProfile();
-        if (Object.keys(userInfo.value).length) {
-            editedUserInfo.value = {...userInfo.value}
-        }
-    });
-
 </script>
 
 <style lang="scss" scoped>
@@ -163,100 +72,11 @@
     $mainFontColor: #26325c;
     $mainGreyColor: #e8ebef;
 
-    .tabs {
-        margin: 0 20px;
-    }
-
-    .select {
-        width: 100%;
-        border-radius: 8px;
-        border: 1px solid transparent;
-        outline: #000 none medium;
-        overflow: visible;
-        background-color: rgb(240, 242, 252);
-        padding: 8px;
-        &:hover {
-            border-color: rgb(192, 201, 240);
-            transition: border-color 0.3s ease 0s;
-        }
-    }
-    .input {
-        width: 100%;
-        outline: #000 none medium;
-        overflow: visible;
-        transition: background-color 0.3s ease 0s, border-color 0.3s ease 0s;
-        border: 1px solid transparent;
-        border-radius: 8px;
-        padding: 8px;
-        background-color: rgb(240, 242, 252);
-        &:hover {
-            border-color: rgb(192, 201, 240);
-            transition: border-color 0.3s ease 0s;
-        }
-        &:focus {
-            background-color: white;
-            border-color: rgb(59, 87, 208);
-            transition: background-color 0.3s ease 0s, border-color 0.3s ease 0s;
-        }
-    }
     .title {
         color: $mainFontColor;
         font-size: 28px;
         font-weight: 600;
     }
-
-
-
-    .custom-label {
-        display:inline-flex;
-        align-items:center;
-        padding-left: 25px;
-        position: relative;
-        margin: 10px 0;
-        cursor: pointer;
-        color: $mainFontColor;
-
-        & + .custom-label {
-            margin-left: 25px;
-        }
-
-        & input {
-            position: absolute;
-            opacity: 0;
-            cursor: pointer;
-            &:checked + .custom-radio-button {
-                background-color: $mainColor;
-                border-color: $mainColor;
-
-                &:after {
-                    content: "";
-                    display: block;
-                    width: 8px;
-                    height: 5px;
-                    border-bottom: 2px solid #fff;
-                    border-left: 2px solid #fff;
-                    position: absolute;
-                    top: 39%;
-                    left: 51%;
-                    transform: translate(-50%, -50%) rotate(-45deg);
-                }
-            }
-        }
-    }
-
-    .custom-radio-button {
-        transition: all .3s ease;
-        position: absolute;
-        top: 0;
-        left: 0;
-        height: 20px;
-        width: 20px;
-        background-color: #fff;
-        border: 2px solid $mainGreyColor;
-        border-radius: 50%;
-    }
-
-
 
     .profile {
         margin-top: 20px;
@@ -308,19 +128,6 @@
         }
     }
 
-    .form {
-        padding: 16px 0;
-        display: block;
-        border-bottom: 1px solid $mainGreyColor;
-        &__title {
-            font-weight: 700;
-            font-size: 24px;
-            color:$mainFontColor;
-        }
-        &__row {
-            margin-bottom: 20px;
-        }
-    }
     @media (max-width: 500px) {
         .profile {
             &__item {
@@ -332,5 +139,4 @@
             }
         }
     }
-
 </style>

@@ -1,3 +1,8 @@
 $mainColor: #454cee;
 $mainFontColor: #26325c;
 $mainGreyColor: #e8ebef;
+$secondaryLight: rgba(70, 77, 234, 0.1);
+.color--secondary {
+    color: $mainColor;
+    background-color: $secondaryLight;
+}
