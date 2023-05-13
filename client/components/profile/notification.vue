@@ -1,5 +1,5 @@
 <template>
-    <form class="form notification" @submit.prevent="connect">
+    <form class="form" @submit.prevent="connect">
         <div class="form__title">Уведомления</div>
         <div class="form__block">
             <div class="control">
@@ -13,22 +13,66 @@
                     <p class="text-gray">Получайте уведомления в мессенджер</p>
                 </div>
             </div>
-            <buttonComponent :color="'blue'" type="submit">Подключить</buttonComponent>
+            <div class="control__buttons">
+                <p class="text-gray" v-if="telegramUserName">{{ telegramUserName }}</p>
+                <buttonComponent :color="'blue'" :radius="true" type="submit">{{ isSubscribe ? 'Отключить' : 'Подключить' }}</buttonComponent>
+            </div>
         </div>
-        <notificationModal v-model:is-show-notification-modal="isShowNotificationModal"/>
+        <connectNotificationModal
+                v-if="isShowNotificationModal"
+                v-model:is-show-modal="isShowNotificationModal"/>
+        <disconnectNotificationModal
+                v-if="isShowDisconnectNotificationModal"
+                v-model:is-show-modal="isShowDisconnectNotificationModal"/>
     </form>
 </template>
 <script setup>
     import buttonComponent from "~/components/button-component.vue";
-    import notificationModal from "~/components/profile/notification-modal.vue"
-    let isShowNotificationModal = ref(false)
-    const connect = () => isShowNotificationModal.value = true;
+    import connectNotificationModal from "~/components/profile/connect-notification-modal.vue";
+    import disconnectNotificationModal from "~/components/profile/disconnect-notification-modal.vue";
+    import { useNuxtApp } from "#app";
+    const { $api } = useNuxtApp();
+
+    let refreshIntervalId;
+    let isShowNotificationModal = ref(false);
+    let isShowDisconnectNotificationModal = ref(false);
+    let isSubscribe = ref(false);
+    let telegramUserName = ref('');
+    const connect = () => {
+        if (!isSubscribe.value) {
+            isShowNotificationModal.value = true;
+        } else {
+            isShowDisconnectNotificationModal.value = true;
+        }
+    }
+
+    const getAccount = async () => {
+        const { data } = await $api.get('/notification/telegram/account');
+        isSubscribe.value = data.subscribe;
+        telegramUserName.value = data.username;
+    }
+
+    watch(
+        isSubscribe,
+        value => {
+            if (value) {
+                isShowNotificationModal.value = false;
+            }
+        }
+    )
+
+
+    onMounted(async () => {
+        await getAccount();
+        refreshIntervalId = setInterval(async () => {
+            await getAccount();
+        }, 3000);
+    });
+
+    onUnmounted(() => clearInterval(refreshIntervalId));
 
 </script>
 <style scoped lang="scss">
-    .notification {
-        width: 800px;
-    }
     .avatar {
         display: inline-flex;
         flex-shrink: 0;
@@ -60,6 +104,12 @@
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+        }
+        &__buttons {
+            display: grid;
+            grid-template-columns: max-content max-content;
+            align-items: center;
+            grid-gap: 20px;
         }
     }
 </style>

@@ -15,7 +15,7 @@
                     </select>
                     <input class="filter__item input filter__input" type="text" placeholder="Поиск по бренду"
                            v-model.trim="search">
-                    <button class="filter__item button filter__button" @click="searchReset">Сброс</button>
+                    <buttonComponent class="filter__item filter__button" :radius="true" :color="'default'" @click="searchReset">Сброс</buttonComponent>
                 </div>
                 <div
                     class="brands__list"
@@ -41,8 +41,9 @@
 </template>
 
 <script setup>
+    import buttonComponent from "~/components/button-component.vue";
     import {storeToRefs} from "pinia";
-    import {useBrandStore} from "../../store/brand";
+    import {useBrandStore} from "~/store/brand";
     const brandStore = useBrandStore();
     const {allBrands, isLoadingAllBrands, countries} = storeToRefs(brandStore);
 
@@ -149,55 +150,6 @@
     margin-bottom: 0;
     vertical-align: middle;
     margin-right: 12px;
-}
-
-.select {
-    border-radius: 8px;
-    border: 1px solid transparent;
-    outline: #000 none medium;
-    overflow: visible;
-    background-color: rgb(240, 242, 252);
-    padding: 8px;
-
-    &:hover {
-        border-color: rgb(192, 201, 240);
-        transition: border-color 0.3s ease 0s;
-    }
-}
-
-.input {
-    width: 100%;
-    outline: #000 none medium;
-    overflow: visible;
-    transition: background-color 0.3s ease 0s, border-color 0.3s ease 0s;
-    border: 1px solid transparent;
-    border-radius: 8px;
-    padding: 8px;
-    background-color: rgb(240, 242, 252);
-
-    &:hover {
-        border-color: rgb(192, 201, 240);
-        transition: border-color 0.3s ease 0s;
-    }
-
-    &:focus {
-        background-color: white;
-        border-color: rgb(59, 87, 208);
-        transition: background-color 0.3s ease 0s, border-color 0.3s ease 0s;
-    }
-}
-
-.button {
-    background-color: #e8e8e8;
-    border: none;
-    color: #333;
-    border-radius: 8px;
-    transition: background-color 0.3s ease 0s, border-color 0.3s ease 0s;
-    padding: 8px 30px;
-
-    &:hover {
-        background-color: #dcdcdc;
-    }
 }
 
 .filter {

@@ -103,7 +103,7 @@ export default {
             position: absolute;
             right: 0;
             top: 0;
-            transition: opacity .2s cubic-bezier(.4,0,.6,1);
+            transition: opacity .2s cubic-bezier(.4,0,.6,1), background-color 0.3s ease 0s, border-color 0.3s ease 0s;
         }
         &:hover::before {
             opacity: .08;
@@ -147,12 +147,17 @@ export default {
             background-color: #fc0;
             color: #000000;
         }
-        &--grey {
+        &--gray {
             background: #e0e0e0 !important;
             border-color: #7e7c7c !important;
             box-shadow: 0 0 2px rgba(0,0,0,.05),0 1px 1px rgba(0,0,0,.1);
             color: #fff !important;
             text-shadow: none !important;
+        }
+        &--default {
+            background-color: #e8e8e8;
+            color: #333;
+            padding: 0 30px;
         }
         &--blue {
             background-color: rgb(0, 91, 255);

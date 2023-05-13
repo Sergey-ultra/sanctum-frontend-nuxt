@@ -23,11 +23,9 @@
     import productList from '../../components/product-list'
     import viewedProducts from '../../components/viewed-products'
     import { storeToRefs } from "pinia";
-    import {useRoute} from "vue-router";
-    import { watch,  onMounted } from 'vue';
-    import {useBrandStore} from "../../store/brand";
-    import {useProductStore} from "../../store/product";
-    import {useFilterStore} from "../../store/filter";
+    //import {useBrandStore} from "~/store/brand";
+    import {useProductStore} from "~/store/product";
+    import {useFilterStore} from "~/store/filter";
 
     // const brandStore = useBrandStore();
     const productStore = useProductStore();

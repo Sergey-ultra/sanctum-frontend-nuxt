@@ -1,48 +1,46 @@
 <template>
-    <div class="profile__item profile__item-form">
-        <form class="form" @submit.prevent="save">
-            <div class="form__title">Личные данные</div>
-            <div class="form__row">
-                <label>
-                    <div class="label">
-                        <span class="text-gray">Ваше имя</span>
-                    </div>
-                    <input class="input" type="text" v-model="editedUserInfo.name">
-                </label>
-            </div>
-            <div class="form__row">
+    <form class="form" @submit.prevent="save">
+        <div class="form__title">Личные данные</div>
+        <div class="form__row">
+            <label>
                 <div class="label">
-                    <span class="text-gray">Пол</span>
+                    <span class="text-gray">Ваше имя</span>
                 </div>
-                <div>
-                    <label class="custom-label">
-                        <input v-model="editedUserInfo.sex" id="male" type="radio" value="0">
-                        <span class="custom-radio-button"></span>
-                        <span>М</span>
-                    </label>
-                    <label class="custom-label">
-                        <input v-model="editedUserInfo.sex" id="female" type="radio" value="1">
-                        <span class="custom-radio-button"></span>
-                        <span>Ж</span>
-                    </label>
-                </div>
+                <input class="input" type="text" v-model="editedUserInfo.name">
+            </label>
+        </div>
+        <div class="form__row">
+            <div class="label">
+                <span class="text-gray">Пол</span>
             </div>
-            <div class="form__row">
-                <label>
-                    <div class="label">
-                        <span class="text-gray">Год рождения</span>
-                    </div>
-                    <select class="select" v-model="editedUserInfo.birthday_year">
-                        <option value="null">Выберите год рождения</option>
-                        <option v-for="year  in years" :value="year">{{ year }}</option>
-                    </select>
+            <div>
+                <label class="custom-label">
+                    <input v-model="editedUserInfo.sex" id="male" type="radio" value="0">
+                    <span class="custom-radio-button"></span>
+                    <span>М</span>
+                </label>
+                <label class="custom-label">
+                    <input v-model="editedUserInfo.sex" id="female" type="radio" value="1">
+                    <span class="custom-radio-button"></span>
+                    <span>Ж</span>
                 </label>
             </div>
-            <div class="buttons">
-                <buttonComponent :color="'blue'" type="submit">Сохранить</buttonComponent>
-            </div>
-        </form>
-    </div>
+        </div>
+        <div class="form__row">
+            <label>
+                <div class="label">
+                    <span class="text-gray">Год рождения</span>
+                </div>
+                <select class="select" v-model="editedUserInfo.birthday_year">
+                    <option value="null">Выберите год рождения</option>
+                    <option v-for="year  in years" :value="year">{{ year }}</option>
+                </select>
+            </label>
+        </div>
+        <div class="buttons">
+            <buttonComponent :color="'blue'" type="submit">Сохранить</buttonComponent>
+        </div>
+    </form>
 </template>
 
 <script setup>
@@ -164,56 +162,10 @@
     }
 
 
-
-    .profile {
-        margin-top: 20px;
-        padding: 20px;
-        border-radius: 8px;
-        box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.16);
-        background-color: #fff;
-        display: flex;
-        flex-wrap: wrap;
-        &__item {
-            &-form {
-                width: 472px;
-            }
-        }
-
-        &__photo {
-            position: relative;
-            /*background-color: gray;*/
-            /*border-radius: 50%;*/
-            height: 200px;
-            margin-right: 30px;
-            width: 200px;
-            & img {
-                position: absolute;
-                width: 100%;
-                height: 100%;
-            }
-            & input[type="file"] {
-                width: 100%;
-                height: 100%;
-                opacity: 0;
-            }
-            &-icon {
-                opacity:0;
-                transition: all .2s ease;
-                height: 60px;
-                width:60px;
-                border-radius:50px;
-                position: absolute;
-                left:50%;
-                top: 50%;
-                transform: translate(-50%,-50%);
-                padding: 15px;
-                background-color: rgba(0, 0, 0, .5);
-            }
-            &:hover .profile__photo-icon {
-                opacity: 1;
-            }
-        }
+    .edit {
+        width: 472px;
     }
+
 
 
     @media (max-width: 500px) {

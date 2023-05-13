@@ -27,6 +27,8 @@
 <style lang="scss" scoped>
     .nav {
         display: flex;
+        overflow-x: auto;
+        overflow-y: hidden;
         white-space: nowrap;
         padding-bottom: 13px;
     }

@@ -1,6 +1,6 @@
 <template>
 <modal
-        v-model:isShowModal="isShowNotificationModalLocal"
+        v-model:isShowModal="isShowModalLocal"
         :width="30"
 >
     <template v-slot:header>
@@ -8,7 +8,7 @@
     </template>
     <p class="text-gray">
         Отсканируйте QR-код с помощью камеры, или
-        перейдите в мессенджер по <a :href="botUrl">ссылке</a>
+        перейдите в мессенджер по <a :href="botUrl" target="_blank">ссылке</a>
     </p>
     <div v-if="qrCode">
         {{ qrCode }}
@@ -16,25 +16,26 @@
 </modal>
 </template>
 <script setup>
+    import modal from '../modal'
     import { useNuxtApp } from "#app";
     const { $api } = useNuxtApp();
     let botUrl = ref('#');
     let qrCode = ref('');
 
     const props = defineProps({
-        isShowNotificationModal: {
+        isShowModal: {
             type: Boolean,
             default: false
         }
     })
-    const emit = defineEmits(['update:isShowNotificationModal'])
+    const emit = defineEmits(['update:isShowModal'])
 
-    let isShowNotificationModalLocal = computed({
+    let isShowModalLocal = computed({
         get() {
-            return props.isShowNotificationModal;
+            return props.isShowModal;
         },
         set(value) {
-            emit('update:isShowNotificationModal', value);
+            emit('update:isShowModal', value);
         }
     });
 

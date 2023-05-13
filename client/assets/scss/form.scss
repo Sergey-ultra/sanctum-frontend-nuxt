@@ -36,6 +36,7 @@ p {
         display: flex;
         justify-content: space-between;
         align-items: center;
+        flex-wrap: wrap;
         padding: 16px 0;
         border-top: 1px solid $mainGreyColor;
         border-bottom: 1px solid $mainGreyColor;
@@ -45,7 +46,6 @@ p {
     }
 }
 .select {
-    width: 100%;
     border-radius: 8px;
     border: 1px solid transparent;
     outline: #000 none medium;

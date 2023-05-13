@@ -216,29 +216,6 @@
         width: 100%;
     }
 
-    .input {
-        height: 38px;
-        width: 200px;
-        outline: #000 none medium;
-        overflow: visible;
-        transition: background-color 0.3s ease 0s, border-color 0.3s ease 0s;
-        border: 1px solid transparent;
-        border-radius: 8px;
-        padding: 8px;
-        background-color: rgb(240, 242, 252);
-
-        &:hover {
-            border-color: rgb(192, 201, 240);
-            transition: border-color 0.3s ease 0s;
-        }
-
-        &:focus {
-            background-color: white;
-            border-color: rgb(59, 87, 208);
-            transition: background-color 0.3s ease 0s, border-color 0.3s ease 0s;
-        }
-    }
-
     .input-group {
         width: 100%;
     }
@@ -307,6 +284,16 @@
             & input {
                 margin-right: 10px;
             }
+        }
+    }
+    @media (max-width: 900px) {
+        .image-upload {
+            width: 50%;
+        }
+    }
+    @media (max-width: 500px) {
+        .image-upload {
+            width: 100%;
         }
     }
 </style>

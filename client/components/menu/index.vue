@@ -222,6 +222,8 @@
                 padding-right:  40px;
             }
             & a {
+                width: 100%;
+                height: 100%;
                 font-size: 16px;
                 font-weight: 600;
                 text-decoration: none;

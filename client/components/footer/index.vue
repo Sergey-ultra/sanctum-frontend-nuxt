@@ -31,7 +31,7 @@
                                     </div>
                                 </div>
                                 <div class="subscription__form-item subscription__form-submit">
-                                    <button  class="subscription__button" type="submit">ПОДПИСАТЬСЯ</button>
+                                    <buttonComponent class="subscription__button" :radius="true" :color="'default'" type="submit">ПОДПИСАТЬСЯ</buttonComponent>
                                 </div>
                             </div>
                             <div class="subscription__policy">
@@ -50,13 +50,15 @@
 </template>
 
 <script setup>
+    import buttonComponent from "~/components/button-component.vue";
     import useVuelidate from '@vuelidate/core';
     import { required, email, helpers } from '@vuelidate/validators';
-    import {useSubscriptionStore} from "../../store/subscription";
+    import {useSubscriptionStore} from "~/store/subscription";
 
     const subscriptionStore = useSubscriptionStore();
 
     let mail = ref('');
+
     const rules = {
         mail: {
             required: helpers.withMessage('Поле должно быть заполнено', required),
@@ -138,17 +140,7 @@
     .subscription {
         color: #000;
         &__button {
-            height: 38px;
-            background-color: #e8e8e8;
-            border: none;
-            color: #333;
             font-weight:bold;
-            border-radius: 8px;
-            transition: background-color 0.3s ease 0s, border-color 0.3s ease 0s;
-            padding: 0 30px;
-            &:hover {
-                background-color: #dcdcdc;
-            }
         }
         &__form {
             margin: 0 auto;

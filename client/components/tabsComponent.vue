@@ -51,7 +51,6 @@ export default {
 <style scoped lang="scss">
 .tabs {
     padding: 0;
-    width: 100%;
     display:flex;
     overflow-x:auto;
     overflow-y:hidden;

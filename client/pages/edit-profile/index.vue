@@ -10,7 +10,7 @@
                 <fa class="profile__photo-icon icon" icon="camera"></fa>
                 <input @change="loadImages($event)" type="file" accept="image/*">
             </div>
-            <tabsComponent :tabList="['Личные данные', 'Смена пароля', 'Уведомления']">
+            <tabsComponent class="profile__inner" :tabList="['Личные данные', 'Смена пароля', 'Уведомления']">
                 <template v-slot:tabPanel-1>
                     <edit-profile/>
                 </template>
@@ -91,15 +91,23 @@
                 width: 472px;
             }
         }
+        &__inner {
+            overflow: hidden;
+            flex-grow: 1;
+        }
 
         &__photo {
             position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             /*background-color: gray;*/
             /*border-radius: 50%;*/
             height: 200px;
             margin-right: 30px;
             width: 200px;
             & img {
+                object-fit: cover;
                 position: absolute;
                 width: 100%;
                 height: 100%;
@@ -135,6 +143,13 @@
                 margin-right: 0;
                 &:not(:last-child) {
                     margin-bottom: 20px;
+                }
+            }
+            &__photo {
+                img {
+                    position: absolute;
+                    max-width: 100%;
+                    height: 100%;
                 }
             }
         }
