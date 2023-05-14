@@ -10,6 +10,7 @@ export default defineNuxtConfig({
         "@/assets/css/normalize.css",
         "@/assets/css/app.css",
         "@/assets/css/style.css",
+        "@/assets/css/ckeditor.css",
         '@fortawesome/fontawesome-svg-core/styles.css',
         '@/assets/scss/colors.scss',
         '@/assets/scss/form.scss',

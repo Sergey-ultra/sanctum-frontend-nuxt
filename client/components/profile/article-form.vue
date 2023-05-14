@@ -3,7 +3,7 @@
             <div class="input-group">
                 <label>
                     <div class="label">
-                        <span class="gray">Заглавная картинка статьи</span>
+                        <span class="text-gray">Заглавная картинка статьи</span>
                     </div>
                     <one-image-upload
                             class="image-upload"
@@ -16,7 +16,7 @@
             <div class="input-group">
                 <label>
                     <div class="label">
-                        <span class="gray">Категория статьи</span>
+                        <span class="text-gray">Категория статьи</span>
                     </div>
 
                     <select v-model="editedArticle.article_category_id" class="form-control input">
@@ -38,7 +38,7 @@
             <div class="input-group">
                 <label>
                     <div class="label">
-                        <span class="gray">Теги статьи</span>
+                        <span class="text-gray">Теги статьи</span>
                     </div>
                     <select-element>
                         <template v-slot:activator="{ on }">
@@ -71,7 +71,7 @@
             <div class="input-group">
                 <label>
                     <div class="label">
-                        <span class="gray">Заголовок</span>
+                        <span class="text-gray">Заголовок</span>
                     </div>
                     <input v-model.trim="editedArticle.title" type="text" class="form-control input">
                 </label>
@@ -84,14 +84,14 @@
             <div class="input-group">
                 <label>
                     <div class="label">
-                        <span class="gray">Превью</span>
+                        <span class="text-gray">Превью</span>
                     </div>
                     <textareaComponent rows=4 v-model.trim="editedArticle.preview" class="form-control"></textareaComponent>
                 </label>
             </div>
             <div class="input-group">
                 <div class="label">
-                    <span class="gray">Статья</span>
+                    <span class="text-gray">Статья</span>
                 </div>
 <!--                <client-only>-->
 <!--                   <ckEditorComponent :text="editedArticle.body"></ckEditorComponent>-->
@@ -119,7 +119,7 @@
     // import ckEditorComponent from "../../components/ckEditorComponent";
 
     import {storeToRefs} from "pinia";
-    import {useArticleStore} from "../../store/article";
+    import {useArticleStore} from "~/store/article";
     import {helpers, minLength, required} from "@vuelidate/validators";
     import useVuelidate from "@vuelidate/core";
 

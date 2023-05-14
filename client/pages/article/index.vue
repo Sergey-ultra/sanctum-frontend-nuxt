@@ -1,6 +1,6 @@
 <template>
     <div>
-        <h1>Статьи</h1>
+        <h1>Блоги</h1>
         <div class="articles">
             <div class="article__row article__row-flex" v-if="isLoadingArticlesByTag">
                 <loader class="loader"/>
@@ -20,7 +20,7 @@
     import articleItem from '../../components/article-item'
     import loader from "~/components/loader";
 
-    import {useArticleStore} from "../../store/article";
+    import {useArticleStore} from "~/store/article";
     import { storeToRefs } from "pinia";
 
     const articleStore = useArticleStore();

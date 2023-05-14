@@ -42,7 +42,7 @@
     import modal from '../modal'
     import useVuelidate from '@vuelidate/core'
     import { required, email } from '@vuelidate/validators'
-    import {useTrackingStore} from "../../store/tracking";
+    import {useTrackingStore} from "~/store/tracking";
     import { storeToRefs } from "pinia";
 
 
@@ -85,7 +85,7 @@
         const isValidate = await v$.value.mail.$validate();
 
         if (isValidate) {
-            trackingStore.addToTracking({email: mail.value, sku_id: props.currentSku.id});
+            await trackingStore.addToTracking({email: mail.value, sku_id: props.currentSku.id});
         }
         v$.value.$reset();
     };
@@ -102,27 +102,6 @@
 </script>
 
 <style lang="scss" scoped>
-    .input {
-        height: 38px;
-        width: 100%;
-        outline: #000 none medium;
-        overflow: visible;
-        transition: background-color 0.3s ease 0s, border-color 0.3s ease 0s;
-        border: 1px solid transparent;
-        border-radius: 8px;
-        padding: 8px;
-        background-color: rgb(240, 242, 252);
-        &:hover {
-            border-color: rgb(192, 201, 240);
-            transition: border-color 0.3s ease 0s;
-        }
-        &:focus {
-            background-color: white;
-            border-color: rgb(59, 87, 208);
-            transition: background-color 0.3s ease 0s, border-color 0.3s ease 0s;
-        }
-    }
-
     .button {
         height: 38px;
         background-color: #fc0;

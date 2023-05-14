@@ -2,10 +2,7 @@
     <compact-sku>
         <div class="review">
             <h2 class="">Отзыв о товаре</h2>
-            <div
-                    v-if="isCheckingExistingReview"
-                    class="loader-wrapper"
-            >
+            <div v-if="isCheckingExistingReview" class="loader-wrapper">
                 <loader class="loader"/>
             </div>
             <form v-else class="review__form" @submit.prevent="saveReview" >
@@ -20,24 +17,24 @@
                     </div>
                 </div>
                 <div class="form-group ">
-                    <textarea rows="5" v-model.trim="editedReview.comment" placeholder="Комментарий"></textarea>
-                    <div class="invalid-feedback" v-for="error of v$.editedReview.comment.$errors" :key="error.$uid">
-                        {{ error.$message }}
-                    </div>
-                </div>
-                <div class="form-group ">
-                    <textarea rows="5" v-model.trim="editedReview.plus" placeholder="Достоинства"></textarea>
+                    <textarea rows="2" v-model.trim="editedReview.plus" placeholder="Достоинства"></textarea>
                     <div class="invalid-feedback" v-for="error of v$.editedReview.plus.$errors" :key="error.$uid">
                         {{ error.$message }}
                     </div>
                 </div>
+
                 <div class="form-group ">
-                    <textarea rows="5" v-model.trim="editedReview.minus" placeholder="Недостатки"></textarea>
+                    <textarea rows="2" v-model.trim="editedReview.minus" placeholder="Недостатки"></textarea>
                     <div class="invalid-feedback" v-for="error of v$.editedReview.minus.$errors" :key="error.$uid">
                         {{ error.$message }}
                     </div>
                 </div>
-
+                <div class="form-group ">
+                    <textarea rows="6" v-model.trim="editedReview.comment" placeholder="Текст отзыва: (20 слов минимум)"></textarea>
+                    <div class="invalid-feedback" v-for="error of v$.editedReview.comment.$errors" :key="error.$uid">
+                        {{ error.$message }}
+                    </div>
+                </div>
 
                 <h4>Фотографии отзыва</h4>
 
@@ -225,6 +222,10 @@
         padding: 0 10px;
         color: #333;
         outline: none;
+        &:focus {
+            border-color: #3b57d0;
+            transition: background-color .3s ease 0s,border-color .3s ease 0s;
+        }
     }
     .review {
         position: relative;
@@ -265,7 +266,7 @@
     .form-group {
         margin: 12px 0;
         & textarea {
-            min-height: 100px;
+            min-height: 60px;
         }
     }
     .add-btn {
@@ -298,6 +299,6 @@
         color: #fc675c;
     }
     .image-upload {
-        height: 168px;
+       // height: 168px;
     }
 </style>

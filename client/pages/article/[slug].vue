@@ -6,7 +6,10 @@
         />
 
         <div v-else class="article">
-            <div class="article__title">{{ currentArticle.title }}</div>
+            <h2 class="article__title">{{ currentArticle.title }}</h2>
+            <nuxt-link :to="`/article/category/${currentArticle.category_id}`" class="article__category" :style="{backgroundColor: '#' + currentArticle.category_color }">
+                {{ currentArticle.category_name }}
+            </nuxt-link>
             <div class="article__preview">{{ currentArticle.preview }}</div>
             <div class="article__meta">
                 <div class="article__user">
@@ -42,7 +45,7 @@
             </div>
             <div class="article__body" v-html="currentArticle.body"></div>
 
-            <tags :tags="currentArticle.tags"></tags>
+            <tags class="article__tags" :tags="currentArticle.tags"></tags>
 
             <div class="article__block" id="comments">
                 <h4>Комментарии</h4>
@@ -118,13 +121,13 @@
         }
     }
 
-    const setSEO = name => {
+    const setSEO = (name, preview = '') => {
         const title = `Статья ${name}`;
         const metaName = `${title} Smart-Beautiful - агрегатор цен косметических товаров`;
         useHead({
             title,
             meta: [
-                {name: 'description', content: metaName},
+                {name: 'description', content: preview ?? metaName},
                 {name: 'keywords', content: metaName}
             ],
         });
@@ -149,12 +152,12 @@
 
     watch(currentArticle, value => {
         if (value && value.title) {
-            setSEO(value.title)
+            setSEO(value.title, value.preview)
         }
     });
 
     if (currentArticle.value && currentArticle.value.title) {
-        setSEO(currentArticle.value.title)
+        setSEO(currentArticle.value.title, currentArticle.value.preview)
     }
 
     useAsyncData(async() => {
@@ -186,6 +189,17 @@
             margin: 16px 0 0;
             color: #222;
             max-width: 920px;
+        }
+        &__category {
+            margin-top: 8px;
+            color: #fff;
+            display: inline-block;
+            padding: 3px 6px 2px;
+            font-size: 11px;
+            line-height: 15px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.1px;
         }
         &__preview {
             font-weight: 400;
@@ -276,9 +290,13 @@
             }
         }
 
+
         &__body {
             font-size: 18px;
             line-height: 1.5;
+        }
+        &__tags {
+            margin-top: 10px;
         }
         & .image {
             width: 400px;

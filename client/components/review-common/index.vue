@@ -33,10 +33,9 @@
             </dl>
 
 
-            <dl v-if="review.comment" class="review__item">
-                <dt>Комментарий:</dt>
-                <dd>{{ review.comment }}</dd>
-            </dl>
+            <div v-if="review.comment" class="review__item">
+                <div v-html="review.comment"></div>
+            </div>
         </div>
     </div>
 </template>
@@ -96,6 +95,7 @@
         }
 
         &__item {
+            color: #2b2b2b;
             display: block;
             margin-top: 12px;
             margin-bottom: 2px;

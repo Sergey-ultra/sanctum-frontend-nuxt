@@ -138,7 +138,7 @@
         {title: 'Скраб', url:'/category/scrab'},
         {title: 'Средства для умывания', url: '/category/umjivanie'},
         {title: 'Маски', url: '/category/maski'},
-        {title: 'Статьи', url: '/article'},
+        {title: 'Блоги', url: '/article'},
     ];
 
     const emit = defineEmits(['update:isShowMobileMenu']);

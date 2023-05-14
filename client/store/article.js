@@ -19,11 +19,16 @@ export const useArticleStore = defineStore({
             data:[],
             tag: {}
         },
+        isLoadingArticlesByCategory: false,
+        articlesByCategory: {
+            data: [],
+            category: {}
+        },
         isLoadingCurrentArticle: false,
         currentArticle: null,
         isLoadingArticlesWithPagination: false,
         articlesWithPagination: [],
-        currentPage: 1
+        currentPage: 1,
     }),
     actions: {
         async loadArticleCategories() {
@@ -88,6 +93,17 @@ export const useArticleStore = defineStore({
                 this.articlesByTag = {...data};
             }
             this.isLoadingArticlesByTag = false;
+
+        },
+        async loadArticlesByCategory(categoryId) {
+            this.isLoadingArticlesByCategory = true;
+            const { $api } = useNuxtApp()
+            const data = await $api.get(`/articles/by-category-id/${categoryId}`);
+
+            if (data !== null) {
+                this.articlesByCategory = {...data};
+            }
+            this.isLoadingArticlesByCategory = false;
 
         },
         async loadCurrentArticle(slug) {

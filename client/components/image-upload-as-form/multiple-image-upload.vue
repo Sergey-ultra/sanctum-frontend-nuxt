@@ -5,7 +5,7 @@
                 :key="index"
                 class="file-form__item file-form__img"
         >
-            <img :src="`${$config.APP_URL}/${image}`" class=""/>
+            <img :src="`${image}`" class=""/>
 
             <progress-bar
                 v-if="isUploading"
@@ -119,6 +119,7 @@
         border-radius: 4px;
         overflow: hidden;
         &__item {
+            height: 152px;
             max-height: 100%;
             margin: 8px;
             display: flex;

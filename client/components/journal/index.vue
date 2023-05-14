@@ -9,13 +9,13 @@
             class="journal__slider"
         >
             <template v-slot:item="{ item }">
-                <nuxt-link :to="`article/${item.slug}`"  class="journal__item">
+                <nuxt-link :to="`article/${item.slug}`" class="journal__item">
                     <div class="journal__image">
                         <img :src="`${$config.APP_URL}/${item.image}`" :alt="item.image"/>
                         <div class="journal__badge">
-                                <span class="journal__tag" :style="{backgroundColor: '#' + item.category_color }">
-                                    {{ item.category_name }}
-                                </span>
+                            <span class="journal__tag" :style="{backgroundColor: '#' + item.category_color }">
+                                {{ item.category_name }}
+                            </span>
                         </div>
                     </div>
                     <div class="journal__title">

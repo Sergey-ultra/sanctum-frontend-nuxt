@@ -15,6 +15,20 @@
 <script setup>
     import tabsComponent from "~/components/tabsComponent.vue";
     import articleForm from "~/components/profile/article-form";
+
+    const setSEO = () => {
+        const title = `Написать`;
+        const metaName = `${title} Smart-Beautiful - агрегатор цен косметических товаров`;
+        useHead({
+            title,
+            meta: [
+                {name: 'description', content: metaName},
+                {name: 'keywords', content: metaName}
+            ],
+        });
+    }
+
+    setSEO();
 </script>
 
 <style scoped lang="scss">
