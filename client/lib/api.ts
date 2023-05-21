@@ -36,6 +36,7 @@ export default class Api {
     }
     public async login(object) {
         const response = await this.post('/login', object);
+        const notificationStore = useNotificationStore();
         if (response.status) {
             if (!response.isRequiredEmailVerification) {
                 const { name, token, avatar, role } = response;
@@ -43,14 +44,14 @@ export default class Api {
                 this.token.value = token;
                 Object.assign(this.$user, { avatar, role, name })
                 this.setIsShowAuthModal(false);
+                notificationStore.setSuccess(response.message);
             } else {
                 this.setEmailVerification({ email: response.email, after: 'login', message: response.message });
             }
 
+        } else {
+            notificationStore.setError(response.message);
         }
-
-        const notificationStore = useNotificationStore();
-        notificationStore.setSuccess('Вы удачно авторизировались');
     }
 
     public setEmailVerification({ after, email, message }) {

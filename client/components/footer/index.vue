@@ -25,7 +25,7 @@
                         <form class="main__style subscription" @submit.prevent="createSubscription">
                             <div class="subscription__form">
                                 <div class="subscription__form-item">
-                                    <input type="text" class="input" placeholder="Ваш email" v-model.trim="mail">
+                                    <inputComponent placeholder="Ваш email" v-model.trim="mail"/>
                                     <div class="invalid-feedback" v-for="error of v$.mail.$errors" :key="error.$uid">
                                         {{ error.$message }}
                                     </div>
@@ -44,13 +44,14 @@
             </div>
             <div>Нашли ошибку на этой странице? Выделите ее и нажмите Ctrl+Enter</div>
             <div>По вопросам сотрудничества admin@smart-beautiful.ru</div>
-            <div class="footer__copy">{{ new Date().getFullYear() }} © Smart-Beautiful | Мониторинг цен косметических товаров</div>
+            <div class="footer__copy">{{ new Date().getFullYear() }} © Smart-Beautiful</div>
         </div>
     </footer>
 </template>
 
 <script setup>
     import buttonComponent from "~/components/button-component.vue";
+    import inputComponent from '../../components/input-component';
     import useVuelidate from '@vuelidate/core';
     import { required, email, helpers } from '@vuelidate/validators';
     import {useSubscriptionStore} from "~/store/subscription";

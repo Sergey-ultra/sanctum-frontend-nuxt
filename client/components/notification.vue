@@ -1,6 +1,6 @@
 <template>
     <div class="notification">
-<!--        <transition-group name="note" class="note_list">-->
+        <transition-group name="note" class="note_list">
             <div
                     v-for="(note, index) in notes"
                     :key="index"
@@ -24,12 +24,12 @@
                     </svg>
                 </div>
             </div>
-<!--        </transition-group>-->
+        </transition-group>
     </div>
 </template>
 
 <script setup>
-    import {useNotificationStore} from "../store/notification";
+    import {useNotificationStore} from "~/store/notification";
     import { storeToRefs } from "pinia";
 
     const notificationStore = useNotificationStore();

@@ -1,119 +1,121 @@
 <template>
-        <form class="form">
-            <div class="input-group">
-                <label>
-                    <div class="label">
-                        <span class="text-gray">Заглавная картинка статьи</span>
-                    </div>
-                    <one-image-upload
-                            class="image-upload"
-                            v-model:image="editedArticle.image"
-                            :entity="`article`"
-                    />
-                </label>
-            </div>
-
-            <div class="input-group">
-                <label>
-                    <div class="label">
-                        <span class="text-gray">Категория статьи</span>
-                    </div>
-
-                    <select v-model="editedArticle.article_category_id" class="form-control input">
-                        <option
-                            v-for="option in articleCategoriesLocal"
-                            :key="option.id"
-                            :value="option.id"
-                        >
-                            {{ option.name }}
-                        </option>
-                    </select>
-                </label>
-                <div class="invalid-feedback" v-for="error of v$.editedArticle.article_category_id.$errors" :key="error.$uid">
-                    {{ error.$message }}
-                </div>
-            </div>
-
-
-            <div class="input-group">
-                <label>
-                    <div class="label">
-                        <span class="text-gray">Теги статьи</span>
-                    </div>
-                    <select-element>
-                        <template v-slot:activator="{ on }">
-                            <div class="form-control select" @click="on">
-                                <div
-                                    class="select__chip"
-                                    v-for="selectedTag in selectedTags"
-                                    :key="selectedTag.id"
-                                >
-                                    {{ selectedTag.tag }}
-                                </div>
-                            </div>
-                        </template>
-                        <label
-                            class="select__item"
-                            v-for="tag in availableArticleTags"
-                            :key="tag.id"
-                        >
-                            <input
-                                type="checkbox"
-                                :value="tag.id"
-                                v-model="selectedTagIds"
-                            >
-                            <span>{{ tag.tag }}</span>
-                        </label>
-                    </select-element>
-                </label>
-            </div>
-
-            <div class="input-group">
-                <label>
-                    <div class="label">
-                        <span class="text-gray">Заголовок</span>
-                    </div>
-                    <input v-model.trim="editedArticle.title" type="text" class="form-control input">
-                </label>
-                <div class="invalid-feedback" v-for="error of v$.editedArticle.body.$errors" :key="error.$uid">
-                    {{ error.$message }}
-                </div>
-            </div>
-
-
-            <div class="input-group">
-                <label>
-                    <div class="label">
-                        <span class="text-gray">Превью</span>
-                    </div>
-                    <textareaComponent rows=4 v-model.trim="editedArticle.preview" class="form-control"></textareaComponent>
-                </label>
-            </div>
-            <div class="input-group">
+    <form class="form">
+        <div class="form__group">
+            <label>
                 <div class="label">
-                    <span class="text-gray">Статья</span>
+                    <span class="text-gray">Заглавная картинка статьи</span>
                 </div>
-<!--                <client-only>-->
-<!--                   <ckEditorComponent :text="editedArticle.body"></ckEditorComponent>-->
-<!--                </client-only>-->
-                <textareaComponent rows=4 v-model.trim="editedArticle.body" class="form-control"></textareaComponent>
-                <div class="invalid-feedback" v-for="error of v$.editedArticle.body.$errors" :key="error.$uid">
-                    {{ error.$message }}
+                <one-image-upload
+                    class="image-upload"
+                    v-model:image="editedArticle.image"
+                    :entity="`article`"
+                />
+            </label>
+        </div>
+
+        <div class="form__group">
+            <label>
+                <div class="label">
+                    <span class="text-gray">Категория статьи</span>
                 </div>
+
+                <select v-model="editedArticle.article_category_id" class="form-control input">
+                    <option
+                        v-for="option in articleCategoriesLocal"
+                        :key="option.id"
+                        :value="option.id"
+                    >
+                        {{ option.name }}
+                    </option>
+                </select>
+            </label>
+            <div class="invalid-feedback" v-for="error of v$.editedArticle.article_category_id.$errors"
+                 :key="error.$uid">
+                {{ error.$message }}
             </div>
+        </div>
 
 
-            <div class="buttons">
-                <buttonComponent :color="'green-light'" :radius="true" @click="save">
-                    {{ $route.params.id ? 'Сохранить' : 'Опубликовать' }}
-                </buttonComponent>
+        <div class="form__group">
+            <label>
+                <div class="label">
+                    <span class="text-gray">Теги статьи</span>
+                </div>
+                <select-element>
+                    <template v-slot:activator="{ on }">
+                        <div class="select" @click="on">
+                            <div
+                                class="select__chip"
+                                v-for="selectedTag in selectedTags"
+                                :key="selectedTag.id"
+                            >
+                                {{ selectedTag.tag }}
+                            </div>
+                        </div>
+                    </template>
+                    <label
+                        class="select__item"
+                        v-for="tag in availableArticleTags"
+                        :key="tag.id"
+                    >
+                        <input
+                            type="checkbox"
+                            :value="tag.id"
+                            v-model="selectedTagIds"
+                        >
+                        <span>{{ tag.tag }}</span>
+                    </label>
+                </select-element>
+            </label>
+        </div>
+
+        <div class="form__group">
+            <label>
+                <div class="label">
+                    <span class="text-gray">Заголовок</span>
+                </div>
+                <inputComponent v-model.trim="editedArticle.title"/>
+            </label>
+            <div class="invalid-feedback" v-for="error of v$.editedArticle.body.$errors" :key="error.$uid">
+                {{ error.$message }}
             </div>
-        </form>
+        </div>
+
+
+        <div class="form__group">
+            <label>
+                <div class="label">
+                    <span class="text-gray">Превью</span>
+                </div>
+                <textareaComponent rows=4 v-model.trim="editedArticle.preview"></textareaComponent>
+            </label>
+        </div>
+        <div class="form__group">
+            <div class="label">
+                <span class="text-gray">Статья</span>
+            </div>
+            <!--                <client-only>-->
+            <!--                   <ckEditorComponent :text="editedArticle.body"></ckEditorComponent>-->
+            <!--                </client-only>-->
+            <textareaComponent rows=4 v-model.trim="editedArticle.body"></textareaComponent>
+            <div class="invalid-feedback" v-for="error of v$.editedArticle.body.$errors" :key="error.$uid">
+                {{ error.$message }}
+            </div>
+        </div>
+
+
+        <div class="buttons">
+            <buttonComponent :color="'green-light'" :radius="true" @click="save">
+                {{ $route.params.id ? 'Сохранить' : 'Опубликовать' }}
+            </buttonComponent>
+        </div>
+    </form>
 </template>
 
 <script setup>
-    import textareaComponent from '../../components/textareaComponent'
-    import buttonComponent from '../../components/button-component.vue'
+    import textareaComponent from '../../components/textareaComponent';
+    import inputComponent from '../../components/input-component';
+    import buttonComponent from '../../components/button-component';
     import selectElement from "../../components/select-element";
     import oneImageUpload from "../image-upload-as-form/one-image-upload.vue";
     // import ckEditorComponent from "../../components/ckEditorComponent";
@@ -216,13 +218,6 @@
         width: 100%;
     }
 
-    .input-group {
-        width: 100%;
-    }
-
-    .form-control {
-        width: 100%;
-    }
     .select {
         display: flex;
         flex-wrap: wrap;

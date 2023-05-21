@@ -44,6 +44,10 @@ p {
     &__row {
         margin-bottom: 20px;
     }
+    .form__group {
+        width: 100%;
+        margin: 12px 0;
+    }
 }
 .select {
     border-radius: 8px;

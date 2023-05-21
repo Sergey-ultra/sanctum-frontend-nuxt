@@ -25,21 +25,24 @@
         <form class="form" @submit.prevent="sendComment">
             <div>Добавить сообщение</div>
 
-            <textareaComponent class="margin-top" placeholder="Комментарий"></textareaComponent>
+            <textareaComponent class="margin-top"  v-model.trim="comment" placeholder="Комментарий"></textareaComponent>
 
             <div class="form__row">
-                <input class="form__item input" type="text" placeholder="Ваше имя">
-                <button class="form__item button" type="submit">Отправить</button>
+                <inputComponent class="form__item" v-model.trim="author" placeholder="Ваше имя"/>
+                <buttonComponent class="form__item" :color="'yellow'" :radius="true" type="submit">Отправить</buttonComponent>
             </div>
-
         </form>
-
     </div>
   </div>
 </template>
 
 <script setup>
-    import textareaComponent from '../../components/textareaComponent'
+    import textareaComponent from '../../components/textareaComponent';
+    import inputComponent from '../../components/input-component';
+    import buttonComponent from '../../components/button-component';
+
+    let comment = ref('');
+    let author = ref('');
     const sendComment = () => {
 
     }
@@ -62,40 +65,11 @@
     .margin-top {
         margin-top: 15px;
     }
+
     .input {
-        height: 38px;
         width: 200px;
-        outline: #000 none medium;
-        overflow: visible;
-        transition: background-color 0.3s ease 0s, border-color 0.3s ease 0s;
-        border: 1px solid transparent;
-        border-radius: 8px;
-        padding: 8px;
-        background-color: rgb(240, 242, 252);
-        &:hover {
-            border-color: rgb(192, 201, 240);
-            transition: border-color 0.3s ease 0s;
-        }
-        &:focus {
-            background-color: white;
-            border-color: rgb(59, 87, 208);
-            transition: background-color 0.3s ease 0s, border-color 0.3s ease 0s;
-        }
     }
 
-    .button {
-        height: 38px;
-        background-color: #fc0;
-        border: none;
-        color: #333;
-        border-radius: 8px;
-        transition: background-color 0.3s ease 0s, border-color 0.3s ease 0s;
-        padding: 8px 30px;
-        font-size: 18px;
-        &:hover {
-            background-color: #f5c423;
-        }
-    }
     .block {
         width: 100%;
         margin: 20px 0;

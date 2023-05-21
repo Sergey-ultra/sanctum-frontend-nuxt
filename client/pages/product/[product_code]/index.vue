@@ -88,7 +88,7 @@
                 </div>
                 <div class="reviews__actions">
                     <button class="reviews__button reviews__button-full reviews__button-transform">
-                        <nuxt-link  :to="`/add-review/${currentSkuProductCode}`">
+                        <nuxt-link  :to="`/add-review/${ currentSkuProductCode }`">
                             <span v-if="!$api.isAuth || ($api.isAuth && !existingReview)">Добавить</span>
                             <span v-else>Изменить</span>
                         </nuxt-link>
@@ -103,7 +103,7 @@
                     <client-content class="reviews__client"/>
                     <reviewList></reviewList>
                     <button class="reviews__button reviews__button-link reviews__button-full">
-                        <nuxt-link   :to="`/reviews/${currentSkuProductCode }`">
+                        <nuxt-link :to="`/reviews/${currentSkuProductCode }`">
                             Перейти к отзывам
                         </nuxt-link>
                     </button>
@@ -111,7 +111,7 @@
                 <div class="reviews__actions reviews__actions-filter">
                     <filterByRating/>
                     <button class="reviews__button reviews__button-link reviews__button-full">
-                        <nuxt-link   :to="`/reviews/${currentSkuProductCode }`">
+                        <nuxt-link :to="`/reviews/${currentSkuProductCode }`">
                             Показать все отзывы
                         </nuxt-link>
                     </button>

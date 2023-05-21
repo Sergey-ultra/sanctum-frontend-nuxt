@@ -5,10 +5,9 @@
             <div v-if="isCheckingExistingReview" class="loader-wrapper">
                 <loader class="loader"/>
             </div>
-            <form v-else class="review__form" @submit.prevent="saveReview" >
-                <div class="form-group">
+            <form v-else class="form review__form" @submit.prevent="saveReview" >
+                <div class="form__group">
                     <h4>Оценка модели</h4>
-
                     <div>
                         <ratingForm :initLoading="false"/>
                         <div class="invalid-feedback" v-for="error of v$.rating.$errors" :key="error.$uid">
@@ -16,21 +15,59 @@
                         </div>
                     </div>
                 </div>
-                <div class="form-group ">
-                    <textarea rows="2" v-model.trim="editedReview.plus" placeholder="Достоинства"></textarea>
+
+                <div class="form__group">
+                    <label>
+                        <div class="label">
+                            <span class="text-gray">Ваше общее впечатление в двух словах: (от 1 до 15 слов)</span>
+                        </div>
+                        <inputComponent v-model="editedReview.title" :color="'white'"/>
+                    </label>
+
+                    <div class="invalid-feedback" v-for="error of v$.editedReview.title.$errors" :key="error.$uid">
+                        {{ error.$message }}
+                    </div>
+                </div>
+
+                <div class="form__group">
+                    <label>
+                        <div class="label">
+                            <span class="text-gray">Достоинства</span>
+                        </div>
+                        <inputComponent v-model.trim="editedReview.plus" :color="'white'"/>
+                    </label>
+
                     <div class="invalid-feedback" v-for="error of v$.editedReview.plus.$errors" :key="error.$uid">
                         {{ error.$message }}
                     </div>
                 </div>
 
-                <div class="form-group ">
-                    <textarea rows="2" v-model.trim="editedReview.minus" placeholder="Недостатки"></textarea>
+                <div class="form__group">
+                    <label>
+                        <div class="label">
+                            <span class="text-gray">Недостатки</span>
+                        </div>
+                        <inputComponent v-model.trim="editedReview.minus" :color="'white'"/>
+                    </label>
+
                     <div class="invalid-feedback" v-for="error of v$.editedReview.minus.$errors" :key="error.$uid">
                         {{ error.$message }}
                     </div>
                 </div>
-                <div class="form-group ">
-                    <textarea rows="6" v-model.trim="editedReview.comment" placeholder="Текст отзыва: (20 слов минимум)"></textarea>
+
+                <div class="form__group">
+                    <label>
+                        <div class="label">
+                            <span class="text-gray">Текст отзыва: (20 слов минимум)</span>
+                        </div>
+                        <textareaComponent
+                            rows="10"
+                            v-model.trim="editedReview.comment"
+                            :color="'white'"
+                        >
+                        </textareaComponent>
+                    </label>
+
                     <div class="invalid-feedback" v-for="error of v$.editedReview.comment.$errors" :key="error.$uid">
                         {{ error.$message }}
                     </div>
@@ -44,7 +81,7 @@
                     v-model:initialImageUrls="editedReview.images"
                 />
 
-                <div class="form-group ">
+                <div class="form__group ">
                     <label>
                         <input v-model="anonymouslyLocal" type="checkbox"/>
                         <span>Оставить отзыв анонимно</span>
@@ -52,16 +89,16 @@
                 </div>
 
 
-                <div class="form-group mt-4">
+                <div class="form__group mt-4">
                     <button class="add-btn" :disabled="isUploadingReview" type="submit">Отправить</button>
 
                     <div class="agreement">
                         Нажимая кнопку «Отправить», Вы соглашаетесь c
                         <span>
-                                <nuxt-link :to="{ name: 'policy' }" target="_blank">
-                                    условиями политики конфиденциальности.
-                                </nuxt-link>
-                            </span>
+                            <nuxt-link :to="{ name: 'policy' }" target="_blank">
+                                условиями политики конфиденциальности.
+                            </nuxt-link>
+                        </span>
                     </div>
                 </div>
             </form>
@@ -74,10 +111,12 @@
     import ratingForm from "~/components/rating-form";
     import compactSku from '~/components/compact-sku'
     import loader from "~/components/loader";
+    import textareaComponent from '../../components/textareaComponent';
+    import inputComponent from '../../components/input-component';
     import { useNuxtApp } from '#app'
     const { $api } = useNuxtApp();
     import useVuelidate from '@vuelidate/core'
-    import { required, minLength, helpers } from '@vuelidate/validators';
+    import {required, minLength, helpers, maxLength} from '@vuelidate/validators';
     import { storeToRefs } from "pinia";
     import {useReviewStore} from "~/store/review";
     import {useCurrentSkuStore} from "~/store/currentSku";
@@ -94,6 +133,7 @@
     let rating = ref(0);
 
     let editedReview = ref({
+        title: '',
         comment:'',
         plus:'',
         minus:'',
@@ -106,12 +146,23 @@
             mustBeRating:  helpers.withMessage('Нужно оценить товар', mustBeRating)
         },
         editedReview: {
+            title: {
+                required:  helpers.withMessage('Поле должно быть заполнено', required),
+                minLength: minLength(5),
+                maxLength: maxLength(256)
+            },
             comment: {
                 required:  helpers.withMessage('Поле должно быть заполнено', required),
-                minLength: minLength(2)
+                minLength: minLength(5)
             },
-            plus: { required:  helpers.withMessage('Поле должно быть заполнено', required) },
-            minus: { required:  helpers.withMessage('Поле должно быть заполнено', required) },
+            plus: {
+                required:  helpers.withMessage('Поле должно быть заполнено', required),
+                minLength: minLength(5)
+            },
+            minus: {
+                required:  helpers.withMessage('Поле должно быть заполнено', required),
+                minLength: minLength(5)
+            },
         }
     };
     const v$ = useVuelidate(rules, {editedReview, rating});
@@ -166,6 +217,7 @@
             if (validated) {
                 await reviewStore.updateOrCreateReview(editedReview.value);
                 editedReview.value = {
+                    title: '',
                     comment: '',
                     plus: '',
                     minus: '',
@@ -214,46 +266,16 @@
         margin-right: 10px;
     }
 
-    textarea {
-        width: 100%;
-        resize: vertical;
-        border-radius: 8px;
-        border: 1px solid #d9d9d9;
-        padding: 0 10px;
-        color: #333;
-        outline: none;
-        &:focus {
-            border-color: #3b57d0;
-            transition: background-color .3s ease 0s,border-color .3s ease 0s;
-        }
-    }
     .review {
         position: relative;
         &__form {
             width: 100%;
         }
-
-    }
-
-    .rating {
-        display: flex;
-        &__item {
-            height: 36px;
-            width: 36px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            line-height: 0;
-
-            & svg path {
-                fill: #d9d9d9;
-            }
-            &-selected svg path {
-                fill: #ffda66;
-            }
+        & textarea {
+            min-height: 60px;
         }
-
     }
+
 
     .form-label {
         color:#42b983;
@@ -263,12 +285,6 @@
         margin-right: 25px;
     }
 
-    .form-group {
-        margin: 12px 0;
-        & textarea {
-            min-height: 60px;
-        }
-    }
     .add-btn {
         margin-top: 50px;
         min-width: 230px;

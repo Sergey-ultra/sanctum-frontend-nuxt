@@ -1,5 +1,11 @@
 <template>
-    <textarea v-model="currentValue" class="textarea"></textarea>
+    <textarea
+        v-model="currentValue"
+        class="textarea"
+        :class="{
+             [`textarea--${color}`]: Boolean(color)
+        }"
+    ></textarea>
 </template>
 
 <script setup>
@@ -8,6 +14,9 @@
         modelValue: {
             type: String,
         },
+        color: {
+            type: String,
+        }
     });
 
     let currentValue = computed({
@@ -39,6 +48,22 @@
             background-color: white;
             border-color: rgb(59, 87, 208);
             transition: background-color 0.3s ease 0s, border-color 0.3s ease 0s;
+        }
+
+        &--white {
+            background-color: white;
+            width: 100%;
+            resize: vertical;
+            border-radius: 8px;
+            border: 1px solid #d9d9d9;
+            padding: 0 10px;
+            color: #333;
+            outline: none;
+
+            &:focus {
+                border-color: #3b57d0;
+                transition: background-color .3s ease 0s, border-color .3s ease 0s;
+            }
         }
     }
 </style>

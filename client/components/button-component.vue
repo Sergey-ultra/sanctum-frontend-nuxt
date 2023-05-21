@@ -146,6 +146,9 @@ export default {
         &--yellow {
             background-color: #fc0;
             color: #000000;
+            &:hover {
+                background-color: #f5c423;
+            }
         }
         &--gray {
             background: #e0e0e0 !important;

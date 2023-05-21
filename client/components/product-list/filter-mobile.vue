@@ -44,8 +44,8 @@
 <script setup>
     import filterListMobile from './filter-list-mobile';
     import {storeToRefs} from "pinia";
-    import {useFilterStore} from "../../store/filter";
-    import {useProductStore} from "../../store/product";
+    import {useFilterStore} from "~/store/filter";
+    import {useProductStore} from "~/store/product";
 
 
     const localFilterParams = ref({

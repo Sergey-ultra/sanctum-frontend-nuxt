@@ -32,11 +32,11 @@
 </template>
 
 <script setup>
-    import reviewList from "../../components/review-list";
-    import clientContent from '../../components/client-content'
-    import compactSku from '../../components/compact-sku'
-    import filterByRating from "../../components/review-list/filter-by-rating";
-    import pagination from "../../components/pagination";
+    import reviewList from "../../components/review-list/index.vue";
+    import clientContent from '../../components/client-content/index.vue'
+    import compactSku from '../../components/compact-sku/index.vue'
+    import filterByRating from "../../components/review-list/filter-by-rating.vue";
+    import pagination from "../../components/pagination.vue";
     import { storeToRefs } from "pinia";
     import {useReviewStore} from "../../store/review";
     import {useCurrentSkuStore} from "../../store/currentSku";
