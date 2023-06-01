@@ -16,6 +16,10 @@ export const useUserStore = defineStore({
         async updateProfile(obj) {
             const { $api } = useNuxtApp();
             const { data } = await $api.post('/users/me', obj)
+        },
+        async updateAvatar(obj) {
+            const { $api } = useNuxtApp();
+            const { data } = await $api.post('/users/me/avatar', obj)
         }
     }
 });

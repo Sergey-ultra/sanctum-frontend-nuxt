@@ -1,7 +1,7 @@
 <template>
     <div class="file-form">
         <div class="file-form__img">
-            <img v-if="localImage" :src="`${$config.APP_URL}/${localImage}`">
+            <img v-if="localImage" :src="localImage">
 
             <div class="file-form__layer">
                 <div class="file-form__description"  v-if="!localImage">
@@ -25,7 +25,7 @@
                     <div  @click="deleteImage">✕</div>
                 </tool-tip>
 
-                <input @change="setImage($event)" type="file"  accept="image/*">
+                <input @change="setImage($event)" type="file" accept="image/*">
             </div>
         </div>
     </div>

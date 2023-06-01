@@ -7,10 +7,15 @@
         <div v-else>
             <div
                 class="reviews__row"
-                v-for="item in reviewsWithPagination"
-                :key="item.id"
+                v-for="review in reviewsWithPagination"
+                :key="review.id"
             >
-                <review :review="item"/>
+                <div class="reviews__main">
+                    <review-common :review="review"/>
+                    <nuxt-link :to="`/review/${review.id}`">
+                        Читать весь отзыв
+                    </nuxt-link>
+                </div>
             </div>
         </div>
     </div>
@@ -18,18 +23,16 @@
 </template>
 
 <script setup>
-    import review from "./review";
+    import reviewCommon from '../review-common';
     import loader from '../loader'
     import { storeToRefs } from "pinia";
-    import {useReviewStore} from "../../store/review";
-    import {useCurrentSkuStore} from "../../store/currentSku";
+    import {useReviewStore} from "~/store/review";
+    import {useCurrentSkuStore} from "~/store/currentSku";
 
     const reviewStore = useReviewStore();
     const currentSkuStore = useCurrentSkuStore();
     const { reviewsWithPagination, isLoadingReviews } = storeToRefs(reviewStore);
     const { currentSkuId } = storeToRefs(currentSkuStore);
-
-    //const toggleShowComments = () => isShowComments.value = !isShowComments.value;
 
     watch(currentSkuId, () => reviewStore.loadReviewsWithPagination());
 
@@ -37,29 +40,50 @@
 </script>
 
 <style lang="scss" scoped>
-    .reviews__row {
+.loader {
+    width: 100px;
+    height: 100px;
+}
+
+.reviews {
+    &__row {
         margin-top: 34px;
-        padding:20px 48px 20px 0;
+        padding: 20px 48px 20px 0;
         width: 100%;
+
         &-flex {
-            display:flex;
+            display: flex;
             justify-content: center;
         }
     }
-    .loader {
-        width: 100px;
-        height: 100px;
+
+    &__main {
+        position: relative;
+        width: 100%;
+        padding-left: 48px;
+        display: inline-block;
+        vertical-align: top;
     }
-    @media (max-width: 900px) {
-        .reviews__row {
-            margin-top: 24px;
-            padding: 20px 24px 20px 0;
-        }
+}
+
+
+@media (max-width: 900px) {
+    .reviews__row {
+        margin-top: 24px;
+        padding: 20px 24px 20px 0;
     }
-    @media (max-width: 700px) {
-        .reviews__row {
+}
+
+@media (max-width: 700px) {
+    .reviews {
+        &__row {
             margin-top: 14px;
             padding: 20px 0;
         }
+
+        &__main {
+            padding: 0;
+        }
     }
+}
 </style>

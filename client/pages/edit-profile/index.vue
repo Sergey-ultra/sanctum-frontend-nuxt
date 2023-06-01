@@ -4,11 +4,11 @@
 
         <div class="profile">
             <div class="profile__item profile__photo">
-                <img v-if="$api.$user.avatar"  :src="`${$config.APP_URL}/${$api.$user.avatar}`" :alt="$api.$user.avatar"/>
-                <img v-else :src="`${$config.APP_URL}/storage/icons/user-mf.svg`" alt="user-mf.svg"/>
+                <img v-if="localImage" :src="localImage" alt="avatar"/>
+
 
                 <fa class="profile__photo-icon icon" icon="camera"></fa>
-                <input @change="loadImages($event)" type="file" accept="image/*">
+                <input @change="loadImage($event)" type="file" accept="image/*">
             </div>
             <tabsComponent class="profile__inner" :tabList="['Личные данные', 'Смена пароля', 'Уведомления']">
                 <template v-slot:tabPanel-1>
@@ -30,25 +30,40 @@
     import notification from '~/components/profile/notification.vue'
     import tabsComponent from "~/components/tabsComponent.vue";
     import editProfile from "~/components/profile/edit-profile.vue";
-    import { useNuxtApp } from '#app'
-    import {useFileStore} from "~/store/file";
+    import { useNuxtApp } from '#app';
+    import {useUserStore} from "~/store/user";
+
     const { $api } = useNuxtApp();
-    const fileStore = useFileStore();
+    const userStore = useUserStore();
+
 
     definePageMeta({
         middleware: ["auth"]
     });
 
-    const loadImages = event => {
-        const files = event.target.files || event.dataTransfer.files
-        // for (const file of files) {
-        //   let reader = new FileReader()
-        //   reader.readAsDataURL(file)
-        //   reader.onload = e => previewImages.value.push(e.target.result)
-        // }
+    let uploadedImage = ref('');
 
+    let localImage = computed(() => {
+        if (uploadedImage.value) {
+            return uploadedImage.value;
+        }
+        return $api.$user.avatar;
+    });
 
-        fileStore.loadFilesAsForm({ files, entity: 'image', type: 'image' })
+    const readImage = async file => {
+        return new Promise(resolve => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = e => resolve(e.target.result);
+        });
+    }
+
+    const loadImage = async event => {
+        let file = event.target.files[0] || event.dataTransfer.files[0];
+        uploadedImage.value = await readImage(file);
+
+        await userStore.updateAvatar({ avatar: uploadedImage.value });
+        $api.$user.avatar = uploadedImage.value;
     };
 
     const setSEO = () => {
@@ -62,7 +77,6 @@
             ],
         });
     }
-
 
     setSEO();
 </script>

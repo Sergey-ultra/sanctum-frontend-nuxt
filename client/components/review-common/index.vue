@@ -33,8 +33,8 @@
             </dl>
 
 
-            <div v-if="review.comment" class="review__item">
-                <div v-html="review.comment"></div>
+            <div v-if="review.body" class="review__item">
+                <div v-html="review.body"></div>
             </div>
         </div>
     </div>

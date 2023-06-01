@@ -33,8 +33,11 @@
                 </div>
 
                 <div class="vote">
-                    <likeUp :likesUp="comment.likes ?? 0"></likeUp>
-                    <likeDown :likesDown="comment.dislikes ?? 0"></likeDown>
+                    <likeUp
+                        @addLike="addLike"
+                        :likes="localLikes"
+                    />
+                    <likeDown :likesDown="comment.dislikes ?? 0"/>
                 </div>
             </div>
             <transition name="comment__answer">
@@ -49,10 +52,11 @@
         </div>
         <div v-if="comment.children" class="comment__nested">
             <comment
-                    v-for="child in comment.children"
-                    :key="child.id"
-                    :comment="child"
-                    @toggleAnswerForm="toggleAnswerForm"
+                v-for="child in comment.children"
+                :key="child.id"
+                :comment="child"
+                :entity="entity"
+                @toggleAnswerForm="toggleAnswerForm"
             />
         </div>
     </div>
@@ -70,20 +74,40 @@
     import likeUp from '../likes/like-up'
     import likeDown from '../likes/like-down'
     import dropMenu from '../drop-menu'
-    import modal from '../modal'
+    import modal from '../modal';
+    import { useLikeStore } from "~/store/like";
     import { useNuxtApp } from '#app'
+    import { storeToRefs } from "pinia";
+
     const { $api } = useNuxtApp();
+    const likeStore = useLikeStore();
+    const { isUpdatedLikeCount } = storeToRefs(likeStore);
 
     const emit = defineEmits(['toggleAnswerForm', 'sendComment']);
 
     const props = defineProps({
-        comment: Object
+        comment: Object,
+        entity: {
+            type: String,
+            default: null,
+        },
     });
 
     const commentField = ref('');
     const isShowComplaintForm = ref(false);
+    const plusLikes = ref(0);
 
+    const localLikes = computed(() => props.comment.likes + plusLikes.value);
 
+    const addLike = async() => {
+        await likeStore.addLike({
+            id: props.comment.id,
+            entity: props.entity
+        });
+        if (isUpdatedLikeCount.value) {
+            plusLikes.value = 1;
+        }
+    }
 
     const sendComment = () => {
         if (commentField.value) {
@@ -98,6 +122,8 @@
             }
         }
     };
+
+
 
     const toggleAnswerForm = comment => {
         if (!comment.isShowAnswerForm) {

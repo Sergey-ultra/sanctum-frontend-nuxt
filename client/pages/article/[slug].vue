@@ -6,39 +6,13 @@
         />
 
         <div v-else class="article">
-            <h2 class="article__title">{{ currentArticle.title }}</h2>
+            <h2 class="title">{{ currentArticle.title }}</h2>
             <nuxt-link :to="`/article/category/${currentArticle.category_id}`" class="article__category" :style="{backgroundColor: '#' + currentArticle.category_color }">
                 {{ currentArticle.category_name }}
             </nuxt-link>
             <div class="article__preview">{{ currentArticle.preview }}</div>
-            <div class="article__meta">
-                <div class="article__user">
-                    <div class="article__userImg">
-                        <img :src="`${$config.APP_URL}/${currentArticle.user_avatar}`" :alt="currentArticle.user_name"/>
-                    </div>
-                    <div class="article__userInfo">
-                        <div class="article__userName">
-                            <span>
-                                {{ currentArticle.user_name }}
-                            </span>
-                        </div>
 
-                    </div>
-                </div>
-                <div class="article__info">
-                    <div class="article__infoItem">{{ currentArticle.created_at }}</div>
-                    <div class="article__infoItem">
-                        <span class="article__viewsIcon">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
-                                 data-tid="9bd43b8c">
-                                <path fill="#999"
-                                      d="M12 17c3.356 0 6.549-1.81 8.96-5.01C18.527 8.794 15.341 7 12 7c-3.356 0-6.549 1.81-8.96 5.01C5.473 15.206 8.659 17 12 17zm0-11c3.816 0 7.299 2.097 9.85 5.51.2.29.2.668 0 .958C19.3 15.903 15.816 18 12 18s-7.299-2.097-9.85-5.51c-.2-.29-.2-.668 0-.958C4.7 8.097 8.184 6 12 6zm-3.5 5.994c.458.349 1.04.541 1.671.5 1.224-.073 2.252-1.1 2.326-2.323A2.568 2.568 0 0 0 11.99 8.5a3.512 3.512 0 0 1 3.503 3.73 3.494 3.494 0 0 1-3.263 3.263 3.512 3.512 0 0 1-3.73-3.499z"></path>
-                            </svg>
-                        </span>
-                        {{ currentArticle.views_count }}
-                    </div>
-                </div>
-            </div>
+            <metaInfo :currentEntity="currentArticle"/>
 
             <div class="article__img">
                 <img :src="`${$config.APP_URL}/${currentArticle.image}`" :alt="currentArticle.image"/>
@@ -52,6 +26,7 @@
                 <comment-list
                     class="article__comments"
                     :isShowComments="true"
+                    :entity="'article_comment'"
                     @sendComment="sendComment"
                     :comments="currentArticle.comments"
                     :isLoadingComments="false"
@@ -78,18 +53,23 @@
     import buttonComponent from '../../components/button-component'
     import loader from '../../components/loader'
     import commentList from '../../components/comment-list'
-    import {useArticleStore} from "../../store/article";
+    import metaInfo from '../../components/meta-info';
+    import { useArticleStore } from "~/store/article";
+    import { useArticleCommentStore } from "~/store/article-comments";
     import { storeToRefs } from "pinia";
     import {helpers, minLength, required} from "@vuelidate/validators";
     import useVuelidate from '@vuelidate/core'
-    import {useArticleCommentStore} from "../../store/article-comments";
     import { useNuxtApp } from '#app'
+
+
     const { $api } = useNuxtApp();
 
     const route = useRoute();
 
+
     const articleStore = useArticleStore();
     const articleCommentStore = useArticleCommentStore();
+
     const { currentArticle, isLoadingCurrentArticle } = storeToRefs(articleStore);
 
     let userComment = ref('');
@@ -107,6 +87,7 @@
         obj.article_id = currentArticle.value.id;
         articleCommentStore.createArticleComment(obj);
     }
+
 
     const sendNewComment = async() => {
         if ($api.isAuth.value) {
@@ -176,20 +157,21 @@
         width: 200px;
         height: 200px;
     }
+    .title {
+        font-weight: 500;
+        font-size: 45px;
+        line-height: 56px;
+        margin: 16px 0 0;
+        color: #222;
+        max-width: 920px;
+    }
     .article {
         width: 100%;
         background-color: #fff;
         padding:25px;
         border-radius: 8px;
         margin-top: 60px;
-        &__title {
-            font-weight: 500;
-            font-size: 45px;
-            line-height: 56px;
-            margin: 16px 0 0;
-            color: #222;
-            max-width: 920px;
-        }
+
         &__category {
             margin-top: 8px;
             color: #fff;

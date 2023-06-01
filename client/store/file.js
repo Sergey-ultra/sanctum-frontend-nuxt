@@ -39,7 +39,7 @@ export const useFileStore = defineStore({
                 if (data && Array.isArray(data)) {
                     this.uploadingFileUrls = data
                         .filter(item => item.status !== false)
-                        .map(item => item.saved_name)
+                        .map(item => item.url);
                 }
             }
             this.isUploading = false;

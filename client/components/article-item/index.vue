@@ -38,8 +38,11 @@
                 </nuxt-link>
             </div>
             <div class="article__likes">
-                <likeUp :likesUp="article.likes ?? 0"></likeUp>
-                <likeDown :likesDown="article.dislikes ?? 0"></likeDown>
+                <likeUp
+                    :likes="localLikes"
+                    @addLike="addLike"
+                />
+                <likeDown :likesDown="article.dislikes ?? 0"/>
             </div>
         </div>
 
@@ -52,10 +55,31 @@
 <script setup>
     import tags from '../tagsComponent'
     import likeUp from '../likes/like-up'
-    import likeDown from '../likes/like-down'
+    import likeDown from '../likes/like-down';
+    import { storeToRefs } from "pinia";
+    import { useLikeStore } from "~/store/like";
+
+    const likeStore = useLikeStore();
+    const { isUpdatedLikeCount } = storeToRefs(likeStore);
+
+    const plusLikes = ref(0);
+
+
     const props = defineProps({
-        article: Object
+        article: Object,
     });
+
+    const localLikes = computed(() => props.article.likes + plusLikes.value);
+
+    const addLike = async() => {
+        await likeStore.addLike({
+            id: props.article.id,
+            entity: 'article'
+        });
+        if (isUpdatedLikeCount.value) {
+            plusLikes.value = 1;
+        }
+    }
 </script>
 
 <style scoped lang="scss">

@@ -1,6 +1,6 @@
 <template>
     <div class="up">
-        <button class="up__btn">
+        <button class="up__btn" @click="$emit('addLike')">
             <div class="up__icon">
                 <svg>
                     <use xlink:href="#icons_thumb-up">
@@ -10,18 +10,22 @@
                     </use>
                 </svg>
             </div>
-            <span class="up__plus">{{ likesUp }}</span>
+            <span class="up__plus">{{ likes }}</span>
         </button>
     </div>
 </template>
 
 <script setup>
+
+    const emit = defineEmits(['addLike'])
+
     const props = defineProps({
-        likesUp: {
+        likes: {
             type: Number,
             default: 0
         }
     });
+
 </script>
 
 <style lang="scss" scoped>

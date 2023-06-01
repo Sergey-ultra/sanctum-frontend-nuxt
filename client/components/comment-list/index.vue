@@ -4,14 +4,15 @@
             <loader class="loader"/>
         </div>
         <div
-                class="comments__row"
-                v-for="commentItem in comments"
-                :key="commentItem.id"
+            class="comments__row"
+            v-for="commentItem in comments"
+            :key="commentItem.id"
         >
             <comment
-                    :comment="commentItem"
-                    @sendComment="$emit('sendComment')"
-                    @toggleAnswerForm="toggleAnswerForm"
+                :entity="entity"
+                :comment="commentItem"
+                @sendComment="$emit('sendComment')"
+                @toggleAnswerForm="toggleAnswerForm"
             />
         </div>
     </div>
@@ -21,12 +22,16 @@
     import comment from './comment'
     import loader from '../loader'
 
-    const emit = defineEmits(['sendComment']);
+    const emit = defineEmits(['sendComment', 'addLike']);
 
     const props = defineProps({
         isShowComments: {
             type: Boolean,
             default: false
+        },
+        entity: {
+          type: String,
+          default: null,
         },
         comments: {
             type: Array,
@@ -37,7 +42,6 @@
             default: false
         }
     });
-
 
 
     watch(

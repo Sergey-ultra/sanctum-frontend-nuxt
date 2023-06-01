@@ -30,7 +30,9 @@ export const useReviewStore = defineStore({
             rating: []
         },
         isLoadingMyReviews: false,
-        isUploadingFormWithVideo: false
+        isUploadingFormWithVideo: false,
+        isLoadingCurrentReview: false,
+        currentReview: null
     }),
     getters: {
         reviewsByRating: state => {
@@ -159,12 +161,22 @@ export const useReviewStore = defineStore({
             }
             this.isLoadingMyReviews = false;
         },
+        async loadCurrentReview(id) {
+            this.isLoadingCurrentReview = true;
+            const { $api } = useNuxtApp();
+            const { data } = await $api.get(`/reviews/${id}`);
+
+            if (data) {
+                this.currentReview = { ...data };
+            }
+            this.isLoadingCurrentReview = false;
+        },
         async checkExistingReview() {
             const currentSkuStore = useCurrentSkuStore();
             const skuId = currentSkuStore.currentSkuId;
             if (skuId) {
                 this.isCheckingExistingReview = true;
-                const { $api } = useNuxtApp()
+                const { $api } = useNuxtApp();
                 const { data } = await $api.post('/review/check-existing-review', { sku_id: skuId });
 
                 if (data) {
@@ -197,7 +209,7 @@ export const useReviewStore = defineStore({
             const skuId = currentSkuStore.currentSkuId;
             if (skuId) {
                 obj.sku_id = skuId;
-                const { $api } = useNuxtApp()
+                const { $api } = useNuxtApp();
                 const { data } = await $api.post('/reviews', obj);
 
                 if (data.status === 'success') {
@@ -208,11 +220,11 @@ export const useReviewStore = defineStore({
             }
         },
         async deleteReview(id) {
-            const { $api } = useNuxtApp()
+            const { $api } = useNuxtApp();
             await $api.delete(`/reviews/${id}`)
             await this.loadMyRatingsWithReviews();
             const notificationStore = useNotificationStore();
             notificationStore.setSuccess('Отзыв успешно удален');
-        }
+        },
     }
 });
