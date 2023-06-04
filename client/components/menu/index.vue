@@ -64,6 +64,19 @@
                             <span class="menu__item-count" v-if="favorites.length"> {{ favorites.length }}</span>
                         </nuxt-link>
                     </li>
+                    <li class="menu__item" v-if="$api.isAuth.value" @click="closeMobileMenuInternal">
+                        <nuxt-link :to="{name: 'profile-index-balance'}">
+                            <svg class="menu__item-icon" height="24" width="24" viewBox="0 0 50 50">
+                                <path d="M33.6,9.2l3.6-6.5c0.3-0.5,0.4-1.2,0.1-1.7C36.9,0.3,36.4,0,35.7,0H13.1c-0.6,0-1.2,0.4-1.5,0.9
+                                        c-0.3,0.6-0.2,1.3,0.2,1.8l4.6,6.5C12.7,12.7,2.1,24.1,2.1,39.5C2.1,45.3,6.8,50,12.6,50h24.8c5.8,0,10.5-4.7,10.5-10.5
+                                        C47.9,23.9,37.2,12.5,33.6,9.2z M35.4,29.2c-0.6,1.1-1.4,1.9-2.3,2.5c-0.9,0.6-2,1-3.3,1.3c-1.2,0.2-2.4,0.4-3.9,0.4H21v4h10.1v2.8
+                                        H21v3.1h-3.8v-3h-2v-2.8h2v-4h-2v-3.4h2V17.7h8.9c2.5,0,4.5,0.3,5.8,0.8c1.3,0.5,2.4,1.4,3.2,2.7c0.8,1.3,1.2,2.7,1.3,4.3
+                                        C36.3,26.9,36,28.2,35.4,29.2z"/>
+                                <path d="M30.6,22c-0.5-0.4-1.1-0.6-2-0.8c-0.8-0.1-1.5-0.2-2.3-0.2h-5.2v9.3h4.8c0.9,0,1.7-0.1,2.5-0.2
+		                                c0.8-0.2,1.5-0.4,2-0.8c0.6-0.3,1-0.8,1.4-1.4l0,0c0.4-0.7,0.5-1.3,0.5-2.2c0-0.8-0.2-1.5-0.5-2.2C31.5,22.8,31.1,22.3,30.6,22z"/></svg>
+                            <span>Баланс</span>
+                        </nuxt-link>
+                    </li>
 
 
                     <li class="menu__auth" v-if="!$api.isAuth.value">
@@ -230,7 +243,7 @@
                 transition: color .2s ease-out;
                 color: #333;
                 &:hover {
-                    color:#46bd87;
+                    color: #46bd87;
                 }
             }
         }
@@ -291,11 +304,12 @@
                     background: #fff;
                     list-style:none;
                     display:flex;
-                    overflow: hidden;
+                    overflow-x: hidden;
+                    overflow-y: auto;
                     margin: 0 auto;
                     width: auto;
-                    height:100%;
-                    padding:0 12px;
+                    height: calc(100% - 40px);
+                    padding: 12px;
                     flex-direction: column;
                 }
             }

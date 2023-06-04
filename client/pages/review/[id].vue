@@ -4,70 +4,104 @@
             class="loader"
             v-if="isLoadingCurrentReview"
         />
-        <div v-else>
-            <h2 class="title">{{ currentReview.title }}</h2>
-            <metaInfo :currentEntity="currentReview"/>
-            <ratingView :rating="Number(currentReview.rating)"/>
-            <div class="review__items">
-                <dl v-if="currentReview.plus" class="review__item">
-                    <dt>Достоинства:</dt>
-                    <dd>{{ currentReview.plus }}</dd>
-                </dl>
-
-                <dl v-if="currentReview.minus" class="review__item">
-                    <dt>Недостатки:</dt>
-                    <dd>{{ currentReview.minus }}</dd>
-                </dl>
-
-
-                <div v-if="currentReview.body" class="review__item">
-                    <div v-html="currentReview.body"></div>
+        <div v-else class="review__wrapper">
+            <div class="review__inner">
+                <div class="review__top">
+                    <nuxt-link :to="`/product/${currentReview.sku_code}`">
+                        <span>{{ currentReview.sku_name }}</span>
+                    </nuxt-link>
+                    <div class="recommend-ratio">
+                        <span>Рекомендуют {{ currentReview.recommend_reviews_percent }}%</span>
+                    </div>
                 </div>
-            </div>
 
-            <div  class="review__bottom" v-if="currentReview.plus && currentReview.minus && currentReview.body">
+                <div class="review__product">
+                    <div class="review__image">
+                        <img :src="currentReview.sku_image" alt="">
+                    </div>
+                    <div class="review__ratings">
+                        <div class="review__rating">
+                            <div class="review__rating-text">
+                                {{ currentReview.common_rating }} <span class="text-gray">/ 5</span>
+                            </div>
+                            <preciseRatingView
+                                class="review__rating-precise"
+                                :rating="currentReview.common_rating"
+                                :large="true"
+                            />
+                        </div>
+                        <ratingPercentage :percentage="currentReview.rating_percentage"/>
+                    </div>
+                </div>
 
-                <div class="review__comment__btn review__comment__btn-add">
+                <nuxt-link :to="`/reviews/${currentReview.sku_code}`">
+                    <span>Все отзывы: {{ currentReview.reviews_count }}</span>
+                </nuxt-link>
+                <h2 class="title">{{ currentReview.title }}</h2>
+                <metaInfo :currentEntity="currentReview"/>
+                <div class="review__items">
+                    <dl v-if="currentReview.plus" class="review__item">
+                        <dt>Достоинства:</dt>
+                        <dd>{{ currentReview.plus }}</dd>
+                    </dl>
+
+                    <dl v-if="currentReview.minus" class="review__item">
+                        <dt>Недостатки:</dt>
+                        <dd>{{ currentReview.minus }}</dd>
+                    </dl>
+
+
+                    <div v-if="currentReview.body" class="review__item">
+                        <div v-html="currentReview.body"></div>
+                    </div>
+                </div>
+
+                <div class="review__bottom" v-if="currentReview.plus && currentReview.minus && currentReview.body">
+
+                    <div class="review__comment__btn review__comment__btn-add">
                     <span>
                         {{ getCommentCountText(currentReview.comments_count) }}
                     </span>
-                </div>
+                    </div>
 
 
-                <div class="dropdown">
-                    <drop-menu
-                        :items="dropMenuItems"
-                    >
-                        <template v-slot:complaint>
-                            <div class="dropdown__inner"  @click="showComplaintForm">
-                                <button class="dropdown__value">
-                                    <span>Пожаловаться</span>
-                                </button>
-                            </div>
-                        </template>
-                    </drop-menu>
+                    <div class="dropdown">
+                        <drop-menu
+                            :items="dropMenuItems"
+                        >
+                            <template v-slot:complaint>
+                                <div class="dropdown__inner" @click="showComplaintForm">
+                                    <button class="dropdown__value">
+                                        <span>Пожаловаться</span>
+                                    </button>
+                                </div>
+                            </template>
+                        </drop-menu>
+                    </div>
+
+                    <div class="vote">
+                        <likeUp
+                            @addLike="addLike"
+                            :likes="currentReview.likes"/>
+                        <likeDown :likesDown="currentReview.dislikes ?? 0"/>
+                    </div>
                 </div>
 
-                <div class="vote">
-                    <likeUp
-                        @addLike="addLike"
-                        :likes="currentReview.likes"/>
-                    <likeDown :likesDown="currentReview.dislikes ?? 0"/>
-                </div>
+                <comment-list
+                    class="review__comments"
+                    :entity="'review_comment'"
+                    @sendComment="sendComment"
+                    :isShowComments="true"
+                    v-model:comments="currentReview.comments"
+                />
+                <add-comment
+                    :reviewId="currentReview.id"
+                />
             </div>
+            <div class="review__right">
 
-            <comment-list
-                class="review__comments"
-                :entity="'review_comment'"
-                @sendComment="sendComment"
-                :isShowComments="true"
-                v-model:comments="currentReview.comments"
-            />
-            <add-comment
-                :reviewId="currentReview.id"
-            />
+            </div>
         </div>
-
         <modal v-model:isShowModal="isShowComplaintForm">
             <template v-slot:header>
                 <h3>Жалоба на отзыв</h3>
@@ -84,6 +118,9 @@
     import dropMenu from '~/components/drop-menu';
     import loader from '../../components/loader';
     import metaInfo from '../../components/meta-info';
+    import preciseRatingView from '~/components/preciseRatingView.vue';
+    import ratingPercentage from '~/components/ratingPercentage';
+    import compactSku from '~/components/compact-sku';
     import { storeToRefs } from "pinia";
     import { useReviewStore } from "~/store/review";
     import { useCommentStore } from "~/store/comments";
@@ -145,6 +182,17 @@
     });
 </script>
 <style scoped lang="scss">
+$greenColor: #46bd87;
+
+.recommend-ratio {
+    margin-left: 20px;
+    color: $greenColor;
+    & > span {
+        font-size: larger;
+        font-weight: bold;
+    }
+}
+
 .loader {
     width: 200px;
     height: 200px;
@@ -152,7 +200,7 @@
 
 .title {
     font-weight: 500;
-    font-size: 45px;
+    font-size: 30px;
     line-height: 56px;
     margin: 16px 0 0;
     color: #222;
@@ -165,6 +213,48 @@
     padding:25px;
     border-radius: 8px;
     margin-top: 60px;
+    &__wrapper {
+        display:flex;
+    }
+    &__inner {
+        padding-right: 65px;
+        width: 75%;
+    }
+    &__right {
+        flex-grow: 1;
+        margin-bottom: 8px;
+        max-width: 336px;
+        max-height: 300px;
+        overflow: hidden;
+    }
+    &__top {
+        display: flex;
+    }
+    &__product {
+        display: flex;
+    }
+    &__image {
+        height: 200px;
+        width: 200px;
+        & img {
+            max-height: 100%;
+            max-width: 100%;
+        }
+    }
+    &__ratings {
+        display: flex;
+    }
+    &__rating {
+        display: flex;
+        flex-direction: column;
+        margin-right: 15px;
+        &-text {
+            font-size: 35px;
+        }
+        &-precise {
+            margin-top: auto;
+        }
+    }
     &__main {
         position: relative;
         width: 100%;
@@ -193,7 +283,7 @@
             flex: 1 0 auto;
         }
         &:hover {
-            color: #46bd87;
+            color: $greenColor;
         }
     }
 }

@@ -1,5 +1,13 @@
 <template>
-    <div class="rating">
+    <div
+        class="rating"
+        :class="{
+            'rating--large': large,
+        }"
+        itemtype="http://schema.org/AggregateRating"
+        itemscope=""
+        itemprop="aggregateRating"
+    >
         <div class="rating__body">
             <div class="rating__active" :style="{width:`${rating / 0.05}%`}"></div>
         </div>
@@ -10,6 +18,10 @@
     const props = defineProps({
         rating: {
             default: 5
+        },
+        large: {
+            type: Boolean,
+            default: false
         }
     });
 </script>
@@ -42,6 +54,9 @@
             left:0;
             color: #ffda66;
         }
+    }
+    &--large {
+        font-size: 25px;
     }
 }
 </style>

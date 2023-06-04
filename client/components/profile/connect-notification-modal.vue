@@ -1,7 +1,6 @@
 <template>
 <modal
         v-model:isShowModal="isShowModalLocal"
-        :width="30"
 >
     <template v-slot:header>
         <h3>Уведомления в Телеграм</h3>

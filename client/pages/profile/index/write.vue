@@ -41,6 +41,7 @@
         background-color: #fff;
         display: flex;
         flex-wrap: wrap;
+        min-height: 350px;
     }
     .title {
         color: $mainFontColor;

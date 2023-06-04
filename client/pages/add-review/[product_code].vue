@@ -62,13 +62,13 @@
                         </div>
                         <textareaComponent
                             rows="10"
-                            v-model.trim="editedReview.comment"
+                            v-model.trim="editedReview.body"
                             :color="'white'"
                         >
                         </textareaComponent>
                     </label>
 
-                    <div class="invalid-feedback" v-for="error of v$.editedReview.comment.$errors" :key="error.$uid">
+                    <div class="invalid-feedback" v-for="error of v$.editedReview.body.$errors" :key="error.$uid">
                         {{ error.$message }}
                     </div>
                 </div>
@@ -86,6 +86,27 @@
                         <input v-model="anonymouslyLocal" type="checkbox"/>
                         <span>Оставить отзыв анонимно</span>
                     </label>
+                </div>
+
+                <div class="form__group">
+                    <div class="label">
+                        <span class="text-gray">Порекоммендовали бы друзьям?</span>
+                    </div>
+                    <div>
+                        <radioComponent
+                            v-model="editedReview.is_recommend"
+                            :value="1"
+                        >
+                            <span>Да</span>
+                        </radioComponent>
+                        <radioComponent
+                            v-model="editedReview.is_recommend"
+                            :value="0"
+                        >
+                            <span>Нет</span>
+                        </radioComponent>
+
+                    </div>
                 </div>
 
 
@@ -109,19 +130,19 @@
 <script setup>
     import multipleImageUpload from "~/components/image-upload-as-form/multiple-image-upload";
     import ratingForm from "~/components/rating-form";
-    import compactSku from '~/components/compact-sku'
+    import compactSku from '~/components/compact-sku';
     import loader from "~/components/loader";
-    import textareaComponent from '../../components/textareaComponent';
-    import inputComponent from '../../components/input-component';
+    import textareaComponent from '~/components/textareaComponent';
+    import inputComponent from '~/components/input-component';
+    import radioComponent from '~/components/radioComponent.vue';
     import { useNuxtApp } from '#app'
-    const { $api } = useNuxtApp();
     import useVuelidate from '@vuelidate/core'
     import {required, minLength, helpers, maxLength} from '@vuelidate/validators';
     import { storeToRefs } from "pinia";
     import {useReviewStore} from "~/store/review";
     import {useCurrentSkuStore} from "~/store/currentSku";
 
-
+    const { $api } = useNuxtApp();
 
     const reviewStore = useReviewStore();
     const currentSkuStore = useCurrentSkuStore();
@@ -134,7 +155,7 @@
 
     let editedReview = ref({
         title: '',
-        comment:'',
+        body:'',
         plus:'',
         minus:'',
         images:[],
@@ -151,7 +172,7 @@
                 minLength: minLength(5),
                 maxLength: maxLength(256)
             },
-            comment: {
+            body: {
                 required:  helpers.withMessage('Поле должно быть заполнено', required),
                 minLength: minLength(5)
             },
@@ -218,7 +239,7 @@
                 await reviewStore.updateOrCreateReview(editedReview.value);
                 editedReview.value = {
                     title: '',
-                    comment: '',
+                    body: '',
                     plus: '',
                     minus: '',
                     images: []

@@ -14,16 +14,18 @@
                 <span class="text-gray">Пол</span>
             </div>
             <div>
-                <label class="custom-label">
-                    <input v-model="editedUserInfo.sex" id="male" type="radio" value="0">
-                    <span class="custom-radio-button"></span>
+                <radioComponent
+                    v-model="editedUserInfo.sex"
+                    :value="0"
+                >
                     <span>М</span>
-                </label>
-                <label class="custom-label">
-                    <input v-model="editedUserInfo.sex" id="female" type="radio" value="1">
-                    <span class="custom-radio-button"></span>
+                </radioComponent>
+                <radioComponent
+                    v-model="editedUserInfo.sex"
+                    :value="0"
+                >
                     <span>Ж</span>
-                </label>
+                </radioComponent>
             </div>
         </div>
         <div class="form__row">
@@ -45,6 +47,7 @@
 
 <script setup>
     import buttonComponent from "~/components/button-component.vue";
+    import radioComponent from '~/components/radioComponent.vue';
     import { helpers, numeric } from "@vuelidate/validators";
     import useVuelidate from "@vuelidate/core";
     import { storeToRefs } from "pinia";
@@ -100,9 +103,7 @@
 </script>
 
 <style scoped lang="scss">
-    $mainColor: #454cee;
     $mainFontColor: #26325c;
-    $mainGreyColor: #e8ebef;
 
     .title {
         color: $mainFontColor;
@@ -110,63 +111,9 @@
         font-weight: 600;
     }
 
-
-
-    .custom-label {
-        display:inline-flex;
-        align-items:center;
-        padding-left: 25px;
-        position: relative;
-        margin: 10px 0;
-        cursor: pointer;
-        color: $mainFontColor;
-
-        & + .custom-label {
-            margin-left: 25px;
-        }
-
-        & input {
-            position: absolute;
-            opacity: 0;
-            cursor: pointer;
-            &:checked + .custom-radio-button {
-                background-color: $mainColor;
-                border-color: $mainColor;
-
-                &:after {
-                    content: "";
-                    display: block;
-                    width: 8px;
-                    height: 5px;
-                    border-bottom: 2px solid #fff;
-                    border-left: 2px solid #fff;
-                    position: absolute;
-                    top: 39%;
-                    left: 51%;
-                    transform: translate(-50%, -50%) rotate(-45deg);
-                }
-            }
-        }
-    }
-
-    .custom-radio-button {
-        transition: all .3s ease;
-        position: absolute;
-        top: 0;
-        left: 0;
-        height: 20px;
-        width: 20px;
-        background-color: #fff;
-        border: 2px solid $mainGreyColor;
-        border-radius: 50%;
-    }
-
-
     .edit {
         width: 472px;
     }
-
-
 
     @media (max-width: 500px) {
         .profile {
