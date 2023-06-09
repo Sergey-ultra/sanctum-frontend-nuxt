@@ -1,6 +1,6 @@
 <template>
     <div class="up">
-        <button class="up__btn" @click="$emit('addLike')">
+        <button class="up__btn" :class="{'up__btn-isVote': isVote}" @click="$emit('addLike')">
             <div class="up__icon">
                 <svg>
                     <use xlink:href="#icons_thumb-up">
@@ -23,6 +23,10 @@
         likes: {
             type: Number,
             default: 0
+        },
+        isVote: {
+            type: Boolean,
+            default: false
         }
     });
 
@@ -48,7 +52,13 @@
                 width: 20px;
                 height: 20px;
             }
+            &-isVote {
+                & svg {
+                    fill: rgba(0, 0, 0, .6);
+                }
+            }
         }
+
         &__icon {
             display: inline-block;
             vertical-align: middle;

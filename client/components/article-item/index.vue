@@ -39,6 +39,7 @@
             </div>
             <div class="article__likes">
                 <likeUp
+                    :isVote="localIsVote"
                     :likes="localLikes"
                     @addLike="addLike"
                 />
@@ -60,25 +61,39 @@
     import { useLikeStore } from "~/store/like";
 
     const likeStore = useLikeStore();
-    const { isUpdatedLikeCount } = storeToRefs(likeStore);
+    const { newCount, isVote } = storeToRefs(likeStore);
 
-    const plusLikes = ref(0);
+    let likesCountLocal = ref(0);
+    let isVoteLocal = ref(false);
+    const isAddLike = ref(false);
 
 
     const props = defineProps({
         article: Object,
     });
 
-    const localLikes = computed(() => props.article.likes + plusLikes.value);
+    const localIsVote = computed(() => {
+        if (!isAddLike.value) {
+            return props.article.is_vote;
+        }
+        return newCount.value;
+    });
+
+    const localLikes = computed(() => {
+        if (!isAddLike.value) {
+            return props.article.likes;
+        }
+        return likesCountLocal.value;
+    });
 
     const addLike = async() => {
         await likeStore.addLike({
             id: props.article.id,
             entity: 'article'
         });
-        if (isUpdatedLikeCount.value) {
-            plusLikes.value = 1;
-        }
+        isAddLike.value = true;
+        likesCountLocal.value = newCount.value;
+        isVoteLocal.value = isVote.value;
     }
 </script>
 

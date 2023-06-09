@@ -34,8 +34,9 @@
 
                 <div class="vote">
                     <likeUp
-                        @addLike="addLike"
+                        :isVote="localIsVote"
                         :likes="localLikes"
+                        @addLike="addLike"
                     />
                     <likeDown :likesDown="comment.dislikes ?? 0"/>
                 </div>
@@ -81,7 +82,7 @@
 
     const { $api } = useNuxtApp();
     const likeStore = useLikeStore();
-    const { isUpdatedLikeCount } = storeToRefs(likeStore);
+    const { newCount, isVote } = storeToRefs(likeStore);
 
     const emit = defineEmits(['toggleAnswerForm', 'sendComment']);
 
@@ -93,20 +94,34 @@
         },
     });
 
+    let likesCountLocal = ref(0);
+    let isVoteLocal = ref(false);
     const commentField = ref('');
     const isShowComplaintForm = ref(false);
-    const plusLikes = ref(0);
+    const isAddLike = ref(false);
 
-    const localLikes = computed(() => props.comment.likes + plusLikes.value);
+    const localIsVote = computed(() => {
+        if (!isAddLike.value) {
+            return props.comment.is_vote;
+        }
+        return isVoteLocal.value;
+    });
+
+    const localLikes = computed(() => {
+        if (!isAddLike.value) {
+            return props.comment.likes;
+        }
+        return likesCountLocal.value;
+    });
 
     const addLike = async() => {
         await likeStore.addLike({
             id: props.comment.id,
             entity: props.entity
         });
-        if (isUpdatedLikeCount.value) {
-            plusLikes.value = 1;
-        }
+        isAddLike.value = true;
+        likesCountLocal.value = newCount.value;
+        isVoteLocal.value = isVote.value;
     }
 
     const sendComment = () => {

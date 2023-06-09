@@ -2,7 +2,9 @@
     <div class="percentage">
         <div v-for="percent in percentage" :key="percent.rating" class="percentage__item">
             <div class="percentage__stars">
-                <span class="star" v-for="star in Array.from({length: percent.rating})" :key="star"></span>
+                <span class="star" v-for="star in Array.from({length: percent.rating})" :key="star">
+                    ★
+                </span>
             </div>
             <div class="percentage__progress">
                 <div class="percentage__progress-active" :style="{width:`${percent.count_percent}%`}"></div>
@@ -21,6 +23,7 @@
 <style scoped lang="scss">
 .percentage {
     &__item {
+        width: 380px;
         display: flex;
         align-items: center;
     }
@@ -31,11 +34,11 @@
         margin-right: 5px;
     }
     &__progress {
-        position:relative;
-        height: 6px;
-        border-radius: 3px;
         width: 250px;
-        background-color: gray;
+        position:relative;
+        height: 5px;
+        border-radius: 2.5px;
+        background-color: #dcdcdc;
 
        &-active {
            border-top-left-radius: 3px;
@@ -52,11 +55,14 @@
 .star {
     display: inline-block;
     width: 15px;
+    line-height: 15px;
     position:relative;
-    &::before {
-        content:"★";
-        display: inline-block;
-        color: #ffda66;
-    }
+    font-size: 14px;
+    color: #ffda66;
+    //&::before {
+    //    content:"★";
+    //    display: inline-block;
+    //    color: #ffda66;
+    //}
 }
 </style>

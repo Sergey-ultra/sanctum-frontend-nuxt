@@ -10,31 +10,32 @@
                     <nuxt-link :to="`/product/${currentReview.sku_code}`">
                         <span>{{ currentReview.sku_name }}</span>
                     </nuxt-link>
-                    <div class="recommend-ratio">
-                        <span>Рекомендуют {{ currentReview.recommend_reviews_percent }}%</span>
-                    </div>
-                </div>
-
-                <div class="review__product">
                     <div class="review__image">
                         <img :src="currentReview.sku_image" alt="">
                     </div>
-                    <div class="review__ratings">
-                        <div class="review__rating">
-                            <div class="review__rating-text">
-                                {{ currentReview.common_rating }} <span class="text-gray">/ 5</span>
-                            </div>
-                            <preciseRatingView
-                                class="review__rating-precise"
-                                :rating="currentReview.common_rating"
-                                :large="true"
-                            />
-                        </div>
-                        <ratingPercentage :percentage="currentReview.rating_percentage"/>
-                    </div>
                 </div>
 
-                <nuxt-link :to="`/reviews/${currentReview.sku_code}`">
+                <div class="recommend-ratio">
+                    <span>Рекомендуют {{ currentReview.recommend_reviews_percent }}%</span>
+                </div>
+
+
+                <div class="review__ratings">
+                    <div class="review__rating">
+                        <div class="review__rating-text">
+                            {{ currentReview.common_rating }} <span class="text-gray">/ 5</span>
+                        </div>
+                        <preciseRatingView
+                            class="review__rating-precise"
+                            :rating="currentReview.common_rating"
+                            :large="true"
+                        />
+                    </div>
+                    <ratingPercentage class="review__percentage" :percentage="currentReview.rating_percentage"/>
+                </div>
+
+
+                <nuxt-link :to="`/reviews/${currentReview.sku_code}`" class="review__all">
                     <span>Все отзывы: {{ currentReview.reviews_count }}</span>
                 </nuxt-link>
                 <h2 class="title">{{ currentReview.title }}</h2>
@@ -81,8 +82,10 @@
 
                     <div class="vote">
                         <likeUp
+                            :isVote="currentReview.is_vote"
+                            :likes="currentReview.likes"
                             @addLike="addLike"
-                            :likes="currentReview.likes"/>
+                        />
                         <likeDown :likesDown="currentReview.dislikes ?? 0"/>
                     </div>
                 </div>
@@ -130,13 +133,15 @@
     const reviewStore = useReviewStore();
     const commentStore = useCommentStore();
     const { currentReview, isLoadingCurrentReview } = storeToRefs(reviewStore);
-    const { isUpdatedLikeCount } = storeToRefs(likeStore);
+    const { newCount, isVote } = storeToRefs(likeStore);
 
     const route = useRoute();
 
     //let isShowComments = ref(false);
     let isShowComplaintForm = ref(false);
+
     const dropMenuItems =  ['complaint'];
+
 
     const sendComment = obj => {
         obj.review_id = props.currentReview.id;
@@ -163,9 +168,8 @@
             id: currentReview.value.id,
             entity: 'review'
         });
-        if (isUpdatedLikeCount.value) {
-            currentReview.value.likes += 1;
-        }
+        currentReview.value.likes = newCount.value;
+        currentReview.value.is_vote = isVote.value;
     }
 
     // watch(
@@ -185,7 +189,7 @@
 $greenColor: #46bd87;
 
 .recommend-ratio {
-    margin-left: 20px;
+    margin-bottom: 15px;
     color: $greenColor;
     & > span {
         font-size: larger;
@@ -230,9 +234,6 @@ $greenColor: #46bd87;
     &__top {
         display: flex;
     }
-    &__product {
-        display: flex;
-    }
     &__image {
         height: 200px;
         width: 200px;
@@ -242,18 +243,24 @@ $greenColor: #46bd87;
         }
     }
     &__ratings {
+        width: 100%;
         display: flex;
+        flex-wrap: wrap;
     }
     &__rating {
+        margin-bottom: 15px;
         display: flex;
         flex-direction: column;
-        margin-right: 15px;
+        margin-right: 10px;
         &-text {
             font-size: 35px;
         }
         &-precise {
             margin-top: auto;
         }
+    }
+    &__percentage {
+        margin-bottom: 15px;
     }
     &__main {
         position: relative;
@@ -326,6 +333,14 @@ $greenColor: #46bd87;
         }
         &__main__image {
             height: 200px;
+        }
+    }
+}
+@media (max-width: 900px) {
+    .review {
+        &__inner {
+            width: 100%;
+            padding: 0;
         }
     }
 }
