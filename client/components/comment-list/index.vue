@@ -11,7 +11,7 @@
             <comment
                 :entity="entity"
                 :comment="commentItem"
-                @sendComment="$emit('sendComment')"
+                @sendComment="sendComment"
                 @toggleAnswerForm="toggleAnswerForm"
             />
         </div>
@@ -43,19 +43,7 @@
         }
     });
 
-
-    watch(
-        props.isShowComments,
-        value => {
-            if (value) {
-                setFalseToAnswerForms(props.comments);
-            }
-        }
-    );
-
-    onMounted(() => setFalseToAnswerForms(props.comments));
-
-
+    const sendComment = obj => emit('sendComment', obj);
     //const toggleAddForm = () => {
     //     isShowAddForm.value = !isShowAddForm.value;
     //     setFalseToAnswerForms(comments.value);
@@ -86,6 +74,18 @@
             }
         })
     };
+
+    watch(
+        props.isShowComments,
+        value => {
+            if (value) {
+                setFalseToAnswerForms(props.comments);
+            }
+        }
+    );
+
+
+    onMounted(() => setFalseToAnswerForms(props.comments));
 </script>
 
 <style lang="scss" scoped>

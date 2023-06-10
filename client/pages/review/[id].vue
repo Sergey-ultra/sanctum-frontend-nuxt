@@ -144,7 +144,7 @@
 
 
     const sendComment = obj => {
-        obj.review_id = props.currentReview.id;
+        obj.review_id = currentReview.value.id;
         commentStore.sendComment(obj);
     }
 

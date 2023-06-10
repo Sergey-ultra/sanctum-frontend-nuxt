@@ -129,7 +129,7 @@
             if (!$api.isAuth.value) {
                 $api.setIsShowAuthModal(true);
             } else {
-                emit('sendComment',{
+                emit('sendComment', {
                     comment: commentField.value,
                     reply_id: props.comment.id,
                 });
