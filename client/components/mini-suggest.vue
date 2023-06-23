@@ -16,7 +16,7 @@
                 :key="index"
                 class="mini-suggest__item"
             >
-                <nuxt-link :to="sku.url + `?search=${sku.name}`" class="mini-suggest__link">
+                <nuxt-link :to="`/product/${sku.sku_code}?search=${sku.name}`" class="mini-suggest__link">
                     <div class="mini-suggest__img" :style="`background-image: url(${$config.APP_URL}/${sku.image})`">
 
                     </div>
@@ -31,11 +31,11 @@
 </template>
 
 <script setup>
-    import {useSuggestStore} from '../store/suggest';
-    import {storeToRefs} from "pinia";
+    import { useSuggestStore } from '~/store/suggest';
+    import { storeToRefs } from "pinia";
 
     const suggestStore = useSuggestStore();
-    const {skus, categories, isLoadingSuggests} = storeToRefs(suggestStore);
+    const { skus, categories, isLoadingSuggests } = storeToRefs(suggestStore);
 
     const emit = defineEmits(['update:isShow']);
     const props = defineProps({

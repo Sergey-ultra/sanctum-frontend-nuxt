@@ -3,23 +3,31 @@ import { useNuxtApp } from '#app'
 export const useBrandStore = defineStore({
     id: 'brand',
     state: () => ({
-        allBrands:[],
+        brandsByLetters: [],
         popularBrands: [],
-        isLoadingAllBrands: false,
+        isLoadingBrandsByLetters: false,
         countries:[],
+        allBrands: [],
         currentBrand: null,
         isLoadingCurrentBrand: false,
     }),
     actions: {
-        setCountries(payload) {
-            this.countries = [ ...payload ];
-        },
-        async loadAllBrand() {
-            this.isLoadingAllBrands = true;
-            const { $api } = useNuxtApp()
+        // setCountries(payload) {
+        //     this.countries = [ ...payload ];
+        // },
+        async loadAllBrands() {
+            const { $api } = useNuxtApp();
             const { data } = await $api.get('/brands/all');
             if (data) {
                 this.allBrands = [...data];
+            }
+        },
+        async loadBrandsByLetters() {
+            this.isLoadingBrandsByLetters = true;
+            const { $api } = useNuxtApp();
+            const { data } = await $api.get('/brands/by-letters');
+            if (data) {
+                this.brandsByLetters = [...data];
 
                 data.forEach(el => {
                     el.brands.forEach(brand => {
@@ -29,7 +37,7 @@ export const useBrandStore = defineStore({
                     })
                 });
             }
-            this.isLoadingAllBrands = false;
+            this.isLoadingBrandsByLetters = false;
         },
         async loadPopularBrands() {
             const { $api } = useNuxtApp()

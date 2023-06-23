@@ -59,7 +59,7 @@
                 isShowNotificationModal.value = false;
             }
         }
-    )
+    );
 
 
     onMounted(async () => {

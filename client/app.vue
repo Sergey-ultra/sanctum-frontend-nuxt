@@ -148,6 +148,7 @@
 		                                c0.8-0.2,1.5-0.4,2-0.8c0.6-0.3,1-0.8,1.4-1.4l0,0c0.4-0.7,0.5-1.3,0.5-2.2c0-0.8-0.2-1.5-0.5-2.2C31.5,22.8,31.1,22.3,30.6,22z"/>
                                 </svg>
                                 <span>Баланс</span>
+                                <span class="dropdown__count">{{ $api.$user.balance ?? 0 }}</span>
                             </nuxt-link>
                             <div class="dropdown__el" @click="exit">
                                 <svg class="dropdown__icon" viewBox="0 0 24 24">

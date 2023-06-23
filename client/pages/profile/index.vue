@@ -112,7 +112,7 @@
         }
         &__main {
             width: 80%;
-            min-height:300px;
+            min-height: 500px;
         }
         &__sidebar {
             display: flex;

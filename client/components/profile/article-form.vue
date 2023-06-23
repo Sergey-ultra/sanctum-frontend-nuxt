@@ -19,15 +19,12 @@
                     <span class="text-gray">Категория статьи</span>
                 </div>
 
-                <select v-model="editedArticle.article_category_id" class="form-control input">
-                    <option
-                        v-for="option in articleCategoriesLocal"
-                        :key="option.id"
-                        :value="option.id"
-                    >
-                        {{ option.name }}
-                    </option>
-                </select>
+                <selectComponent
+                    v-model="editedArticle.article_category_id"
+                    :items="articleCategoriesLocal"
+                    :item-title="'name'"
+                    :item-value="'id'"
+                />
             </label>
             <div class="invalid-feedback" v-for="error of v$.editedArticle.article_category_id.$errors"
                  :key="error.$uid">
@@ -116,6 +113,7 @@
     import textareaComponent from '../../components/textareaComponent';
     import inputComponent from '../../components/input-component';
     import buttonComponent from '../../components/button-component';
+    import selectComponent from '~/components/select-component-extended.vue';
     import selectElement from "../../components/select-element";
     import oneImageUpload from "../image-upload-as-form/one-image-upload.vue";
     // import ckEditorComponent from "../../components/ckEditorComponent";

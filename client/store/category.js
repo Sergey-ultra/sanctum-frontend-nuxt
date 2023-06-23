@@ -6,9 +6,17 @@ export const useCategoryStore = defineStore({
         isLoading: false,
         currentCategory: {},
         categories: [],
+        allCategories: [],
         isLoadingCategories: false
     }),
     actions: {
+        async loadAllCategories() {
+            const { $api } = useNuxtApp()
+            const { data } = await $api.get(`/categories/all`);
+            if (data) {
+                this.allCategories = [...data];
+            }
+        },
         async loadNestedCategories() {
             this.isLoadingCategories = true;
 

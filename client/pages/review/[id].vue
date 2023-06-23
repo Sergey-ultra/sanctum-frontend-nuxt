@@ -7,7 +7,7 @@
         <div v-else class="review__wrapper">
             <div class="review__inner">
                 <div class="review__top">
-                    <nuxt-link :to="`/product/${currentReview.sku_code}`">
+                    <nuxt-link class="title" :to="`/product/${currentReview.sku_code}`">
                         <span>{{ currentReview.sku_name }}</span>
                     </nuxt-link>
                     <div class="review__image">

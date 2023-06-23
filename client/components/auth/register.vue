@@ -69,11 +69,11 @@
 </template>
 
 <script setup>
-    import btn from "../btn";
     import useVuelidate from '@vuelidate/core'
     import { required, email, minLength, helpers } from '@vuelidate/validators'
     import { useNuxtApp } from '#app'
     const { $api } = useNuxtApp();
+    const route = useRoute();
 
 
     const registrationForm = ref({
@@ -122,7 +122,12 @@
         const validated = await v$.value.registrationForm.$validate();
 
         if (validated) {
-            await $api.register(registrationForm.value);
+            const obj = registrationForm.value;
+            if (route.query.ref) {
+                obj.ref = route.query.ref;
+            }
+
+            await $api.register(obj);
             registrationForm.value = {
                 name: '',
                 email: '',

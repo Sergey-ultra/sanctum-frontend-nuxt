@@ -6,7 +6,7 @@
                 <div class="label">
                     <span class="text-gray">Ваше имя</span>
                 </div>
-                <input class="input" type="text" v-model="editedUserInfo.name">
+                <inputComponent v-model="editedUserInfo.name"/>
             </label>
         </div>
         <div class="form__row">
@@ -22,7 +22,7 @@
                 </radioComponent>
                 <radioComponent
                     v-model="editedUserInfo.sex"
-                    :value="0"
+                    :value="1"
                 >
                     <span>Ж</span>
                 </radioComponent>
@@ -33,10 +33,12 @@
                 <div class="label">
                     <span class="text-gray">Год рождения</span>
                 </div>
-                <select class="select" v-model="editedUserInfo.birthday_year">
-                    <option value="null">Выберите год рождения</option>
-                    <option v-for="year  in years" :value="year">{{ year }}</option>
-                </select>
+                <selectComponent
+                    v-model="editedUserInfo.birthday_year"
+                    :items="yearsOptions"
+                    :item-title="'title'"
+                    :item-value="'value'"
+                />
             </label>
         </div>
         <div class="buttons">
@@ -47,6 +49,8 @@
 
 <script setup>
     import buttonComponent from "~/components/button-component.vue";
+    import inputComponent from "~/components/input-component.vue";
+    import selectComponent from '~/components/select-component-extended.vue';
     import radioComponent from '~/components/radioComponent.vue';
     import { helpers, numeric } from "@vuelidate/validators";
     import useVuelidate from "@vuelidate/core";
@@ -56,15 +60,17 @@
     const { userInfo } = storeToRefs(userStore);
 
     const editedUserInfo = ref({
-        birthday_year: 'null'
+        birthday_year: null
     });
 
-    const years = computed(() => {
+    const yearsOptions = computed(() => {
         let res = []
         for (let currentYear = 1940; currentYear <= new Date().getFullYear(); currentYear++) {
             res.push(currentYear)
         }
-        return res
+        res = res.map(el => ({ title: el, value: el }));
+        res.unshift({ title: 'Выберите год рождения', value: null });
+        return res;
     });
 
 
@@ -90,6 +96,7 @@
         userInfo,
         value => {
         if (Object.keys(userInfo.value).length) {
+            console.log(value);
             editedUserInfo.value = {...value}
         }
     });

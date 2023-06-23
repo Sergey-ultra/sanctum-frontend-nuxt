@@ -4,18 +4,30 @@
             <h2 class="title">Бренды</h2>
         </div>
         <div class="brands">
-            <div v-if="isLoadingAllBrands"></div>
+            <div v-if="isLoadingBrandsByLetters"></div>
             <div v-else class="brands__content">
                 <div class="filter">
-                    <select class="filter__item select filter__select" v-model="country">
-                        <option value="null">Все страны</option>
-                        <option v-for="country in countries" :key="country" :value="country">
-                            {{ country }}
-                        </option>
-                    </select>
-                    <input class="filter__item input filter__input" type="text" placeholder="Поиск по бренду"
-                           v-model.trim="search">
-                    <buttonComponent class="filter__item filter__button" :radius="true" :color="'default'" @click="searchReset">Сброс</buttonComponent>
+                    <selectComponent
+                        class="filter__item filter__select"
+                        v-model="country"
+                        :items="countryOptions"
+                        :item-title="'title'"
+                        :item-value="'value'"
+                    />
+
+                    <inputComponent
+                        class="filter__item filter__input"
+                        :placeholder="'Поиск по бренду'"
+                        v-model.trim="search"/>
+
+                    <buttonComponent
+                        class="filter__item filter__button"
+                        :radius="true"
+                        :color="'default'"
+                        @click="searchReset"
+                    >
+                        Сброс
+                    </buttonComponent>
                 </div>
                 <div
                     class="brands__list"
@@ -42,14 +54,24 @@
 
 <script setup>
     import buttonComponent from "~/components/button-component.vue";
+    import selectComponent from '~/components/select-component-extended.vue';
+    import inputComponent from '~/components/input-component.vue';
     import {storeToRefs} from "pinia";
     import {useBrandStore} from "~/store/brand";
     const brandStore = useBrandStore();
-    const {allBrands, isLoadingAllBrands, countries} = storeToRefs(brandStore);
+    const { brandsByLetters, isLoadingBrandsByLetters, countries } = storeToRefs(brandStore);
 
-    const country = ref('null');
+    const country = ref(null);
     const search = ref('');
     // let chunksCount = ref(3);
+
+    let countryOptions = computed(() => {
+        return [{
+            title: 'Все страны',
+            value: null,
+        }].concat(countries.value.map(el => ({ title: el, value: el })));
+    });
+
 
     const searchReset = () => {
         country.value = 'null';
@@ -68,7 +90,7 @@
 
     let filteredBrands = computed(() => {
         if (country.value !== 'null' || search.value !== '') {
-            return allBrands.value.map(el => {
+            return brandsByLetters.value.map(el => {
                 let brands = el.brands
 
                 if (country.value !== 'null') {
@@ -85,7 +107,7 @@
                 }
             }).filter(el => el.brands.length > 0)
         }
-        return allBrands.value;
+        return brandsByLetters.value;
     });
 
 
@@ -127,8 +149,8 @@
     // });
 
     useAsyncData(async () => {
-        if (!allBrands.value.length) {
-            await brandStore.loadAllBrand();
+        if (!brandsByLetters.value.length) {
+            await brandStore.loadBrandsByLetters();
         }
     });
 
