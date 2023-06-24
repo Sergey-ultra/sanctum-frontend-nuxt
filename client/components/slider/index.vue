@@ -31,6 +31,7 @@
                     <slot
                         name ="item"
                         :item="item"
+                        :index="index"
                     ></slot>
                 </div>
             </div>

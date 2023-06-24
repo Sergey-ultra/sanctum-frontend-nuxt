@@ -35,12 +35,13 @@
         margin-top: 28px;
         display: flex;
         align-items: stretch;
-
+        height: 324px;
+        overflow: hidden;
 
         &__main__image {
             width: 70%;
             flex: 1;
-            height: 324px;
+            height: 100%;
             max-width: 676px;
             margin-right: 12px;
             position: relative;

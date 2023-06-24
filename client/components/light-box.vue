@@ -5,19 +5,19 @@
             <div class="light__slider">
                 <ul class="light__list">
                     <li
-                            class="light__item"
-                            :class="{'light__item-selected': selectedPhotoIndexLocal === index}"
-                            v-for="(image, index) in smallImages"
-                            :key="index"
-                            @click="selectPhotoIndex(index)"
+                        class="light__item"
+                        :class="{'light__item-selected': selectedPhotoIndexLocal === index}"
+                        v-for="(item, index) in items"
+                        :key="index"
+                        @click="selectPhotoIndex(index)"
                     >
-                        <img :src="`${$config.APP_URL}/${image}`" />
+                        <img :src="`${$config.APP_URL}/${item.small}`" />
                     </li>
                 </ul>
             </div>
             <div class="light__main">
                 <div class="light__inner">
-                    <img :src="`${$config.APP_URL}/${images[selectedPhotoIndexLocal]}`"/>
+                    <img :src="`${$config.APP_URL}/${items[selectedPhotoIndexLocal].url}`"/>
                 </div>
             </div>
         </div>
@@ -35,14 +35,10 @@
             type: Number,
             default: 0
         },
-        images: {
+        items: {
             type: Array,
             default: () => []
         },
-        smallImages: {
-            type: Array,
-            default: () => []
-        }
     });
 
     const selectedPhotoIndexLocal = computed({

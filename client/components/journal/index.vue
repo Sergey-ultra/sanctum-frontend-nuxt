@@ -47,8 +47,8 @@
 </template>
 
 <script setup>
-    import slider from '../slider'
-    import {useArticleStore} from "../../store/article";
+    import slider from '../slider';
+    import {useArticleStore} from "~/store/article";
     import {storeToRefs} from "pinia";
     const articleStore = useArticleStore();
     const { lastArticles } = storeToRefs(articleStore);

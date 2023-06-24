@@ -8,7 +8,12 @@
 
             <p class="item bold">Введите <span class="red">точное название</span> объекта отзыва, о котором хотите написать:</p>
             <div class="item flex">
-                <inputComponent v-model.trim="search" :color="'white'" :isLoading="isLoadingSuggests" @input="getSuggests"/>
+                <div class="fill">
+                    <inputComponent v-model.trim="search" :color="'white'" :isLoading="isLoadingSuggests" @input="getSuggests"/>
+                    <div class="invalid-feedback" v-for="error of v$.search.$errors" :key="error.$uid">
+                        {{ error.$message }}
+                    </div>
+                </div>
                 <buttonComponent @click="showAddForm">
                     Далее
                 </buttonComponent>
@@ -46,11 +51,22 @@ import addNewSku from "./add-new-sku.vue";
 import buttonComponent from "~/components/button-component.vue";
 import {useSuggestStore} from "~/store/suggest";
 import {storeToRefs} from "pinia";
+import { helpers, required } from "@vuelidate/validators";
+import useVuelidate from "@vuelidate/core";
 const suggestStore = useSuggestStore();
 const { skus, isLoadingSuggests } = storeToRefs(suggestStore);
 
 const search = ref('');
 let isShowAddForm = ref('');
+
+const rules = {
+    search: {
+        required: helpers.withMessage('Укажите точное название объекта своего отзыва (как в примере)!', required),
+    },
+};
+
+const v$ = useVuelidate(rules, { search });
+
 const getSuggests = () => {
     if (search.value) {
         suggestStore.getSuggests(search.value);
@@ -59,8 +75,9 @@ const getSuggests = () => {
     }
 }
 
-const showAddForm = () => {
-    if (search.value.length) {
+const showAddForm = async () => {
+    const validated = await v$.value.search.$validate();
+    if (validated) {
         isShowAddForm.value = true;
     }
 }
@@ -73,6 +90,9 @@ const showAddForm = () => {
     }
     .item {
         margin-bottom: 15px;
+    }
+    .fill {
+        width: 100%;
     }
     .bold {
         font-weight: bold;

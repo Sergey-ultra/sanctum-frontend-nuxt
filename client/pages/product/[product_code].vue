@@ -239,8 +239,7 @@
         <light-box
             class="light-box"
             v-if="isShowLightBox"
-            :images="mainPhotos"
-            :smallImages="smallPhotos"
+            :items="photos"
             v-model:selectedPhotoIndex="selectedPhotoIndex"
             v-model:isShowLightBox="isShowLightBox"
         />
@@ -256,13 +255,14 @@
     import lightBox from '../../components/light-box'
     import mobileSlider from '../../components/mobile-slider'
     import {storeToRefs} from "pinia";
-    import {useCurrentSkuStore} from "../../store/currentSku";
-    import {useComparisonStore} from "../../store/comparison";
-    import {useFavoritesStore} from "../../store/favorites";
-    import {useTrackingStore} from "../../store/tracking";
-    import {useViewedSkuStore} from "../../store/viewedSku";
-    import {useReviewStore} from "../../store/review";
-    import { useNuxtApp } from '#app'
+    import {useCurrentSkuStore} from "~/store/currentSku";
+    import {useComparisonStore} from "~/store/comparison";
+    import {useFavoritesStore} from "~/store/favorites";
+    import {useTrackingStore} from "~/store/tracking";
+    import {useViewedSkuStore} from "~/store/viewedSku";
+    import {useReviewStore} from "~/store/review";
+    import transformImagePath from '~/utils/transform-image-path';
+    import { useNuxtApp } from '#app';
     const { $api } = useNuxtApp();
 
     const currentSkuStore = useCurrentSkuStore();
@@ -290,6 +290,7 @@
         return currentSku.value.code + '-' + currentSku.value.id;
     });
 
+    const mainPhotos = computed(() => currentSku.value.images);
     const smallPhotos = computed(() => {
         if (currentSku.value.images) {
             return currentSku.value.images.map(path => {
@@ -298,7 +299,12 @@
         }
         return [];
     });
-    const mainPhotos = computed(() => currentSku.value.images);
+    const photos = computed(() =>  {
+        return currentSku.value.images
+            .map(path => {
+                return { type: 'image', url: path, small: transformImagePath(path, 'small') }
+            });
+    });
 
     const skuName = computed(() => `${currentSku.value.name}, ${currentSku.value.volume}`);
 
@@ -333,15 +339,6 @@
             },
         ]
     });
-
-
-    const transformImagePath = (path, folder) => {
-        let imagePathParts = path.split('/');
-        const imageName = imagePathParts[imagePathParts.length - 1];
-        imagePathParts[imagePathParts.length - 1] = folder;
-        imagePathParts.push(imageName);
-        return imagePathParts.join('/');
-    };
 
     const showLightBox = () => isShowLightBox.value = true;
 
