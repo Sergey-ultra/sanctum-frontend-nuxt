@@ -1,25 +1,35 @@
 <template>
     <div class="photos">
         <div class="photos__main__image">
-            <picture class="photos__main__photo">
-                <img :src="`${$config.APP_URL}/${images[photoMainIndex]}`"/>
+            <picture class="photos__main__photo"  @click="openLightBox">
+                <img :src="`${$config.APP_URL}/${images[selectedPhotoIndex]}`"/>
             </picture>
         </div>
         <div class="photos__images" v-if="images.length > 1">
             <div
                     class="photos__image"
-                    :class="{'active-image': imageIndex === photoMainIndex}"
+                    :class="{'active-image': imageIndex === selectedPhotoIndex}"
                     v-for="(image, imageIndex) in  images"
                     :key="imageIndex"
-                    @click="photoMainIndex = imageIndex"
+                    @click="selectedPhotoIndex = imageIndex"
             >
                 <img class="" :src="`${$config.APP_URL}/${image}`" :alt="image"/>
             </div>
         </div>
+        <light-box
+            class="light-box"
+            v-if="isShowLightBox"
+            :items="additionalInfoWithSmall"
+            v-model:selectedPhotoIndex="selectedPhotoIndex"
+            v-model:isShowLightBox="isShowLightBox"
+        />
     </div>
 </template>
 
 <script setup>
+    import lightBox from '~/components/light-box';
+    import transformImagePath from "~/utils/transform-image-path";
+
     const props = defineProps({
         images: {
             type: Array,
@@ -27,7 +37,17 @@
         }
     });
 
-    let photoMainIndex = ref(0);
+    const selectedPhotoIndex = ref(0);
+    const isShowLightBox = ref(false);
+
+    const additionalInfoWithSmall = computed(() => {
+        return props.images
+            .map(path => {
+                return { type: 'image', url: path, small: transformImagePath(path, 'small') }
+            });
+    });
+
+    const openLightBox = () =>  isShowLightBox.value = true;
 </script>
 
 <style scoped lang="scss">
@@ -59,6 +79,7 @@
             background-color: #f4f4f4;
 
             & img {
+                cursor: pointer;
                 display: block;
                 flex: 0 0 auto;
                 margin: 0;
