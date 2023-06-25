@@ -6,7 +6,7 @@
             <div class="row__item">
                 <h4>Отзывы и предложения по работе сайта Smart-Beautiful.ru</h4>
 <!--                <blockquote>-->
-                    <p>Smart-Beautiful - это сервис сравнения цен на косметических товаров.</p>
+                    <p>Smart-Beautiful - это сервис отзывов и сравнения цен на косметические товары.</p>
 
                     <p>Сайт создан для удобного сравнения цен на косметику в популярных интернет-магазинах России.</p>
 
@@ -22,13 +22,37 @@
         </div>
 
         <h4>Комментарии пользователей</h4>
-        <form class="form" @submit.prevent="sendComment">
-            <div>Добавить сообщение</div>
+        <div>
+            <div v-for="message in messages">
+                <div>
+                    <span>{{ message.message }}</span>
+                    <span>{{ message.author }}</span>
+                </div>
+            </div>
+        </div>
+        <form class="form" @submit.prevent="sendMessage">
+            <div class="form__row">
+                <label>
+                    <div class="label">
+                        <span class="text-gray">Добавить сообщение</span>
+                    </div>
 
-            <textareaComponent class="margin-top"  v-model.trim="comment" placeholder="Комментарий"></textareaComponent>
+                    <textareaComponent v-model.trim="form.message" placeholder="Комментарий"></textareaComponent>
+                </label>
+
+                <div class="invalid-feedback" v-for="error of v$.form.message.$errors" :key="error.$uid">
+                    {{ error.$message }}
+                </div>
+            </div>
 
             <div class="form__row">
-                <inputComponent class="form__item" v-model.trim="author" placeholder="Ваше имя"/>
+                <div class="form__item">
+                    <inputComponent  v-model.trim="form.author" placeholder="Ваше имя"/>
+                    <div class="invalid-feedback" v-for="error of v$.form.author.$errors" :key="error.$uid">
+                        {{ error.$message }}
+                    </div>
+                </div>
+
                 <buttonComponent class="form__item" :color="'yellow'" :radius="true" type="submit">Отправить</buttonComponent>
             </div>
         </form>
@@ -37,14 +61,43 @@
 </template>
 
 <script setup>
-    import textareaComponent from '../../components/textareaComponent';
-    import inputComponent from '../../components/input-component';
-    import buttonComponent from '../../components/button-component';
+    import textareaComponent from '~/components/textareaComponent';
+    import inputComponent from '~/components/input-component';
+    import buttonComponent from '~/components/button-component';
+    import {useNuxtApp} from "#app";
+    import {helpers, minLength, required} from "@vuelidate/validators";
+    import useVuelidate from "@vuelidate/core";
+    const { $api } = useNuxtApp();
 
-    let comment = ref('');
-    let author = ref('');
-    const sendComment = () => {
+    const messages = ref([]);
+    const form = ref({
+        message: '',
+        author: '',
+    });
+    const rules = {
+        form: {
+            message: {
+                required:  helpers.withMessage('Поле должно быть заполнено', required),
+                minLength: helpers.withMessage('Должно быть не меньше 10 символов', minLength(10)),
+            },
+            author: {
+                required:  helpers.withMessage('Поле должно быть заполнено', required),
+                minLength: helpers.withMessage('Должно быть не меньше 2 символов', minLength(2)),
+            },
+        }
+    };
 
+    const v$ = useVuelidate(rules, { form });
+    const sendMessage = async () => {
+        const validated = await v$.value.form.$validate();
+        if (validated) {
+            await $api.post('client-messages', form.value);
+            v$.value.$reset();
+            form.value = {
+                message: '',
+                author: '',
+            };
+        }
     }
 
     const setSEO = () => {
@@ -59,13 +112,16 @@
         });
     }
     setSEO();
+
+    useAsyncData(async () => {
+        const { data } = await $api.get('client-messages');
+        if (Array.isArray(data)) {
+            messages.value = [...data];
+        }
+    });
 </script>
 
 <style lang="scss" scoped>
-    .margin-top {
-        margin-top: 15px;
-    }
-
     .input {
         width: 200px;
     }
@@ -95,12 +151,9 @@
         width: 100%;
         &__row {
             width: 100%;
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-between;
         }
         &__item {
-            margin-top: 15px;
+            margin-bottom: 20px;
         }
     }
 

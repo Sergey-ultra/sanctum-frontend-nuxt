@@ -112,7 +112,7 @@
 <script setup>
     import register from "./register";
     import recover from "./recover";
-    import modal from '../modal'
+    import modal from '~/components/modal';
     import btn from "../btn";
     import useVuelidate from '@vuelidate/core'
     import {required, email, minLength, helpers} from '@vuelidate/validators'

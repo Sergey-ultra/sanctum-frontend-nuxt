@@ -1,6 +1,5 @@
 import {useNuxtApp} from "#app";
 import {useCurrentSkuStore} from "./currentSku";
-import {useNotificationStore} from "./notification";
 
 
 export const useQuestionStore = defineStore({
@@ -86,19 +85,17 @@ export const useQuestionStore = defineStore({
             const skuId = currentSkuStore.currentSkuId;
             if (skuId) {
                 obj.sku_id = skuId;
-                const { $api } = useNuxtApp()
+                const { $api } = useNuxtApp();
                 const { data } = await $api.post('questions', obj);
-                const notificationStore = useNotificationStore();
-                notificationStore.setSuccess('Вопрос успешно создан и будет опубликован после модерации');
+                $api.$toast.setSuccess('Вопрос успешно создан и будет опубликован после модерации');
                 await this.reloadQuestions();
             }
         },
         async deleteItem(id) {
-            const { $api } = useNuxtApp()
-            await $api.delete(`/questions/${id}`)
+            const { $api } = useNuxtApp();
+            await $api.delete(`/questions/${id}`);
             await this.loadMyQuestions();
-            const notificationStore = useNotificationStore();
-            notificationStore.setSuccess('Отзыв успешно удален');
+            $api.$toast.setSuccess('Отзыв успешно удален');
         }
     },
 });

@@ -2,13 +2,13 @@
     <div class="notification">
         <transition-group name="note" class="note_list">
             <div
-                    v-for="(note, index) in notes"
-                    :key="index"
-                    class="notification__content"
-                    :class="{
-                        'green': note.status === 'success',
-                        'red': note.status === 'error'
-                    }"
+                v-for="(note, index) in notes"
+                :key="index"
+                class="notification__content"
+                :class="{
+                   'green': note.status === 'success',
+                   'red': note.status === 'error'
+                }"
             >
                 <div class="notification__icon">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" role="img" aria-hidden="true" class="v-icon__svg">
@@ -18,7 +18,7 @@
                 <div class="notification__text">
                     {{ note.message }}
                 </div>
-                <div class="notification__button" @click="notificationStore.deleteNote(index)">
+                <div class="notification__button" @click="$api.$toast.deleteNote(index)">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" role="img" aria-hidden="true" class="v-icon__svg">
                         <path d="M12,2C17.53,2 22,6.47 22,12C22,17.53 17.53,22 12,22C6.47,22 2,17.53 2,12C2,6.47 6.47,2 12,2M15.59,7L12,10.59L8.41,7L7,8.41L10.59,12L7,15.59L8.41,17L12,13.41L15.59,17L17,15.59L13.41,12L17,8.41L15.59,7Z"></path>
                     </svg>
@@ -27,13 +27,9 @@
         </transition-group>
     </div>
 </template>
-
 <script setup>
-    import {useNotificationStore} from "~/store/notification";
-    import { storeToRefs } from "pinia";
-
-    const notificationStore = useNotificationStore();
-    const { notes } = storeToRefs(notificationStore);
+    const { $api } = useNuxtApp();
+    const notes = computed(() => $api.$toast.notes.value);
 </script>
 
 <style lang="scss" scoped>

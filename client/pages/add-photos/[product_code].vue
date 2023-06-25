@@ -50,7 +50,7 @@
 </template>
 
 <script setup>
-    import multipleImageUpload from "../../components/image-upload-as-form/multiple-image-upload";
+    import multipleImageUpload from "~/components/image-upload-as-form/multiple-image-upload";
     import compactSku from '../../components/compact-sku'
     import ratingForm from "../../components/rating-form";
     import useVuelidate from '@vuelidate/core'

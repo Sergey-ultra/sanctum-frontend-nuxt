@@ -1,6 +1,5 @@
 import {useNuxtApp} from "#app";
 import {useCurrentSkuStore} from "./currentSku";
-import {useNotificationStore} from "./notification";
 
 
 export const useReviewStore = defineStore({
@@ -198,8 +197,7 @@ export const useReviewStore = defineStore({
                 const { data } = await $api.post('/reviews/add-video', obj);
 
                 if (data.status === 'success') {
-                    const notificationStore = useNotificationStore();
-                    notificationStore.setSuccess('Видео успешно загружено и будет опубликовано после модерации');
+                    $api.$toast.setSuccess('Видео успешно загружено и будет опубликовано после модерации');
                 }
                 this.isUploadingFormWithVideo = false;
             }
@@ -214,8 +212,7 @@ export const useReviewStore = defineStore({
 
                 if (data.status === 'success') {
                     this.setExistingReview(data.data);
-                    const notificationStore = useNotificationStore();
-                    notificationStore.setSuccess('Отзыв успешно создан и будет опубликован после модерации');
+                    $api.$toast.setSuccess('Отзыв успешно создан и будет опубликован после модерации');
                 }
             }
         },
@@ -223,8 +220,7 @@ export const useReviewStore = defineStore({
             const { $api } = useNuxtApp();
             await $api.delete(`/reviews/${id}`)
             await this.loadMyRatingsWithReviews();
-            const notificationStore = useNotificationStore();
-            notificationStore.setSuccess('Отзыв успешно удален');
+            $api.$toast.setSuccess('Отзыв успешно удален');
         },
     }
 });

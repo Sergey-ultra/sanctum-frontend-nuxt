@@ -105,14 +105,6 @@
                                 <img class="dropdown__avatar" :src="$api.$user.avatar" :alt="$api.$user.avatar">
                                 <span class="dropdown__username">{{ $api.$user.name }}</span>
                             </nuxt-link>
-                            <nuxt-link class="dropdown__el" :to="'/comparison'">
-                                <svg class="dropdown__icon" viewBox="0 0 24 24">
-                                    <path
-                                        d="M3 7V4h2v3l3 .001v2H5V12H3V9H0V7h3zm5 6.004v-2h13v2H8zM10 7v2h11V7H10zM3 17.002v-2h18v2H3zM3 19v2h18v-2H3z"></path>
-                                </svg>
-                                <span>Списки сравнения</span>
-                                <span class="dropdown__count" v-if="allComparedSkuIdsCount">{{ allComparedSkuIdsCount }}</span>
-                            </nuxt-link>
                             <nuxt-link class="dropdown__el" :to="{name: 'profile-index-write'}">
                                 <svg class="dropdown__icon" viewBox="0 0 24 24">
                                     <path
@@ -136,6 +128,14 @@
                                 </svg>
                                 <span>Избранное</span>
                                 <span class="dropdown__count" v-if="favorites.length">{{ favorites.length }}</span>
+                            </nuxt-link>
+                            <nuxt-link class="dropdown__el" :to="'/comparison'">
+                                <svg class="dropdown__icon" viewBox="0 0 24 24">
+                                    <path
+                                        d="M3 7V4h2v3l3 .001v2H5V12H3V9H0V7h3zm5 6.004v-2h13v2H8zM10 7v2h11V7H10zM3 17.002v-2h18v2H3zM3 19v2h18v-2H3z"></path>
+                                </svg>
+                                <span>Списки сравнения</span>
+                                <span class="dropdown__count" v-if="allComparedSkuIdsCount">{{ allComparedSkuIdsCount }}</span>
                             </nuxt-link>
                             <nuxt-link class="dropdown__el" :to="{name: 'profile-index-balance'}">
                                 <svg class="dropdown__icon" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 50 50">

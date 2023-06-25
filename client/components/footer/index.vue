@@ -6,6 +6,9 @@
                     <div class="footer__col">
                         <div class="footer__title">О компании</div>
                         <div class="footer__item">
+                            <nuxt-link :to="{ name: 'terms'}">Правила сервиса</nuxt-link>
+                        </div>
+                        <div class="footer__item">
                             <nuxt-link :to="{ name: 'about'}"> Вопросы и пожелания по сайту</nuxt-link>
                         </div>
                         <div class="footer__item">

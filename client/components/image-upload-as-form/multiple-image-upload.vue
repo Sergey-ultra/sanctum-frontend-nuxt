@@ -4,6 +4,7 @@
                 v-for="(image, index) in previewImages"
                 :key="index"
                 class="file-form__item file-form__img"
+                :style="{width: width, height: `${height}px`}"
         >
             <img :src="`${image}`" class=""/>
 
@@ -22,7 +23,10 @@
 
         </div>
 
-        <div  class="file-form__item file-form__upload">
+        <div
+            class="file-form__item file-form__upload"
+            :style="{width: width, height: `${height}px`}"
+        >
             <svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24"
                  stroke-linecap="round" stroke-linejoin="round" height="1em" width="1em"
                  xmlns="http://www.w3.org/2000/svg">
@@ -32,7 +36,7 @@
             </svg>
             <p>Добавьте свои фотографии (до 10
                 штук)<span>*</span></p>
-            <input id="formFileMultiple" @change="loadImages($event)" type="file" name="images"  multiple accept="image/*">
+            <input @change="loadImages($event)" type="file" name="images"  multiple accept="image/*" :disabled="disabled">
         </div>
     </div>
 </template>
@@ -49,18 +53,35 @@
 
     const props = defineProps({
         entity: {
-          type: String
+          type: String,
         },
-        initialImageUrls: Array,
+        initialImageUrls: {
+            type: Array,
+            default: () => [],
+        },
         fileName: {
           type: String,
-          default: ''
-        }
+          default: '',
+        },
+        photoCountInRow: {
+            type: Number,
+            default: 4
+        },
+        height: {
+            type:Number,
+            default: 152
+        },
+        disabled: {
+            type: Boolean,
+            default: false
+        },
     });
 
     const previewImages = ref([]);
     const mainPhotoIndex = ref(0);
     const isPreviewImagesInit = ref(true);
+
+    const width = computed(() => `calc(100% / ${props.photoCountInRow} - 16px)`);
 
     let initialImageUrlsLocal = computed({
         get() {
@@ -68,21 +89,19 @@
         },
         set(value) {
             emit('update:initialImageUrls', value);
-        }
+        },
     });
-
 
 
     const loadImages = event => {
         const files = event.target.files || event.dataTransfer.files
         for (const file of files) {
-            let reader = new FileReader()
-            reader.readAsDataURL(file)
-            reader.onload = e => previewImages.value.push(e.target.result)
+            let reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = e => previewImages.value.push(e.target.result);
         }
 
-
-        fileStore.loadFilesAsForm({ files, entity: props.entity, type: 'image' })
+        fileStore.loadFilesAsForm({ files, entity: props.entity, type: 'image' });
     };
 
     const deletePhoto = index => {
@@ -119,7 +138,6 @@
         border-radius: 4px;
         overflow: hidden;
         &__item {
-            height: 152px;
             max-height: 100%;
             margin: 8px;
             display: flex;
@@ -128,7 +146,6 @@
             border: 1px solid #e6e6e6;
             position: relative;
             border-radius: 4px;
-            width: calc(100% / 4 - 16px);
 
             &  img {
                 max-height: 100%;

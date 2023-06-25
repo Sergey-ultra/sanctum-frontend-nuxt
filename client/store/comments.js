@@ -1,6 +1,4 @@
 import { useNuxtApp } from '#app'
-import {useNotificationStore} from "./notification";
-
 
 export const useCommentStore = defineStore({
     id: 'comment',
@@ -45,16 +43,14 @@ export const useCommentStore = defineStore({
             const { $api } = useNuxtApp()
             const { data } = await $api.post('/comments', object);
             if (data.status) {
-                const notificationStore = useNotificationStore()
-                notificationStore.setSuccess('Комментарий успешно создан и будет опубликован после модерации');
+                $api.$toast.setSuccess('Комментарий успешно создан и будет опубликован после модерации');
             }
         },
         async deleteItem(id) {
             const { $api } = useNuxtApp()
             await $api.delete(`/comments/${id}`);
             await this.loadMyComments();
-            const notificationStore = useNotificationStore()
-            notificationStore.setSuccess('Комментарий успешно удален');
+            $api.$toast.setSuccess('Комментарий успешно удален');
         }
     },
 });

@@ -1,7 +1,5 @@
 import {useNuxtApp} from "#app";
 
-
-
 export const useSuggestStore = defineStore({
     id: 'suggest',
     state: () => ({

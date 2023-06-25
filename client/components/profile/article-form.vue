@@ -110,11 +110,11 @@
 </template>
 
 <script setup>
-    import textareaComponent from '../../components/textareaComponent';
-    import inputComponent from '../../components/input-component';
-    import buttonComponent from '../../components/button-component';
+    import textareaComponent from '~/components/textareaComponent';
+    import inputComponent from '~/components/input-component';
+    import buttonComponent from '~/components/button-component';
     import selectComponent from '~/components/select-component-extended.vue';
-    import selectElement from "../../components/select-element";
+    import selectElement from "~/components/select-element";
     import oneImageUpload from "../image-upload-as-form/one-image-upload.vue";
     // import ckEditorComponent from "../../components/ckEditorComponent";
 

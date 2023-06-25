@@ -18,7 +18,7 @@ export const useTrackingStore = defineStore({
                 this.trackingSkuIds.push(obj.sku_id);
 
                 localStorage.setItem('trackingSkuIds', JSON.stringify([...this.trackingSkuIds]));
-                const { $api } = useNuxtApp()
+                const { $api } = useNuxtApp();
                 const { data } = await $api.post('add-to-tracking', obj);
                 if (data && data.status === 'success') {
                     this.isSuccessToAddingToTrackingSkuIds = true;

@@ -1,6 +1,4 @@
 import {useNuxtApp} from "#app";
-import {useCurrentSkuStore} from "./currentSku";
-import {useNotificationStore} from "./notification";
 
 
 export const useVideoStore = defineStore({

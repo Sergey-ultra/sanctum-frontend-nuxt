@@ -1,5 +1,4 @@
 import { useNuxtApp } from '#app'
-import {useNotificationStore} from "~/store/notification";
 
 
 export const useArticleCommentStore = defineStore({
@@ -36,8 +35,7 @@ export const useArticleCommentStore = defineStore({
             const { $api } = useNuxtApp();
             const { data } = await $api.post('/article-comments', object);
             if (data.status) {
-                const notificationStore = useNotificationStore()
-                notificationStore.setSuccess('Комментарий успешно создан и будет опубликован после модерации');
+                $api.$toast.setSuccess('Комментарий успешно создан и будет опубликован после модерации');
             }
         }
     }

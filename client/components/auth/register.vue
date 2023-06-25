@@ -87,19 +87,19 @@
         registrationForm: {
             name: {
                 required:  helpers.withMessage('Поле должно быть заполнено', required),
-                minLength: helpers.withMessage('Должно быть не меньше 2 символов', minLength(2))
+                minLength: helpers.withMessage('Должно быть не меньше 2 символов', minLength(2)),
             },
             email: {
                 required:  helpers.withMessage('Поле должно быть заполнено', required),
-                email: helpers.withMessage('Не правильно введен email', email)
+                email: helpers.withMessage('Не правильно введен email', email),
             },
             password: {
                 required:  helpers.withMessage('Поле должно быть заполнено', required),
-                minLength: helpers.withMessage('Должно быть не меньше 8 символов', minLength(8))
+                minLength: helpers.withMessage('Должно быть не меньше 8 символов', minLength(8)),
             },
             password_confirmation: {
                 required:  helpers.withMessage('Поле должно быть заполнено', required),
-                minLength: helpers.withMessage('Должно быть не меньше 8 символов', minLength(8))
+                minLength: helpers.withMessage('Должно быть не меньше 8 символов', minLength(8)),
             },
         },
     };

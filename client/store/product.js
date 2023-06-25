@@ -154,7 +154,7 @@ export const useProductStore = defineStore({
 
             params.page = this.currentPage;
 
-            const { $api } = useNuxtApp()
+            const { $api } = useNuxtApp();
             const res = await $api.get(`/skus/main`, { params })
 
             if (res) {
@@ -173,6 +173,10 @@ export const useProductStore = defineStore({
                 }
             }
             this.isLoadingProductsWithPagination = false;
-        }
+        },
+        async createSku(obj) {
+            const { $api } = useNuxtApp();
+            const res = await $api.post(`/skus`, obj);
+        },
     }
 });

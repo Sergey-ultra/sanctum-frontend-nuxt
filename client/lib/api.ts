@@ -1,8 +1,6 @@
 import { FetchError, FetchOptions, SearchParams, $fetch } from 'ohmyfetch'
 import { Router } from 'vue-router'
-import {useNotificationStore} from "~/store/notification";
-
-
+import Toast from '~/lib/toast';
 
 export interface ApiConfig {
     fetchOptions: FetchOptions<'json'>
@@ -20,7 +18,7 @@ export default class Api {
         name: '',
         avatar: ''
     })
-
+    public $toast: Toast
     public mailVerification = reactive({
         isRequired: false,
         email: '',
@@ -31,12 +29,13 @@ export default class Api {
     public isAuth = ref(false)
     public isShowAuthModal = ref(false)
 
-    constructor(config: ApiConfig) {
+    constructor(config: ApiConfig, toast: Toast) {
         this.config = { ...config }
+        this.$toast = toast
     }
     public async login(object) {
         const response = await this.post('/login', object);
-        const notificationStore = useNotificationStore();
+
         if (response.status) {
             if (!response.isRequiredEmailVerification) {
                 const { name, token, avatar, role } = response;
@@ -44,13 +43,12 @@ export default class Api {
                 this.token.value = token;
                 Object.assign(this.$user, { avatar, role, name })
                 this.setIsShowAuthModal(false);
-                notificationStore.setSuccess(response.message);
+
             } else {
                 this.setEmailVerification({ email: response.email, after: 'login', message: response.message });
             }
-
         } else {
-            notificationStore.setError(response.message);
+            this.$toast.setError(response.message);
         }
     }
 
@@ -88,31 +86,27 @@ export default class Api {
         if (response.isRequiredEmailVerification) {
             this.setEmailVerification({ email: response.email, after: 'register', message: response.message });
         } else {
-            const notificationStore = useNotificationStore();
-            notificationStore.setSuccess(response.message);
+            this.$toast.setSuccess(response.message);
         }
     }
 
     public async changePassword(object) {
         const { message } = await this.post('/change-password', object);
         if (message) {
-            const notificationStore = useNotificationStore();
-            notificationStore.setSuccess(message);
+            this.$toast.setSuccess(message);
         }
     }
 
     public async resendVerificationEmail() {
         const { message } = await this.post('/email/verification-notification', { email: this.mailVerification.email });
         if (message) {
-            const notificationStore = useNotificationStore();
-            notificationStore.setSuccess(message);
+            this.$toast.setSuccess(message);
         }
     }
 
     public async recover(email) {
         const { message } = await this.post('/forgot-password', { email });
-        const notificationStore = useNotificationStore();
-        notificationStore.setSuccess(message);
+        this.$toast.setSuccess(message);
     }
 
     public async checkAuth() {
@@ -179,7 +173,7 @@ export default class Api {
                     if (Array.isArray(value) && value.length) {
                         value.forEach(el => queryArray.push(`${key}[]=${el}`))
                     } else if (("string" === typeof value && value !== '') || "number" === typeof value) {
-                        queryArray.push(`${key}=${value}`)
+                        queryArray.push(`${key}=${value}`);
                     }
                 }
                 delete params.params
@@ -193,8 +187,12 @@ export default class Api {
 
             return await $fetch(endpoint, fetchOptions)
         } catch (error) {
-            if (cb) cb(error)
-            if (toast) await this.handleError(error)
+            if (cb) {
+                cb(error)
+            }
+            if (toast) {
+                await this.handleError(error)
+            }
         }
     }
 
@@ -230,23 +228,24 @@ export default class Api {
 
     public async handleError (error: FetchError): Promise<void> {
 
-        // if (error.response?.status === 401)
-        //     return await this.invalidate()
-        //
+        if (error.response?.status === 401) {
+            return await this.invalidate();
+        }
+        console.log(this.$toast);
         // console.log('handling our 402')
         // if (error.response?.status === 402 && this.config.paymentToast)
         //     return this.$toast.show(this.config.paymentToast)
         //
         //
-        // if (!this.$toast) throw error
-        //
-        // if (error.response._data && error.response._data.errors)
-        //     for (const err of error.response._data.errors)
-        //         this.$toast.show({
-        //             type: 'danger',
-        //             message: err.detail ?? err.message ?? '',
-        //             timeout: 12,
-        //         })
+        if (!this.$toast) {
+            throw error;
+        }
+
+        if (error.response?.status !== 422 && error.response._data && error.response._data.error) {
+            let err = error.response._data;
+            console.log(err);
+            this.$toast.setError(err.error.message ?? '');
+        }
         //
         // if (error.response?.status === 403)
         //     return this.$toast.show({
@@ -266,10 +265,13 @@ export default class Api {
 
 
     public async invalidate (router?: Router): Promise<void> {
-        // this.token.value = undefined
-        // if (router) await router.push(this.config.redirect.logout)
-        // else if (process.client && document.location.pathname !== this.config.redirect.logout)
+        this.token.value = undefined
+        if (router) {
+            //await router.push(this.config.redirect.logout);
+        }
+        // else if (process.client && document.location.pathname !== this.config.redirect.logout) {
         //     document.location.href = this.config.redirect.logout
+        // }
     }
 
 }
