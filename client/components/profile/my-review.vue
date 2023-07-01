@@ -53,7 +53,7 @@
             <div class="review__text">Ваш отзыв не соответствует требованиям к публикациям.</div>
             <nuxt-link
                     class="review__action"
-                    :to="`/add-review/${productCode}`"
+                    :to="`/product/${productCode}/add-review`"
             >
                 <span>Редактировать отзыв</span>
             </nuxt-link>
@@ -65,7 +65,7 @@
             </div>
             <nuxt-link
                     class="review__action"
-                    :to="`/add-review/${productCode}`"
+                    :to="`/product/${productCode}/add-review`"
             >
                 <span>Оставить отзыв</span>
             </nuxt-link>
@@ -77,7 +77,7 @@
                 </div>
                 <nuxt-link
                         class="review__action"
-                        :to="`/add-review/${productCode}`"
+                        :to="`/product/${productCode}/add-review`"
                 >
                     <div class="icon">
                         <div class="icon-inner">
@@ -131,7 +131,7 @@
     };
 
     const showEditForm = () => {
-       navigateTo({ name: 'add-review', params: { product_code:productCode.value }})
+       navigateTo({ name: 'product-product_code-add-review', params: { product_code:productCode.value }})
     };
 </script>
 

@@ -21,7 +21,7 @@
     import {useArticleStore} from "~/store/article";
     import { storeToRefs } from "pinia";
 
-    const route =  useRoute();
+    const route = useRoute();
     const articleStore = useArticleStore();
     const { isLoadingArticlesByTag, articlesByTag } = storeToRefs(articleStore);
 

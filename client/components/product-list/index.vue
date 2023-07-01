@@ -71,7 +71,7 @@
                 <div class="product__branch">
                     <nuxt-link
                         class="product__branch-item branch__item"
-                        :to="`/reviews/${getProductCode(product)}`"
+                        :to="`/product/${getProductCode(product)}/reviews`"
                     >
                         <preciseRatingView
                             v-if="product.currentSku.rating"
@@ -82,7 +82,7 @@
 
                     <nuxt-link
                         class="product__branch-item branch__item"
-                        :to="`/questions/${getProductCode(product)}`"
+                        :to="`/product/${getProductCode(product)}/questions`"
                     >
                         <svg class="branch__icon" viewBox="0 0 24 24">
                             <path d="M18 7.998H6v2h12v-2zM17.998 11.998H6.002v2h11.996v-2z"></path>

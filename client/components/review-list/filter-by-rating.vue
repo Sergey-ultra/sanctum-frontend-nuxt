@@ -3,7 +3,7 @@
         <div class="filter__show">Показать отзывы с оценкой</div>
         <nuxt-link
             :to="{
-                name: 'reviews-product_code',
+                name: 'product-product_code-reviews',
                 params: { ...$route.params, savePosition: mode ==='review' },
                 query: { rating: getLinkQuery(rating)}
             }"

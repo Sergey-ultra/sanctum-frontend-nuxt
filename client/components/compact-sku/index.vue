@@ -36,8 +36,8 @@
                         <div class="sku__row">
                             <div v-if="currentSkuLocal.reviews_count === 0" class="sku__url">
                                 <nuxt-link
-                                    v-if="'reviews-product_code' !==  $route.name"
-                                    :to="`/reviews/${currentSkuProductCode}`"
+                                    v-if="'product-product_code-reviews' !==  $route.name"
+                                    :to="`/product/${currentSkuProductCode}/reviews`"
                                     class="sku__link sku__link-active"
                                 >
                                     Отзывы
@@ -48,7 +48,7 @@
                             <div v-else class="sku__url" >
                                 <span class="sku__rating">{{ currentSkuLocal.rating }}</span>
                                 <nuxt-link
-                                    v-if="'reviews-product_code' !==  $route.name"
+                                    v-if="'product-product_code-reviews' !==  $route.name"
                                     :to="`/product/${currentSkuProductCode}`"
                                     class="sku__link sku__link-active"
                                 >
@@ -57,8 +57,8 @@
                                 <span v-else  class="sku__link">{{ reviewText }}</span>
                             </div>
                             <nuxt-link
-                                v-if="'questions' !==  $route.name"
-                                :to="`/questions/${currentSkuProductCode}`"
+                                v-if="'product-product_code-questions' !==  $route.name"
+                                :to="`/product/${currentSkuProductCode}/questions`"
                                 class="sku__link sku__link-active"
                             >
                                 Задать вопрос

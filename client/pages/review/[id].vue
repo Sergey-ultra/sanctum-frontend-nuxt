@@ -35,7 +35,7 @@
                 </div>
 
 
-                <nuxt-link :to="`/reviews/${currentReview.sku_code}`" class="review__all">
+                <nuxt-link :to="`/product/${currentReview.sku_code}/reviews`" class="review__all">
                     <span>Все отзывы: {{ currentReview.reviews_count }}</span>
                 </nuxt-link>
                 <h2 class="title">{{ currentReview.title }}</h2>

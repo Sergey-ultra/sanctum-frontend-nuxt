@@ -48,7 +48,7 @@
                             </div>
                             <div class="slider-product__branch-item branch__item">
                                 <nuxt-link
-                                        :to="`/reviews/${sku.code + '-' + sku.id}`"
+                                        :to="`/product/${sku.code + '-' + sku.id}/reviews`"
                                 >
                                     <preciseRatingView v-if="sku.rating " :rating="sku.rating "></preciseRatingView>
                                     <span v-if="sku.reviews_count">{{ sku.reviews_count }}</span>

@@ -73,7 +73,7 @@
             <div class="element__text">Ваш видео не соответствует требованиям к публикациям.</div>
             <nuxt-link
                 class="element__action"
-                :to="`/add-review/${productCode}`"
+                :to="`/product/${productCode}/add-review`"
             >
                 <span>Редактировать</span>
             </nuxt-link>
@@ -114,7 +114,7 @@
     };
 
     const showEditForm = () => {
-        navigateTo({ name: 'add-review', params: { product_code:productCode.value }})
+        navigateTo({ name: 'product-product_code-add-review', params: { product_code:productCode.value }})
     };
 </script>
 

@@ -57,115 +57,114 @@
 </template>
 
 <script setup>
-    import compactSku from '../../components/compact-sku'
-    import pagination from "../../components/pagination";
-    import { onMounted, computed, ref, watch } from 'vue';
-    import { storeToRefs } from "pinia";
-    import useVuelidate from "@vuelidate/core";
-    import {helpers, minLength, required} from "@vuelidate/validators";
-    import {useQuestionStore} from "../../store/question";
-    import {useCurrentSkuStore} from "../../store/currentSku";
-    import { useNuxtApp } from '#app'
-    const { $api } = useNuxtApp();
+import compactSku from '~/components/compact-sku'
+import pagination from "~/components/pagination";
+import { storeToRefs } from "pinia";
+import useVuelidate from "@vuelidate/core";
+import {helpers, minLength, required} from "@vuelidate/validators";
+import {useQuestionStore} from "~/store/question";
+import {useCurrentSkuStore} from "~/store/currentSku";
+import { useNuxtApp } from '#app'
+const { $api } = useNuxtApp();
 
-    import {useRoute, useRouter} from "vue-router";
+import {useRoute, useRouter} from "vue-router";
 
-    const questionStore = useQuestionStore();
-    const currentSkuStore = useCurrentSkuStore();
-    const { questionWithPagination, isLoadingQuestions, tableOptions, total , lastPage } = storeToRefs(questionStore);
-    const { currentSkuId } = storeToRefs(currentSkuStore);
+const questionStore = useQuestionStore();
+const currentSkuStore = useCurrentSkuStore();
+const { questionWithPagination, isLoadingQuestions, tableOptions, total , lastPage } = storeToRefs(questionStore);
+const { currentSkuId } = storeToRefs(currentSkuStore);
 
-    let rules = {
-        question: {
-            required:  helpers.withMessage('Поле должно быть заполнено', required),
-            minLength: minLength(2)
+let rules = {
+    question: {
+        required:  helpers.withMessage('Поле должно быть заполнено', required),
+        minLength: minLength(2)
+    }
+};
+let question = ref('');
+
+const v$ = useVuelidate(rules, question);
+
+const route = useRoute();
+const router = useRouter();
+
+const currentPageLocal = computed({
+    get() {
+        return tableOptions.value.currentPage;
+    },
+    set(value) {
+        setPageQuery(value);
+    }
+});
+
+
+
+const countText = computed(() => {
+        let text = ''
+        switch (total.value) {
+            case 1:
+                text = 'вопрос';
+                break;
+            case 2:
+            case 3:
+            case 4:
+                text = 'вопроса';
+                break;
+            default:
+                text = 'вопросов';
         }
-    };
-    let question = ref('');
+        return total.value + ' ' + text;
+    }
+);
 
-    const v$ = useVuelidate(rules, question);
+const setPageQuery = value  => {
+    const query =  { ...route.query }
 
-    const route = useRoute();
-    const router = useRouter();
+    if (value > 1) {
+        query.page = value
+    } else if (value === 1) {
+        delete query.page
+    }
+    router.push({ query })
+};
 
-    const currentPageLocal = computed({
-        get() {
-            return tableOptions.value.currentPage;
-        },
-        set(value) {
-            setPageQuery(value);
+const sendQuestion = async () => {
+    if (!$api.isAuth.value) {
+        $api.setIsShowAuthModal(true);
+    } else {
+        const validated = await v$.value.$validate();
+        if (validated) {
+            questionStore.createQuestion({body: question.value});
+            v$.value.$reset();
+            question.value = '';
         }
-    });
+    }
+};
 
 
 
-    const countText = computed(() => {
-            let text = ''
-            switch (total.value) {
-                case 1:
-                    text = 'вопрос';
-                    break;
-                case 2:
-                case 3:
-                case 4:
-                    text = 'вопроса';
-                    break;
-                default:
-                    text = 'вопросов';
-            }
-            return total.value + ' ' + text;
+
+
+
+
+
+watch(
+    () => ({params: route.params, query: route.query}),
+    value => {
+        if (value) {
+            questionStore.setTableOptionsByQuery(value.query);
+            questionStore.loadQuestionsWithPagination();
         }
-    );
-
-    const setPageQuery = value  => {
-        const query =  { ...route.query }
-
-        if (value > 1) {
-            query.page = value
-        } else if (value === 1) {
-            delete query.page
-        }
-        router.push({ query })
-    };
-
-    const sendQuestion = async () => {
-        if (!$api.isAuth.value) {
-            $api.setIsShowAuthModal(true);
-        } else {
-            const validated = await v$.value.$validate();
-            if (validated) {
-                questionStore.createQuestion({body: question.value});
-                v$.value.$reset();
-                question.value = '';
-            }
-        }
-    };
+    },
+    {deep: true}
+);
 
 
 
 
-
-
-
-
-    watch(
-        () => ({params: route.params, query: route.query}),
-        value => {
-            if (value) {
-                questionStore.setTableOptionsByQuery(value.query);
-                questionStore.loadQuestionsWithPagination();
-            }
-        },
-        {deep: true}
-    );
-
-
-
-
-    useAsyncData(async () => {
-        questionStore.setTableOptionsByQuery(route.query);
-        await questionStore.loadQuestionsWithPagination();
-    });
+useAsyncData(async () => {
+    questionStore.setTableOptionsByQuery(route.query);
+    await questionStore.loadQuestionsWithPagination();
+});
 
 </script>
 

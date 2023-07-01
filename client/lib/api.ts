@@ -231,7 +231,6 @@ export default class Api {
         if (error.response?.status === 401) {
             return await this.invalidate();
         }
-        console.log(this.$toast);
         // console.log('handling our 402')
         // if (error.response?.status === 402 && this.config.paymentToast)
         //     return this.$toast.show(this.config.paymentToast)
@@ -243,7 +242,6 @@ export default class Api {
 
         if (error.response?.status !== 422 && error.response._data && error.response._data.error) {
             let err = error.response._data;
-            console.log(err);
             this.$toast.setError(err.error.message ?? '');
         }
         //

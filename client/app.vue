@@ -121,6 +121,15 @@
                                 </svg>
                                 <span>Мои публикации</span>
                             </nuxt-link>
+                            <nuxt-link class="dropdown__el" :to="{name: 'profile-index-message'}">
+                                <fa class="dropdown__icon" icon="envelope"></fa>
+                                <span>Сообщения</span>
+                                <span class="dropdown__count" v-if="$api.$user.unviewed_message_count">
+                                    {{  $api.$user.unviewed_message_count }}
+                                </span>
+
+                            </nuxt-link>
+
                             <nuxt-link class="dropdown__el" :to="'/favorites'">
                                 <svg class="dropdown__icon" viewBox="0 0 24 24">
                                     <path

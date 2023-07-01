@@ -6,7 +6,6 @@
             <div class="profile__item profile__photo">
                 <img v-if="localImage" :src="localImage" alt="avatar"/>
 
-
                 <fa class="profile__photo-icon icon" icon="camera"></fa>
                 <input @change="loadImage($event)" type="file" accept="image/*">
             </div>

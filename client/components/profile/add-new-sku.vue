@@ -29,6 +29,9 @@
                     :item-title="'name'"
                     :item-value="'id'"
                 />
+                <div class="invalid-feedback" v-for="error of v$.sku.category_id.$errors" :key="error.$uid">
+                    {{ error.$message }}
+                </div>
             </label>
         </div>
 
@@ -38,6 +41,9 @@
                     <span class="text-gray">Точное название объекта отзыва:</span>
                 </div>
                 <inputComponent v-model="localSkuName" :color="'white'"/>
+                <div class="invalid-feedback" v-for="error of v$.sku.name.$errors" :key="error.$uid">
+                    {{ error.$message }}
+                </div>
             </label>
         </div>
 
@@ -55,6 +61,9 @@
                     :item-title="'name'"
                     :item-value="'id'"
                 />
+                <div class="invalid-feedback" v-for="error of v$.sku.brand_id.$errors" :key="error.$uid">
+                    {{ error.$message }}
+                </div>
             </label>
         </div>
 
@@ -64,6 +73,9 @@
                     <span class="text-gray">Объем:</span>
                 </div>
                 <inputComponent v-model="sku.volume" :color="'white'"/>
+                <div class="invalid-feedback" v-for="error of v$.sku.volume.$errors" :key="error.$uid">
+                    {{ error.$message }}
+                </div>
             </label>
         </div>
 
@@ -73,6 +85,9 @@
                     <span class="text-gray">Описание:</span>
                 </div>
                 <textareaComponent rows="10" v-model="sku.description" :color="'white'"/>
+                <div class="invalid-feedback" v-for="error of v$.sku.description.$errors" :key="error.$uid">
+                    {{ error.$message }}
+                </div>
             </label>
         </div>
 
@@ -86,6 +101,9 @@
                     :entity="`sku`"
                     v-model:initialImageUrls="sku.images"
                 />
+                <div class="invalid-feedback" v-for="error of v$.sku.images.$errors" :key="error.$uid">
+                    {{ error.$message }}
+                </div>
             </label>
         </div>
 
@@ -104,12 +122,16 @@ import { useCategoryStore } from '~/store/category';
 import { useProductStore } from '~/store/product';
 import {useBrandStore} from "~/store/brand";
 import {storeToRefs} from "pinia";
+import {helpers, minLength, required} from "@vuelidate/validators";
+import useVuelidate from "@vuelidate/core";
 
 const categoryStore = useCategoryStore();
 const brandStore = useBrandStore();
 const productStore = useProductStore();
 const { allCategories } = storeToRefs(categoryStore);
 const { allBrands } = storeToRefs(brandStore);
+
+const router = useRouter();
 
 const props = defineProps({
     name: {
@@ -123,6 +145,33 @@ const sku = ref({
     name: '',
     brand_id: null,
 });
+
+const rules = {
+    sku: {
+        name: {
+            required: helpers.withMessage('Поле должно быть заполнено', required),
+            minLength: helpers.withMessage('Поле должно быть не меньше 5 символов', minLength(5)),
+        },
+        brand_id: {
+            required: helpers.withMessage('Поле должно быть заполнено', required),
+
+        },
+        category_id: {
+            required: helpers.withMessage('Поле должно быть заполнено', required),
+        },
+        volume: {
+            required: helpers.withMessage('Поле должно быть заполнено', required),
+        },
+        description: {
+            required: helpers.withMessage('Поле должно быть заполнено', required),
+            minLength: helpers.withMessage('Поле должно быть не меньше 5 символов', minLength(5)),
+        },
+        images: {
+            required: helpers.withMessage('Поле должно быть заполнено', required),
+        }
+    }
+};
+const v$ = useVuelidate(rules, { sku });
 
 
 const localSkuName = computed({
@@ -159,7 +208,14 @@ let brands = computed(() => {
 });
 
 const createNewSku = async () => {
-    await productStore.createSku(sku.value);
+    const validated = await v$.value.sku.$validate();
+    if (validated) {
+        const response = await productStore.createSku(sku.value);
+        if (response) {
+            await router.push({ name: 'product-product_code-add-review', params: { product_code: response.sku_code }});
+        }
+        v$.value.$reset();
+    }
 }
 
 onMounted(async() => {

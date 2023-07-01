@@ -25,7 +25,7 @@
                         :key="index"
                         class="suggest__item"
                     >
-                        <nuxt-link :to="`/add-review/${sku.sku_code}`" class="mini-suggest__link">
+                        <nuxt-link :to="`/product/${sku.sku_code}/add-review`" class="mini-suggest__link">
                             <div class="suggest__img" :style="`background-image: url(${$config.APP_URL}/${sku.image})`">
 
                             </div>

@@ -7,8 +7,8 @@
             <div>
                 <nuxt-link
                         :to="(!$api.isAuth.value || ($api.isAuth.value && !existingReview))
-                         ? `/add-photos/${$route.params.product_code}`
-                         : `/add-review/${$route.params.product_code}`"
+                         ? `/product/${$route.params.product_code}/add-photos`
+                         : `/product/${$route.params.product_code}/add-review`"
                         class="btn"
                 >
                     Загрузить фотографии
@@ -19,7 +19,7 @@
 
         <div>
             <div>
-                <nuxt-link :to="`/add-video/${$route.params.product_code}`" class="btn">
+                <nuxt-link :to="`/product/${$route.params.product_code}/add-video`" class="btn">
                     Загрузить видео
                 </nuxt-link>
             </div>

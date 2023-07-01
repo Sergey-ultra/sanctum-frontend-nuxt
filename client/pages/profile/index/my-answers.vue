@@ -32,14 +32,14 @@
 
 <script setup>
     import reviewsAnswersNav from "~/components/profile/reviewsAnswersNav";
-    import pagination from '../../../components/pagination';
+    import pagination from '~/components/pagination';
     import loader from "~/components/loader";
     import myAnswer from "~/components/profile/my-answer";
 
 
 
     import { storeToRefs } from "pinia";
-    import { useQuestionStore } from "../../../store/question";
+    import { useQuestionStore } from "~/store/question";
 
     const questionStore = useQuestionStore();
     const { isLoadingMyQuestions, myQuestions, myQuestionOptions, myQuestionLastPage } = storeToRefs(questionStore);

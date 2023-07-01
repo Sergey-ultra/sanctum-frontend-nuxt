@@ -177,6 +177,11 @@ export const useProductStore = defineStore({
         async createSku(obj) {
             const { $api } = useNuxtApp();
             const res = await $api.post(`/skus`, obj);
+            console.log(res);
+            if (res.data) {
+                return res.data;
+            }
+            return null;
         },
     }
 });

@@ -1,21 +1,24 @@
 <template>
-    <div class="prices">
-        <div
+    <product>
+        <div class="prices">
+            <div
                 class="prices__item"
                 v-for="price in currentSku.prices"
                 :key="price.price"
-        >
-            <a :href="'/to/' + price.link_code">{{ price.name }}</a>
-            <a :href="'/to/' + price.link_code">{{ price.price }}</a>
-            <a class="prices__go" :href="'/to/' + price.link_code">Перейти в магазин</a>
-            <div class="prices__img">
-                <img :src="`${$config.APP_URL}/${price.image}`" :alt="price.image"/>
+            >
+                <a :href="'/to/' + price.link_code">{{ price.name }}</a>
+                <a :href="'/to/' + price.link_code">{{ price.price }}</a>
+                <a class="prices__go" :href="'/to/' + price.link_code">Перейти в магазин</a>
+                <div class="prices__img">
+                    <img :src="`${$config.APP_URL}/${price.image}`" :alt="price.image"/>
+                </div>
             </div>
         </div>
-    </div>
+    </product>
 </template>
 
 <script setup>
+    import product from '~/components/product';
     import { storeToRefs } from "pinia";
     import {useCurrentSkuStore} from "~/store/currentSku";
 

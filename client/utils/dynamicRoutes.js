@@ -11,8 +11,8 @@ export default async () => {
 
         const productUrls = products.map(url => [
             `/product/${url}`,
-            `/questions/${url}`,
-            `/reviews/${url}`
+            `/product/${url}/questions`,
+            `/product/${url}/reviews`
         ]).flat();
 
 

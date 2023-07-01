@@ -1,5 +1,6 @@
 <template>
-    <div class="description">
+    <product>
+        <div class="description">
         <div class="skus">
             <div
                     class="skus__item"
@@ -80,7 +81,7 @@
                         <nuxt-link
                                 v-if="currentSku.reviews_count"
                                 class="title__count"
-                                :to="`/reviews/${currentSkuProductCode}`"
+                                :to="`/product/${currentSkuProductCode}/reviews`"
                         >
                             {{ currentSku.reviews_count }}
                         </nuxt-link>
@@ -88,7 +89,7 @@
                 </div>
                 <div class="reviews__actions">
                     <button class="reviews__button reviews__button-full reviews__button-transform">
-                        <nuxt-link  :to="`/add-review/${ currentSkuProductCode }`">
+                        <nuxt-link  :to="`/product/${ currentSkuProductCode }/add-review`">
                             <span v-if="!$api.isAuth || ($api.isAuth && !existingReview)">Добавить</span>
                             <span v-else>Изменить</span>
                         </nuxt-link>
@@ -103,7 +104,7 @@
                     <client-content class="reviews__client"/>
                     <reviewList></reviewList>
                     <button class="reviews__button reviews__button-link reviews__button-full">
-                        <nuxt-link :to="`/reviews/${currentSkuProductCode }`">
+                        <nuxt-link :to="`/product/${currentSkuProductCode }/reviews`">
                             Перейти к отзывам
                         </nuxt-link>
                     </button>
@@ -111,7 +112,7 @@
                 <div class="reviews__actions reviews__actions-filter">
                     <filterByRating/>
                     <button class="reviews__button reviews__button-link reviews__button-full">
-                        <nuxt-link :to="`/reviews/${currentSkuProductCode }`">
+                        <nuxt-link :to="`/product/${currentSkuProductCode }/reviews`">
                             Показать все отзывы
                         </nuxt-link>
                     </button>
@@ -133,22 +134,24 @@
                 Это поможет другим покупателям
             </div>
             <button class="reviews__button  reviews__button-full">
-                <nuxt-link :to="`/add-review/${currentSkuProductCode }`">
+                <nuxt-link :to="`/product/${currentSkuProductCode }/add-review`">
                     <span v-if="!$api.isAuth || ($api.isAuth && !existingReview)">Оставить отзыв</span>
                     <span v-else>Изменить</span>
                 </nuxt-link>
             </button>
         </section>
     </div>
+    </product>
 </template>
 
 <script setup>
-    // import skuPriceHistoryChart from '../../../components/sku-price-history-chart'
-    import priceHistoryChart from '../../../components/price-history-chart'
-    import ratingForm from '../../../components/rating-form'
-    import reviewList from "../../../components/review-list";
-    import clientContent from "../../../components/client-content";
-    import filterByRating from "../../../components/review-list/filter-by-rating";
+    // import skuPriceHistoryChart from '~/components/sku-price-history-chart'
+    import priceHistoryChart from '~/components/price-history-chart';
+    import product from '~/components/product';
+    import ratingForm from '~/components/rating-form';
+    import reviewList from "~/components/review-list";
+    import clientContent from "~/components/client-content";
+    import filterByRating from "~/components/review-list/filter-by-rating";
     import { storeToRefs } from "pinia";
     import {useCurrentSkuStore} from "~/store/currentSku";
     import {usePriceHistoryStore} from "~/store/pricehistory";
