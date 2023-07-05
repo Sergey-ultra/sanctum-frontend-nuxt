@@ -42,13 +42,12 @@ const props = defineProps({
     flex-wrap: wrap;
 
     &__user {
-        flex: 1 0 450px;
+        flex: 1 1 450px;
         display: flex;
         align-items: center;
     }
 
     &__userImg {
-        flex: 0 0 62px;
         margin-right: 16px;
         width: 62px;
         height: 62px;
@@ -106,4 +105,15 @@ const props = defineProps({
         vertical-align: top;
     }
 }
+@media (max-width: 500px) {
+    .meta {
+        &__userImg {
+            margin-right: 16px;
+            width: 42px;
+            height: 42px;
+
+        }
+    }
+}
+
 </style>

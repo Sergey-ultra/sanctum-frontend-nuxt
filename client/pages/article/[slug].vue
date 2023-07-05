@@ -48,18 +48,18 @@
 </template>
 
 <script setup>
-    import tags from '../../components/tagsComponent'
-    import textareaComponent from '../../components/textareaComponent'
-    import buttonComponent from '../../components/button-component'
-    import loader from '../../components/loader'
-    import commentList from '../../components/comment-list'
-    import metaInfo from '../../components/meta-info';
+    import tags from '~/components/tagsComponent';
+    import textareaComponent from '~/components/textareaComponent';
+    import buttonComponent from '~/components/button-component';
+    import loader from '~/components/loader';
+    import commentList from '~/components/comment-list';
+    import metaInfo from '~/components/meta-info';
     import { useArticleStore } from "~/store/article";
     import { useArticleCommentStore } from "~/store/article-comments";
     import { storeToRefs } from "pinia";
     import {helpers, minLength, required} from "@vuelidate/validators";
-    import useVuelidate from '@vuelidate/core'
-    import { useNuxtApp } from '#app'
+    import useVuelidate from '@vuelidate/core';
+    import { useNuxtApp } from '#app';
 
 
     const { $api } = useNuxtApp();
@@ -299,5 +299,12 @@
     }
     .comment-btn {
         margin-top:15px;
+    }
+    @media (max-width: 500px) {
+        .title {
+            font-weight: 500;
+            font-size: 30px;
+            line-height: 35px;
+        }
     }
 </style>

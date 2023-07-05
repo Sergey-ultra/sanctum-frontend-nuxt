@@ -1,5 +1,5 @@
 <template>
-    <form class="form" @submit.prevent="createNewSku">
+    <form class="form fill" @submit.prevent="createNewSku">
         <h1>Добавление нового объекта</h1>
 
         <div class="form__group">
@@ -224,5 +224,7 @@ onMounted(async() => {
 })
 </script>
 <style scoped lang="scss">
-
+.fill {
+    width: 100%;
+}
 </style>

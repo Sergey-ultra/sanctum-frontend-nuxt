@@ -1,146 +1,146 @@
 <template>
     <product>
         <div class="description">
-        <div class="skus">
-            <div
+            <div class="skus">
+                <div
                     class="skus__item"
                     :class="{'skus__item-selected': sku.id === currentSku.id }"
                     v-for="sku in currentSku.skus"
                     :key="sku.id"
-            >
-                <nuxt-link
+                >
+                    <nuxt-link
                         v-if="sku.id !== currentSku.id"
                         :to="`/product/${currentSku.code + '-' + sku.id }`"
-                >
-                    {{ sku.volume }}
-                </nuxt-link>
-                <div v-else>
-                    {{ sku.volume }}
+                    >
+                        {{ sku.volume }}
+                    </nuxt-link>
+                    <div v-else>
+                        {{ sku.volume }}
+                    </div>
                 </div>
             </div>
-        </div>
 
 
-        <section class="description__item description__item-description" id="description">
-            <h2 class="title">Описание</h2>
-            <div>{{ currentSku.description }}</div>
-        </section>
+            <section class="description__item description__item-description" id="description">
+                <h2 class="title">Описание</h2>
+                <div>{{ currentSku.description }}</div>
+            </section>
 
-        <section
+            <section
                 class="description__item characteristics"
-                 v-if="currentSku.options && Object.keys(currentSku.options).length"
-        >
-            <h2 class="title">Характеристики</h2>
-            <div
+                v-if="currentSku.options && Object.keys(currentSku.options).length"
+            >
+                <h2 class="title">Характеристики</h2>
+                <div
                     class="characteristics__item"
                     v-for="(char, index) in currentSku.options"
                     :key="index"
-            >
-                <div class="characteristics__key">
-                    <div class="characteristics__key-name">
-                        <span> {{ getCharacteristicsTitle(index) }}</span>
+                >
+                    <div class="characteristics__key">
+                        <div class="characteristics__key-name">
+                            <span> {{ getCharacteristicsTitle(index) }}</span>
+                        </div>
                     </div>
+                    <div class="characteristics__value">{{ char }}</div>
                 </div>
-                <div class="characteristics__value">{{ char }}</div>
+            </section>
+
+
+            <div class="description__item price__dynamics" id="price__dynamics">
+                <h2 class="title">Динамика цен</h2>
+                <ClientOnly>
+                    <!--            <sku-price-history-chart :chartData="priceHistory"/>-->
+                    <price-history-chart class="chart" :chartData="priceHistory"/>
+                </ClientOnly>
             </div>
-        </section>
 
-
-        <div  class="description__item price__dynamics" id="price__dynamics">
-            <h2 class="title">Динамика цен</h2>
-            <ClientOnly>
-<!--            <sku-price-history-chart :chartData="priceHistory"/>-->
-                <price-history-chart class="chart" :chartData="priceHistory" />
-            </ClientOnly>
-        </div>
-
-        <section class="description__item ingredients" v-if="currentSku.ingredients.length">
-            <h2 class="title">Ингредиенты</h2>
-            <div class="ingredients__row">
-                <div
+            <section class="description__item ingredients" v-if="currentSku.ingredients.length">
+                <h2 class="title">Ингредиенты</h2>
+                <div class="ingredients__row">
+                    <div
                         class="ingredients__column"
                         v-for="(ingredientBlock, ingredientBlockIndex) in spliceIntoChunks(currentSku.ingredients, 2)"
                         :key="ingredientBlockIndex"
-                >
-                    <div
+                    >
+                        <div
                             class="ingredients__item"
                             v-for="ingredient in ingredientBlock"
                             :key="ingredient"
-                    >
-                        {{ ingredient }}
+                        >
+                            {{ ingredient }}
+                        </div>
                     </div>
                 </div>
-            </div>
-        </section>
+            </section>
 
-        <section class="description__item" v-if="currentSku.reviews_count">
-            <div class="reviews reviews-title">
-                <div class="reviews__body">
-                    <h2 class="title title-review">
-                        <span>Отзывы</span>
-                        <nuxt-link
+            <section class="description__item" v-if="currentSku.reviews_count">
+                <div class="reviews reviews-title">
+                    <div class="reviews__body">
+                        <h2 class="title title-review">
+                            <span>Отзывы</span>
+                            <nuxt-link
                                 v-if="currentSku.reviews_count"
                                 class="title__count"
                                 :to="`/product/${currentSkuProductCode}/reviews`"
-                        >
-                            {{ currentSku.reviews_count }}
-                        </nuxt-link>
-                    </h2>
+                            >
+                                {{ currentSku.reviews_count }}
+                            </nuxt-link>
+                        </h2>
+                    </div>
+                    <div class="reviews__actions">
+                        <button class="reviews__button reviews__button-full reviews__button-transform">
+                            <nuxt-link :to="`/product/${ currentSkuProductCode }/add-review`">
+                                <span v-if="!$api.isAuth || ($api.isAuth && !existingReview)">Добавить</span>
+                                <span v-else>Изменить</span>
+                            </nuxt-link>
+                        </button>
+                    </div>
+
                 </div>
-                <div class="reviews__actions">
-                    <button class="reviews__button reviews__button-full reviews__button-transform">
-                        <nuxt-link  :to="`/product/${ currentSkuProductCode }/add-review`">
-                            <span v-if="!$api.isAuth || ($api.isAuth && !existingReview)">Добавить</span>
-                            <span v-else>Изменить</span>
-                        </nuxt-link>
-                    </button>
+
+
+                <div class="reviews">
+                    <div class="reviews__body">
+                        <client-content class="reviews__client"/>
+                        <reviewList></reviewList>
+                        <button class="reviews__button reviews__button-link reviews__button-full">
+                            <nuxt-link :to="`/product/${currentSkuProductCode }/reviews`">
+                                Перейти к отзывам
+                            </nuxt-link>
+                        </button>
+                    </div>
+                    <div class="reviews__actions reviews__actions-filter">
+                        <filterByRating/>
+                        <button class="reviews__button reviews__button-link reviews__button-full">
+                            <nuxt-link :to="`/product/${currentSkuProductCode }/reviews`">
+                                Показать все отзывы
+                            </nuxt-link>
+                        </button>
+                    </div>
                 </div>
 
-            </div>
+            </section>
+            <section class="description__item" v-else>
+                <h2 class="title">Отзывов ещё нет — ваш может стать первым</h2>
 
+                <div v-if="selectedRating">Спасибо, оценка принята</div>
+                <div v-else>Для начала оцените товар</div>
 
-            <div class="reviews">
-                <div class="reviews__body">
-                    <client-content class="reviews__client"/>
-                    <reviewList></reviewList>
-                    <button class="reviews__button reviews__button-link reviews__button-full">
-                        <nuxt-link :to="`/product/${currentSkuProductCode }/reviews`">
-                            Перейти к отзывам
-                        </nuxt-link>
-                    </button>
+                <ratingForm></ratingForm>
+
+                <div class="reviews__explain">
+                    Будет здорово, если вы напишете свои впечатления о товаре.
+                    <br>
+                    Это поможет другим покупателям
                 </div>
-                <div class="reviews__actions reviews__actions-filter">
-                    <filterByRating/>
-                    <button class="reviews__button reviews__button-link reviews__button-full">
-                        <nuxt-link :to="`/product/${currentSkuProductCode }/reviews`">
-                            Показать все отзывы
-                        </nuxt-link>
-                    </button>
-                </div>
-            </div>
-
-        </section>
-        <section class="description__item" v-else>
-            <h2 class="title">Отзывов ещё нет — ваш может стать первым</h2>
-
-            <div v-if="selectedRating">Спасибо, оценка принята</div>
-            <div v-else>Для начала оцените товар</div>
-
-            <ratingForm></ratingForm>
-
-            <div class="reviews__explain">
-                Будет здорово, если вы напишете свои впечатления о товаре.
-                <br>
-                Это поможет другим покупателям
-            </div>
-            <button class="reviews__button  reviews__button-full">
-                <nuxt-link :to="`/product/${currentSkuProductCode }/add-review`">
-                    <span v-if="!$api.isAuth || ($api.isAuth && !existingReview)">Оставить отзыв</span>
-                    <span v-else>Изменить</span>
-                </nuxt-link>
-            </button>
-        </section>
-    </div>
+                <button class="reviews__button  reviews__button-full">
+                    <nuxt-link :to="`/product/${currentSkuProductCode }/add-review`">
+                        <span v-if="!$api.isAuth || ($api.isAuth && !existingReview)">Оставить отзыв</span>
+                        <span v-else>Изменить</span>
+                    </nuxt-link>
+                </button>
+            </section>
+        </div>
     </product>
 </template>
 

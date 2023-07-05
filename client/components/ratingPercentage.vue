@@ -22,8 +22,9 @@
 </script>
 <style scoped lang="scss">
 .percentage {
+    width: 330px;
     &__item {
-        width: 380px;
+        width: 100%;
         display: flex;
         align-items: center;
     }
@@ -34,7 +35,7 @@
         margin-right: 5px;
     }
     &__progress {
-        width: 250px;
+        width: calc(100% - 80px);
         position:relative;
         height: 5px;
         border-radius: 2.5px;

@@ -55,6 +55,15 @@
                         </nuxt-link>
                     </li>
                     <li class="menu__item" v-if="$api.isAuth.value" @click="closeMobileMenuInternal">
+                        <nuxt-link :to="{name: 'profile-index-message'}">
+                            <fa class="menu__item-icon"  icon="envelope"></fa>
+                            <span>Сообщения</span>
+                            <span class="menu__item-count" v-if="$api.$user.unviewed_message_count">
+                                {{ $api.$user.unviewed_message_count }}
+                            </span>
+                        </nuxt-link>
+                    </li>
+                    <li class="menu__item" v-if="$api.isAuth.value" @click="closeMobileMenuInternal">
                         <nuxt-link :to="'/favorites'">
                             <svg class="menu__item-icon" height="24" width="24" viewBox="0 0 24 24">
                                 <path
@@ -94,24 +103,42 @@
                                     d="M3 7V4h2v3l3 .001v2H5V12H3V9H0V7h3zm5 6.004v-2h13v2H8zM10 7v2h11V7H10zM3 17.002v-2h18v2H3zM3 19v2h18v-2H3z"></path>
                             </svg>
                             <span>Списки сравнения</span>
-                            <span class="menu__item-count" v-if="allComparedSkuIdsCount"> {{
-                                    allComparedSkuIdsCount
-                                }}</span>
+                            <span class="menu__item-count" v-if="allComparedSkuIdsCount">
+                                {{ allComparedSkuIdsCount }}
+                            </span>
                         </nuxt-link>
                     </li>
-                    <li
-                        v-for="(menuItem, index) in menu"
-                        :key="index"
-                        class="menu__item"
-                        @click="closeMobileMenuInternal"
-                    >
-                        <nuxt-link :to="menuItem.url">
+                    <li class="menu__item" @click="toggleShowCatalog">
+                        <div class="menu__item-text">
+                            <fa class="menu__item-icon"  icon="envelope"></fa>
+                            Каталог
+                        </div>
+                    </li>
+                    <div v-if="isShowCatalog">
+                        <li
+                            v-for="(menuItem, index) in menu"
+                            :key="index"
+                            class="menu__item"
+                            @click="closeMobileMenuInternal"
+                        >
+                            <nuxt-link :to="menuItem.url">
+                                <svg class="menu__item-icon" width="24" height="24" viewBox="0 0 24 24">
+                                    <path
+                                        d="M17,10 L17,19 L12,19 L12,14 C12,12.8954305 11.1045695,12 10,12 C8.8954305,12 8,12.8954305 8,14 L8,19 L3,19 L3,10 L0,10 L10,0 L20,10 L17,10 Z"
+                                        transform="translate(2 2)"></path>
+                                </svg>
+                                {{ menuItem.title }}
+                            </nuxt-link>
+                        </li>
+                    </div>
+                    <li class="menu__item">
+                        <nuxt-link :to="'/article'">
                             <svg class="menu__item-icon" width="24" height="24" viewBox="0 0 24 24">
                                 <path
                                     d="M17,10 L17,19 L12,19 L12,14 C12,12.8954305 11.1045695,12 10,12 C8.8954305,12 8,12.8954305 8,14 L8,19 L3,19 L3,10 L0,10 L10,0 L20,10 L17,10 Z"
                                     transform="translate(2 2)"></path>
                             </svg>
-                            {{ menuItem.title }}
+                            Блоги
                         </nuxt-link>
                     </li>
                     <li class="menu__item" @click="exit" v-if="$api.isAuth.value">
@@ -151,7 +178,6 @@
         {title: 'Скраб', url:'/category/scrab'},
         {title: 'Средства для умывания', url: '/category/umjivanie'},
         {title: 'Маски', url: '/category/maski'},
-        {title: 'Блоги', url: '/article'},
     ];
 
     const emit = defineEmits(['update:isShowMobileMenu']);
@@ -164,13 +190,16 @@
 
     const menuLayer = ref(null);
     const menuWrapper = ref(null);
+    const isShowCatalog = ref(false);
 
 
     watch(() => props.isShowMobileMenu, (value) => {
         if (value){
             menuLayer.value.addEventListener('click', closeMobileMenu, { capture: true });
+            document.body.style.overflow = "hidden";
         } else {
             menuLayer.value.removeEventListener('click', closeMobileMenu, { capture: true });
+            document.body.style.overflow = "";
         }
     });
 
@@ -183,6 +212,7 @@
         }
     );
 
+    const toggleShowCatalog = () => isShowCatalog.value = !isShowCatalog.value;
 
     const closeMobileMenu = event => {
         if (!menuWrapper.value.contains(event.target)) {
@@ -325,6 +355,8 @@
                     background-color: #f5f5f5;
                 }
                 &-icon {
+                    height: 24px;
+                    width: 24px;
                     margin: 0 12px 0 20px;
                 }
                 &-count {
@@ -332,7 +364,7 @@
                     display: inline-block;
                     margin-left: 10px;
                 }
-                & a {
+                &-text, a {
                     display: flex;
                     align-items: center;
                     font-family: "Work Sans",sans-serif;

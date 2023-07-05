@@ -1,35 +1,10 @@
 <template>
-    <div class="wrapper">
-        <tabsComponent class="width" :tabList="['Написать отзыв', 'Написать статью']" >
-            <template v-slot:tabPanel-1>
-                <review-form/>
-            </template>
-            <template v-slot:tabPanel-2>
-                <h2 class="title">Написать статью</h2>
-                <article-form />
-            </template>
-        </tabsComponent>
-    </div>
+    <review-form class="wrapper"/>
 </template>
 
 <script setup>
-    import tabsComponent from "~/components/tabsComponent.vue";
-    import articleForm from "~/components/profile/article-form";
     import reviewForm from "~/components/profile/review-form";
 
-    const setSEO = () => {
-        const title = `Написать`;
-        const metaName = `${title} Smart-Beautiful - агрегатор цен косметических товаров`;
-        useHead({
-            title,
-            meta: [
-                {name: 'description', content: metaName},
-                {name: 'keywords', content: metaName}
-            ],
-        });
-    }
-
-    setSEO();
 </script>
 
 <style scoped lang="scss">

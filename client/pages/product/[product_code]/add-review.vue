@@ -64,9 +64,13 @@
                             rows="10"
                             v-model.trim="editedReview.body"
                             :color="'white'"
-                        >
-                        </textareaComponent>
+                        />
+<!--                        <client-only>-->
+<!--                            <editor-js v-model="editedReview.body"/>-->
+<!--                        </client-only>-->
+<!--                        <ckEditorComponent :text="editedReview.body"></ckEditorComponent>-->
                     </label>
+                    <span class="text-gray">Количество символов: {{ symbolCount }}</span>
 
                     <div class="invalid-feedback" v-for="error of v$.editedReview.body.$errors" :key="error.$uid">
                         {{ error.$message }}
@@ -135,12 +139,15 @@ import loader from "~/components/loader";
 import textareaComponent from '~/components/textareaComponent';
 import inputComponent from '~/components/input-component';
 import radioComponent from '~/components/radioComponent.vue';
+//import ckEditorComponent from "~/components/ckEditorComponent";
+
 import { useNuxtApp } from '#app'
 import useVuelidate from '@vuelidate/core'
 import {required, minLength, helpers, maxLength} from '@vuelidate/validators';
 import { storeToRefs } from "pinia";
 import {useReviewStore} from "~/store/review";
 import {useCurrentSkuStore} from "~/store/currentSku";
+
 
 const { $api } = useNuxtApp();
 
@@ -188,7 +195,7 @@ let rules = {
 };
 const v$ = useVuelidate(rules, {editedReview, rating});
 
-
+const symbolCount = computed(() => editedReview.value.body.replace(/[^А-яЁёA-Za-z1-9]/g,"").trim().length)
 
 const anonymouslyLocal = computed({
     get() {

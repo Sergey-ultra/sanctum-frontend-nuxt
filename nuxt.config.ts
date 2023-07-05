@@ -1,6 +1,12 @@
 // https://v3.nuxtjs.org/api/configuration/nuxt.config
 import dynamicRoutes from './client/utils/dynamicRoutes'
 
+let script = [];
+if (process.env.NODE_ENV === 'production') {
+    script.push({
+        src:'/ym.js',
+    });
+}
 export default defineNuxtConfig({
     srcDir: 'client/',
     // static: {
@@ -38,11 +44,7 @@ export default defineNuxtConfig({
                     rel: "mask-icon", href: "/favicon/safari-pinned-tab.svg", color: "#5bbad5"
                 }
             ],
-            script: [
-                {
-                    src: 'ym.js',
-                }
-            ]
+            script: script,
         }
     },
     runtimeConfig: {
@@ -65,6 +67,9 @@ export default defineNuxtConfig({
                     //ws: false
                 },
             },
+        },
+        optimizeDeps: {
+            include: ["@editorjs/editorjs"],
         },
         // css: {
         //     preprocessorOptions: {
@@ -92,6 +97,7 @@ export default defineNuxtConfig({
     // ],
     modules: [
         '@funken-studio/sitemap-nuxt-3',
+        "nuxt-editorjs"
         // [
         //     '@nuxtjs/yandex-metrika',
         //     {

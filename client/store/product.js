@@ -28,7 +28,8 @@ export const useProductStore = defineStore({
             country_ids:[]
         },
         productLoadingMode: null,
-        isLoadMore: false
+        isLoadMore: false,
+        popularSkus: [],
     }),
     getters: {
         filterOptionsKeys(state) {
@@ -173,6 +174,13 @@ export const useProductStore = defineStore({
                 }
             }
             this.isLoadingProductsWithPagination = false;
+        },
+        async getPopularTenSkus() {
+            const { $api } = useNuxtApp();
+            const { data } = await $api.get(`/skus/popular`);
+            if (data && Array.isArray(data)) {
+                this.popularSkus = [...data];
+            }
         },
         async createSku(obj) {
             const { $api } = useNuxtApp();

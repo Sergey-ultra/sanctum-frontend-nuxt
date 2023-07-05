@@ -47,7 +47,7 @@
             </div>
             <div>Нашли ошибку на этой странице? Выделите ее и нажмите Ctrl+Enter</div>
             <div>По вопросам сотрудничества admin@smart-beautiful.ru</div>
-            <div class="footer__copy">{{ new Date().getFullYear() }} © Smart-Beautiful</div>
+            <div class="footer__copy">2022 - {{ new Date().getFullYear() }} © Smart-Beautiful</div>
         </div>
     </footer>
 </template>

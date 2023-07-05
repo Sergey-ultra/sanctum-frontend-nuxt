@@ -2,8 +2,33 @@
     <div class="wrapper">
         <h2 class="title">Сообщения</h2>
         <div>
-            <div class="message" v-for="message in messages" :key="message.id">
-                {{ message.message }}
+            <div
+                class="message"
+                v-for="message in messages"
+                :key="message.id"
+                @mouseover="setOpenChat(message.id)"
+                @mouseout="setOpenChat(null)"
+            >
+                <div class="avatar">
+                    <img :src="message.avatar" alt="">
+                </div>
+                <div class="body">
+                    <div class="user-name">
+                        {{ message.user_name }}
+                    </div>
+                    <div>
+                        <span v-if="message.type === 'add-sku'">
+                            Объект {{ message.data.name }} был создан по Вашей заявке. Если Вы еще не написали отзыв по нему, то можете воспользоваться ссылкой:
+                            <nuxt-link :to="`/product/${message.data.sku_code}/add-review`">
+                                добавить свой отзыв на "{{ message.data.name }}"
+                            </nuxt-link>.
+                        </span>
+                        <div class="time-box">
+                            <span class="open" v-if="openChatId === message.id">Открыть беседу</span>
+                            <span>{{ message.created_at }}</span>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -13,12 +38,15 @@ import {useNuxtApp} from "#app";
 
 const { $api } = useNuxtApp();
 const messages = ref([]);
+const openChatId = ref(null);
+
+const setOpenChat = id => openChatId.value = id;
 
 onMounted(async () => {
     const { data } = await $api.get('/my-messages');
 
-    if (data && Array.isArray(data.data)) {
-        messages.value = [...data.data];
+    if (data && Array.isArray(data)) {
+        messages.value = [...data];
     }
 
 });
@@ -41,5 +69,27 @@ onMounted(async () => {
     &:hover {
         background-color: #f5f7f9;
     }
+}
+.avatar {
+    position: absolute;
+    width: 50px;
+    height: 50px;
+}
+.body {
+    position: relative;
+    margin-left: 66px;
+}
+.user-name {
+    margin-bottom: 4px;
+    font-weight: bold;
+    font-size: 14px;
+}
+.time-box {
+    text-align: right;
+    color: #8d9399;
+    font-size: smaller;
+}
+.open {
+    margin-right: 15px;
 }
 </style>

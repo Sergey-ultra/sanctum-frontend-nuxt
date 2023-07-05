@@ -119,8 +119,8 @@
     import addComment from '~/components/review-list/add-comment';
     import modal from '~/components/modal';
     import dropMenu from '~/components/drop-menu';
-    import loader from '../../components/loader';
-    import metaInfo from '../../components/meta-info';
+    import loader from '~/components/loader';
+    import metaInfo from '~/components/meta-info';
     import preciseRatingView from '~/components/preciseRatingView.vue';
     import ratingPercentage from '~/components/ratingPercentage';
     import compactSku from '~/components/compact-sku';
@@ -345,6 +345,11 @@ $greenColor: #46bd87;
     }
 }
 @media (max-width: 500px) {
+    .title {
+        font-weight: 500;
+        font-size: 20px;
+        line-height: 35px;
+    }
     .review {
         &__main__image {
             height: 150px;

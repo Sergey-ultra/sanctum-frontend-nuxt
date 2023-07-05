@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div v-if="!isShowAddForm">
+        <div v-if="!isShowAddForm" class="fill">
             <p class="item">
                 Для добавления нового отзыва необходимо указать объект, о котором Вы собираетесь написать отзыв.
                 Если во всплывающей подсказке вы обнаружите нужный объект, то выберите его, чтобы пропустить лишние шаги.
@@ -38,6 +38,11 @@
                 </ul>
                 <div v-else>
                     <h3 class="h3">Примеры правильного оформления названий:</h3>
+                    <div>
+                        <div v-for="(popularSku, index) in popularSkus" :key="index">
+                            {{ popularSku.name }} {{ popularSku.volume }}
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -50,14 +55,19 @@ import inputComponent from "~/components/input-component.vue";
 import addNewSku from "./add-new-sku.vue";
 import buttonComponent from "~/components/button-component.vue";
 import {useSuggestStore} from "~/store/suggest";
+import {useProductStore} from "~/store/product";
 import {storeToRefs} from "pinia";
 import { helpers, required } from "@vuelidate/validators";
 import useVuelidate from "@vuelidate/core";
+
 const suggestStore = useSuggestStore();
+const productStore = useProductStore();
 const { skus, isLoadingSuggests } = storeToRefs(suggestStore);
+const { popularSkus } = storeToRefs(productStore);
 
 const search = ref('');
-let isShowAddForm = ref('');
+const isShowAddForm = ref('');
+
 
 const rules = {
     search: {
@@ -81,6 +91,10 @@ const showAddForm = async () => {
         isShowAddForm.value = true;
     }
 }
+
+onMounted(async() => {
+    await productStore.getPopularTenSkus();
+});
 </script>
 <style scoped lang="scss">
     $redColor: #b74746;

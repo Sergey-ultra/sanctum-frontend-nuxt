@@ -1,31 +1,31 @@
 <template>
-    <client-only>
-        <ckeditor
-                :editor="editor"
-                v-model.trim="text"
-                :config="editorConfig">
-        </ckeditor>
-    </client-only>
+    <ckeditor
+        :editor="editor"
+        v-model.trim="text"
+        :config="editorConfig">
+    </ckeditor>
 </template>
 
 <script>
     import UploadAdapter from '../../utils/customCKEditorUploader';
+    import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
+    import CKEditor from '@ckeditor/ckeditor5-vue';
     const uploader = function (editor) {
         editor.plugins.get('FileRepository').createUploadAdapter = (loader) =>
             new UploadAdapter(loader, '/');
     };
     // let editor = reactive({});
-    let CKEditor;
-    let ClassicEditor;
+    //let CKEditor;
+    //let ClassicEditor;
 
-    if (process.client) {
-        ClassicEditor = await import("@ckeditor/ckeditor5-build-classic");
-        CKEditor = (await import('@ckeditor/ckeditor5-vue')).component;
-        //editor = ClassicEditor;
-        console.log(ClassicEditor);
-    } else {
-        CKEditor = { component: { template: '<div></div>' } }
-    }
+    // if (process.client) {
+    //     ClassicEditor = await import("@ckeditor/ckeditor5-build-classic");
+    //     CKEditor = (await import('@ckeditor/ckeditor5-vue')).component;
+    //     //editor = ClassicEditor;
+    //     console.log(ClassicEditor);
+    // } else {
+    //     CKEditor = { component: { template: '<div></div>' } }
+    // }
 
     // //import classicEditor from "@ckeditor/ckeditor5-build-classic";
     // const props = defineProps({
@@ -43,7 +43,7 @@
         },
         data() {
             return {
-                editor:  () => ClassicEditor,
+                editor: ClassicEditor,
                 editorConfig: { extraPlugins: [ uploader ] }
             }
         },

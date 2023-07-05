@@ -58,8 +58,10 @@
     watch(() => props.isShowModal, value => {
             if (value) {
                 document.addEventListener('click', closeModal, {capture: true});
+                document.body.style.overflow = "hidden";
             } else {
                 document.removeEventListener('click', closeModal, {capture: true});
+                document.body.style.overflow = "";
             }
         }
     );
