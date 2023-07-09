@@ -53,7 +53,14 @@
 
 
                     <div v-if="currentReview.body" class="review__item">
-                        <div v-html="currentReview.body"></div>
+                        <div v-for="(block, index) in currentReview.body.blocks" :key="index">
+                            <div v-if="block.type === 'paragraph'">
+                                {{ block.data.text }}
+                            </div>
+                            <div v-else-if="block.type === 'image'">
+                                <img :src="`${$config.APP_URL}/${block.data.text}`" :alt="block.data.description">
+                            </div>
+                        </div>
                     </div>
                 </div>
 

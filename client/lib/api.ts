@@ -1,7 +1,9 @@
-import { FetchError, FetchOptions, SearchParams, $fetch } from 'ohmyfetch'
+import { FetchError, FetchOptions, $fetch } from 'ofetch'
 import { Router } from 'vue-router'
 import Toast from '~/lib/toast';
-
+interface SearchParams {
+    [key: string]: any;
+}
 export interface ApiConfig {
     fetchOptions: FetchOptions<'json'>
     webURL: string

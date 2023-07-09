@@ -119,13 +119,21 @@
                                         d="M4.4 23h12.2a1.4 1.4 0 0 0 1.4-1.4V19h2.6a1.4 1.4 0 0 0 1.4-1.4V2.4A1.4 1.4 0 0 0 20.6 1H8.4A1.4 1.4 0 0 0 7 2.4V5H4.4A1.4 1.4 0 0 0 3 6.4v15.2A1.4 1.4 0 0 0 4.4 23zM5 7h11v14H5V7zm4-4h11v14h-2V6.4A1.4 1.4 0 0 0 16.6 5H9V3z"></path>
                                     <path d="M14 9H7v2h7V9zM14 13H7v2h7v-2z"></path>
                                 </svg>
+                                <span>Мои отзывы</span>
+                            </nuxt-link>
+                            <nuxt-link class="dropdown__el" :to="{name: 'profile-index-my-comments'}">
+                                <svg class="dropdown__icon" viewBox="0 0 24 24">
+                                    <path
+                                        d="M4.4 23h12.2a1.4 1.4 0 0 0 1.4-1.4V19h2.6a1.4 1.4 0 0 0 1.4-1.4V2.4A1.4 1.4 0 0 0 20.6 1H8.4A1.4 1.4 0 0 0 7 2.4V5H4.4A1.4 1.4 0 0 0 3 6.4v15.2A1.4 1.4 0 0 0 4.4 23zM5 7h11v14H5V7zm4-4h11v14h-2V6.4A1.4 1.4 0 0 0 16.6 5H9V3z"></path>
+                                    <path d="M14 9H7v2h7V9zM14 13H7v2h7v-2z"></path>
+                                </svg>
                                 <span>Мои публикации</span>
                             </nuxt-link>
                             <nuxt-link class="dropdown__el" :to="{name: 'profile-index-message'}">
                                 <fa class="dropdown__icon" icon="envelope"></fa>
                                 <span>Сообщения</span>
                                 <span class="dropdown__count" v-if="$api.$user.unviewed_message_count">
-                                    {{  $api.$user.unviewed_message_count }}
+                                    {{ $api.$user.unviewed_message_count }}
                                 </span>
 
                             </nuxt-link>
@@ -221,7 +229,7 @@
             <comparison-notification/>
         </top-notification>
         <notification/>
-        <img src="https://mc.yandex.ru/watch/87589913" style="position:absolute; left:-9999px;" alt="ya" />
+        <img v-if="isProduction" src="https://mc.yandex.ru/watch/87589913" style="position:absolute; left:-9999px;" alt="ya" />
     </div>
 </template>
 
@@ -266,7 +274,7 @@
 
     const scrollTop = () => window.scrollTo(0, 0);
 
-
+    const isProduction = computed(() => process.env.NODE_ENV === 'production');
     const toggleMenu = () => isShowMobileMenu.value = !isShowMobileMenu.value;
     const showDropdown = () => isShowDropdown.value = true;
     const darkenTheBackground = () => isDarkBackground.value = true;
@@ -317,14 +325,16 @@
         $api.checkAuth();
         comparisonStore.checkCompared();
 
-        setTimeout(() => {
-            document.querySelector('img[alt="ya"]')?.remove();
+        if (isProduction.value) {
+            setTimeout(() => {
+                document.querySelector('img[alt="ya"]')?.remove();
 
-            router.afterEach(to => {
-                ym(87589913, 'hit', to.fullPath);
-            });
+                router.afterEach(to => {
+                    ym(87589913, 'hit', to.fullPath);
+                });
 
-        }, 5000);
+            }, 5000);
+        }
     });
 </script>
 

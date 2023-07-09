@@ -34,7 +34,7 @@
 <script setup>
     import ProgressBar from '../progress-bar'
     import toolTip from '../tool-tip.vue'
-    import { useFileStore } from "../../store/file";
+    import { useFileStore } from "~/store/file";
     import { storeToRefs } from "pinia";
 
     const fileStore = useFileStore();
@@ -64,12 +64,12 @@
     });
 
     const setImage = event => {
-        const file = event.target.files[0] || event.dataTransfer.files[0]
-        const reader = new FileReader()
-        reader.readAsDataURL(file)
-        reader.onload = e => localImage.value = e.target.result
+        const file = event.target.files[0] || event.dataTransfer.files[0];
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = e => localImage.value = e.target.result;
 
-        fileStore.loadFilesAsForm({ files: [file], entity: props.entity, type: 'image' })
+        fileStore.loadFilesAsForm({ files: [file], entity: props.entity, type: 'image' });
     };
     const deleteImage = () => localImage.value = null;
 

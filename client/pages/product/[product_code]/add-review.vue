@@ -56,34 +56,33 @@
                 </div>
 
                 <div class="form__group">
-                    <label>
-                        <div class="label">
+
+                    <div class="label">
                             <span class="text-gray">Текст отзыва: (20 слов минимум)</span>
-                        </div>
-                        <textareaComponent
-                            rows="10"
-                            v-model.trim="editedReview.body"
-                            :color="'white'"
-                        />
-<!--                        <client-only>-->
-<!--                            <editor-js v-model="editedReview.body"/>-->
-<!--                        </client-only>-->
-<!--                        <ckEditorComponent :text="editedReview.body"></ckEditorComponent>-->
-                    </label>
-                    <span class="text-gray">Количество символов: {{ symbolCount }}</span>
+                    </div>
+<!--                        <textareaComponent-->
+<!--                            rows="10"-->
+<!--                            v-model.trim="editedReview.body"-->
+<!--                            :color="'white'"-->
+<!--                        />-->
+                    <reviewBody v-model="editedReview.body" class="body"/>
+<!--                            <editor-js class="body" v-model="editedReview.body"/>-->
+<!--                            <ckEditorComponent v-model="editedReview.body"></ckEditorComponent>-->
+
+
+
 
                     <div class="invalid-feedback" v-for="error of v$.editedReview.body.$errors" :key="error.$uid">
                         {{ error.$message }}
                     </div>
                 </div>
+<!--                <h4>Фотографии отзыва</h4>-->
 
-                <h4>Фотографии отзыва</h4>
-
-                <multiple-image-upload
-                    class="image-upload"
-                    :entity="`review`"
-                    v-model:initialImageUrls="editedReview.images"
-                />
+<!--                <multiple-image-upload-->
+<!--                    class="image-upload"-->
+<!--                    :entity="`review`"-->
+<!--                    v-model:initialImageUrls="editedReview.images"-->
+<!--                />-->
 
                 <div class="form__group ">
                     <label>
@@ -132,14 +131,16 @@
 </template>
 
 <script setup>
-import multipleImageUpload from "~/components/image-upload-as-form/multiple-image-upload";
 import ratingForm from "~/components/rating-form";
 import compactSku from '~/components/compact-sku';
 import loader from "~/components/loader";
-import textareaComponent from '~/components/textareaComponent';
 import inputComponent from '~/components/input-component';
 import radioComponent from '~/components/radioComponent.vue';
-//import ckEditorComponent from "~/components/ckEditorComponent";
+import reviewBody from '~/components/review-body/index.vue';
+ import multipleImageUpload from "~/components/image-upload-as-form/multiple-image-upload";
+// import textareaComponent from '~/components/textareaComponent';
+import editor from "~/components/editor/index.vue";
+// import ckEditorComponent from "~/components/ckEditorComponent";
 
 import { useNuxtApp } from '#app'
 import useVuelidate from '@vuelidate/core'
@@ -147,6 +148,7 @@ import {required, minLength, helpers, maxLength} from '@vuelidate/validators';
 import { storeToRefs } from "pinia";
 import {useReviewStore} from "~/store/review";
 import {useCurrentSkuStore} from "~/store/currentSku";
+import calculateSymbolCount from '~/utils/symbolCount';
 
 
 const { $api } = useNuxtApp();
@@ -162,40 +164,47 @@ let rating = ref(0);
 
 let editedReview = ref({
     title: '',
-    body:'',
-    plus:'',
-    minus:'',
-    images:[],
+    body: {
+        blocks: [
+            {
+                type: 'paragraph',
+                data: {
+                    text: ''
+                }
+            }
+        ],
+    },
+    plus: '',
+    minus: '',
+    images: [],
     anonymously: 0
 });
 const mustBeRating = value => value > 0;
 let rules = {
     rating: {
-        mustBeRating:  helpers.withMessage('Нужно оценить товар', mustBeRating)
+        mustBeRating:  helpers.withMessage('Нужно оценить товар', mustBeRating),
     },
     editedReview: {
         title: {
             required:  helpers.withMessage('Поле должно быть заполнено', required),
             minLength: minLength(5),
-            maxLength: maxLength(256)
+            maxLength: maxLength(256),
         },
         body: {
-            required:  helpers.withMessage('Поле должно быть заполнено', required),
-            minLength: minLength(5)
+            symbolCount: helpers.withMessage('Поле должно быть заполнено', value => calculateSymbolCount(value) > 0),
         },
         plus: {
             required:  helpers.withMessage('Поле должно быть заполнено', required),
-            minLength: minLength(5)
+            minLength: minLength(5),
         },
         minus: {
             required:  helpers.withMessage('Поле должно быть заполнено', required),
-            minLength: minLength(5)
+            minLength: minLength(5),
         },
-    }
+    },
 };
-const v$ = useVuelidate(rules, {editedReview, rating});
 
-const symbolCount = computed(() => editedReview.value.body.replace(/[^А-яЁёA-Za-z1-9]/g,"").trim().length)
+const v$ = useVuelidate(rules, {editedReview, rating});
 
 const anonymouslyLocal = computed({
     get() {
@@ -227,14 +236,26 @@ watch(currentSkuId, async (value) => {
 const initEditedReview = () => {
     editedReview.value = {
         ...existingReview.value,
+        body: existingReview.value.body && Object.keys(existingReview.value.body).length
+            ? existingReview.value.body
+            : {
+                blocks: [
+                    {
+                        type: 'paragraph',
+                        data: {
+                            text: ''
+                        }
+                    }
+                ],
+            },
         images: Array.isArray(existingReview.value.images)
             ? [...existingReview.value.images]
             : []
     }
 };
 
-let router =  useRouter();
-let route =  useRoute();
+let router = useRouter();
+let route = useRoute();
 
 const saveReview = async () => {
     if (!$api.isAuth.value) {
@@ -289,7 +310,6 @@ onMounted(async () => {
 }
 
 
-
 input[type=checkbox] {
     margin-right: 10px;
 }
@@ -297,7 +317,7 @@ input[type=checkbox] {
 .review {
     position: relative;
     &__form {
-        width: 100%;
+        max-width: 800px;
     }
     & textarea {
         min-height: 60px;

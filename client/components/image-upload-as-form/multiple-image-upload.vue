@@ -43,7 +43,7 @@
 
 <script setup>
     import ProgressBar from '../progress-bar'
-    import { useFileStore } from "../../store/file";
+    import { useFileStore } from "~/store/file";
     import { storeToRefs } from "pinia";
 
     const fileStore = useFileStore();

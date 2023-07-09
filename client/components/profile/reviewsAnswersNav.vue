@@ -3,9 +3,6 @@
         <div class="btn" :class="{'active': $route.name ===  'profile-index-my-articles'}">
             <nuxt-link :to="{name: 'profile-index-my-articles'}">Мои статьи</nuxt-link>
         </div>
-        <div class="btn" :class="{'active': $route.name ===  'profile-index-my-reviews'}">
-            <nuxt-link :to="{name: 'profile-index-my-reviews'}">Отзывы</nuxt-link>
-        </div>
         <div class="btn" :class="{'active': $route.name ===  'profile-index-my-videos'}">
             <nuxt-link :to="{name: 'profile-index-my-videos'}">Видео</nuxt-link>
         </div>

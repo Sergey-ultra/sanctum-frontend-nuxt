@@ -178,7 +178,7 @@
             border-radius: 11px;
             background-color: #fff;
             padding-bottom: 20px;
-            overflow: hidden;
+            //overflow: hidden;
         }
         &__inner {
             padding: 0 20px;

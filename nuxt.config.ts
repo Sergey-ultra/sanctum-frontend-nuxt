@@ -68,9 +68,6 @@ export default defineNuxtConfig({
                 },
             },
         },
-        optimizeDeps: {
-            include: ["@editorjs/editorjs"],
-        },
         // css: {
         //     preprocessorOptions: {
         //         scss: {
@@ -92,12 +89,19 @@ export default defineNuxtConfig({
     imports: {
         dirs: ['stores'],
     },
+    pinia: {
+        autoImports: [
+            // automatically imports `defineStore`
+            'defineStore', // import { defineStore } from 'pinia'
+            ['defineStore', 'definePiniaStore'], // import { defineStore as definePiniaStore } from 'pinia'
+        ],
+    },
     // components: [
     //     '~/components',
     // ],
     modules: [
         '@funken-studio/sitemap-nuxt-3',
-        "nuxt-editorjs"
+        "@pinia/nuxt",
         // [
         //     '@nuxtjs/yandex-metrika',
         //     {
@@ -123,17 +127,17 @@ export default defineNuxtConfig({
         ],
         routes: dynamicRoutes
     },
-    buildModules: [
-        [
-            '@pinia/nuxt',
-            {
-                autoImports: [
-                    // automatically imports `defineStore`
-                    'defineStore', // import { defineStore } from 'pinia'
-                    // automatically imports `defineStore` as `definePiniaStore`
-                    ['defineStore', 'definePiniaStore'], // import { defineStore as definePiniaStore } from 'pinia'
-                ],
-            },
-        ],
-    ]
+    // buildModules: [
+    //     [
+    //         '@pinia/nuxt',
+    //         {
+    //             autoImports: [
+    //                 // automatically imports `defineStore`
+    //                 'defineStore', // import { defineStore } from 'pinia'
+    //                 // automatically imports `defineStore` as `definePiniaStore`
+    //                 ['defineStore', 'definePiniaStore'], // import { defineStore as definePiniaStore } from 'pinia'
+    //             ],
+    //         },
+    //     ],
+    // ]
 })

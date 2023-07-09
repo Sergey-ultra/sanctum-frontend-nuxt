@@ -8,7 +8,10 @@
                         <nuxt-link :to="'/edit-profile'">
                             <div class="profile__avatar">
                                 <img v-if="$api.$user.avatar" :src="$api.$user.avatar" :alt="$api.$user.avatar"/>
-                                <svg  v-else xmlns="http://www.w3.org/2000/svg" width="120" height="120" fill-rule="evenodd" clip-rule="evenodd" image-rendering="optimizeQuality" shape-rendering="geometricPrecision" text-rendering="geometricPrecision" viewBox="0 0 32 32"><circle cx="16" cy="16" r="16" fill="#ebebeb"/><path fill="#ccc" d="M16 18.85c6.27 0 11.36 3.46 11.36 7.73 0 .25-.02.5-.05.74C24.41 30.21 20.42 32 16 32c-4.42 0-8.41-1.79-11.31-4.68-.03-.24-.05-.49-.05-.74 0-4.27 5.09-7.73 11.36-7.73zm0-12.66c2.95 0 5.34 2.39 5.34 5.34 0 2.95-2.39 5.34-5.34 5.34-2.95 0-5.34-2.39-5.34-5.34 0-2.95 2.39-5.34 5.34-5.34z"/></svg>
+                                <svg  v-else xmlns="http://www.w3.org/2000/svg" width="120" height="120" fill-rule="evenodd" clip-rule="evenodd" image-rendering="optimizeQuality" shape-rendering="geometricPrecision" text-rendering="geometricPrecision" viewBox="0 0 32 32">
+                                    <circle cx="16" cy="16" r="16" fill="#ebebeb"/>
+                                    <path fill="#ccc" d="M16 18.85c6.27 0 11.36 3.46 11.36 7.73 0 .25-.02.5-.05.74C24.41 30.21 20.42 32 16 32c-4.42 0-8.41-1.79-11.31-4.68-.03-.24-.05-.49-.05-.74 0-4.27 5.09-7.73 11.36-7.73zm0-12.66c2.95 0 5.34 2.39 5.34 5.34 0 2.95-2.39 5.34-5.34 5.34-2.95 0-5.34-2.39-5.34-5.34 0-2.95 2.39-5.34 5.34-5.34z"/>
+                                </svg>
                             </div>
                         </nuxt-link>
 
@@ -33,7 +36,7 @@
     import { useNuxtApp } from '#app'
     const { $api } = useNuxtApp();
     import { storeToRefs } from "pinia";
-    import {useUserStore} from "../../store/user";
+    import {useUserStore} from "~/store/user";
 
 
     definePageMeta({

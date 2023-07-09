@@ -1,6 +1,5 @@
 <template>
     <div class="reviews">
-        <reviewsAnswersNav></reviewsAnswersNav>
         <div class="loader__wrapper" v-if="isLoadingMyReviews">
             <loader class="loader"></loader>
         </div>
