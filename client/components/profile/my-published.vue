@@ -1,5 +1,5 @@
 <template>
-    <div  class="published">
+    <div class="published">
 
         <slot name="status"></slot>
 
@@ -125,6 +125,7 @@
             margin-bottom: 20px;
         }
     }
+
     .dropdown {
         margin: -5px 5px -5px auto;
         &__inner {

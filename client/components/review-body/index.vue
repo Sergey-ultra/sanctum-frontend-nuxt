@@ -13,7 +13,7 @@
                     :style="getMarginByIndex(index)"
                 >
                     <div v-if="block.type === 'paragraph'">
-                        <textarea v-model="block.data.text"></textarea>
+                        <textarea v-model="block.data.text" @input="heightSync($event)" @change="heightSync($event)"></textarea>
                     </div>
                     <div
                         v-else-if="block.type === 'image'"
@@ -55,6 +55,9 @@
                 <div class="edit-panel__button">
                     Добавить ссылку
                 </div>
+                <div class="edit-panel__button" @click="emit('saveAsDraft')">
+                     В черновик
+                </div>
             </div>
         </div>
         {{ modelValue }}
@@ -85,6 +88,7 @@ import {storeToRefs} from "pinia";
 
 const props = defineProps({
     modelValue: {
+        type: Object,
         default: {
             blocks: [
                 {
@@ -99,7 +103,7 @@ const props = defineProps({
 });
 
 const fileStore = useFileStore();
-const emit = defineEmits(['update:modelValue']);
+const emit = defineEmits(['update:modelValue', 'saveAsDraft']);
 const { progress, isUploading, uploadingFileUrls } = storeToRefs(fileStore);
 
 
@@ -134,11 +138,15 @@ const showAddImageModal = () => isShowAddImageModal.value = true;
 const setImageFocusIndex = index => imageFocusIndex.value = index;
 
 
-const keydown = event => {
-    setTimeout(() => {
-        event.target.style.cssText = 'height:auto; padding:0';
-        event.target.style.cssText = 'height:' + event.target.scrollHeight + 'px';
-    }, 1);
+const heightSync = event => {
+    const target = event.target;
+    console.log(target.scrollTop);
+    if (target.scrollTop > 0){
+        target.style.height = target.scrollHeight + "px";
+    }
+    // target.style.cssText = 'height:auto; padding:0';
+    // target.style.cssText = 'height:' + event.target.scrollHeight + 'px';
+
 }
 
 const getMarginByIndex = index => {
@@ -306,6 +314,20 @@ const closeModal = () => imageFocusIndex.value = null;
 //     }
 // });
 
+const syncTextareaHeight = () => {
+    Object.values(container.value.children)
+        .reduce((acc, item) => {
+            const chl = Object.values(item.childNodes).reduce((acc, item) => {
+                return acc.concat(Object.values(item.childNodes));
+            }, []);
+            return acc.concat(chl);
+        }, [])
+        .filter(el => el.tagName.toLowerCase() === 'textarea')
+        .forEach(el => {
+            el.style.height = `${el.scrollHeight}px`
+        });
+}
+
 watch(imageFocusIndex, (value) => {
     if (value) {
         document.addEventListener('click', closeModal, {capture: true, once: true});
@@ -314,6 +336,7 @@ watch(imageFocusIndex, (value) => {
     }
 });
 
+onMounted(() => syncTextareaHeight());
 </script>
 <style scoped lang="scss">
 textarea {

@@ -14,15 +14,45 @@
         <div class="main__row">
             <journal></journal>
         </div>
+        <div class="main__row">
+            <div class="main__wrapper">
+                <div class="main__row bold">
+                    <div>
+                        Авторов сейчас на сайте
+                        <div class="count">{{ userCount }}</div>
+                    </div>
+                    <div>
+                        Всего отзывов
+                        <div class="count">{{ reviewCount }}</div>
+                    </div>
+                    <div>
+                        Всего комментариев
+                        <div class="count">{{ commentCount}}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="main__row">
+            <div class="main__wrapper">
+                <h3>Отзывы о товарах красоты и здоровья!</h3>
+                <b>Smart-Beautiful – самый информативный форум отзывов о косметики,</b> где миллионы реальных покупателей обмениваются полезным опытом о товарах крсоты и здоровья, делятся фото и видео, ставят оценки, создают рейтинги лучших, изучают инструкции по применению и предлагают аналоги, раздают лайфхаки и хитрости, советуют что посмотреть и где выгоднее купить, а также предупреждают о недостатках и проблемах. Присоединяйтесь!
+
+                <h3>Как писать хорошие отзывы?</h3>
+                Отзыв должен быть полезен читателю. Если в отзыве нет никакой полезной информации, то и тратить время на него нет смысла. Вы должны обладать достаточными знаниями и личным опытом, чтобы указать читателю на все достоинства и недостатки объекта своего отзыва. В этом случае, люди будут благодарны Вам за ценную информацию, что положительно отразится на его релевантности относительно других отзывов.
+            </div>
+          </div>
     </div>
 </template>
 
 <script setup>
-    import journal from "../components/journal";
+    import journal from "~/components/journal";
     import {useCategoryStore} from "~/store/category";
+    import { useMainStore } from "~/store/main";
     import { storeToRefs } from "pinia";
 
     const categoryStore = useCategoryStore();
+    const mainStore = useMainStore();
+    const { userCount, reviewCount, commentCount } = storeToRefs(mainStore);
     const { categories } = storeToRefs(categoryStore);
 
     const title = `Главная`;
@@ -37,8 +67,10 @@
 
     useAsyncData(async() => {
         if (!categories.length) {
-            await categoryStore.loadNestedCategories()
+            await categoryStore.loadNestedCategories();
+            mainStore.loadMainStatistics();
         }
+
     });
 </script>
 
@@ -122,6 +154,21 @@
                 }
             }
         }
+        &__wrapper {
+            width: 100%;
+            border-radius: 8px;
+            background-color: #fff;
+            padding: 20px;
+        }
+    }
+    .bold {
+        font-size: 18px;
+        font-weight: 600;
+    }
+    .count {
+        font-size: 20px;
+        font-weight: bold;
+        color: #e080a7;
     }
 
     @media (max-width: 1000px) {

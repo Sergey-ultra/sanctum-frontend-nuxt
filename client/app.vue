@@ -5,6 +5,121 @@
             <div class="container">
                 <div class="top-menu__wrapper">
                     <location class="location-choice"/>
+                    <div class="top-menu__right">
+                        <nuxt-link class="header__item header__item-comparison" :to="{ name: 'comparison' }">
+                            <span v-if="allComparedSkuIdsCount" class="header__item-badge">
+                                {{ allComparedSkuIdsCount }}
+                            </span>
+                            <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                 viewBox="0 0 32 32">
+                                <path
+                                    d="M12 2h20v4h-20v-4zM12 14h20v4h-20v-4zM12 26h20v4h-20v-4zM0 4c0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.209-1.791 4-4 4s-4-1.791-4-4zM0 16c0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.209-1.791 4-4 4s-4-1.791-4-4zM0 28c0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.209-1.791 4-4 4s-4-1.791-4-4z"></path>
+                            </svg>
+                        </nuxt-link>
+
+                        <nuxt-link
+                            v-if="$api.isAuth.value"
+                            :to="{ name: 'favorites' }"
+                            class="header__item header__item-favorite">
+                            <span v-if="favorites.length" class="header__item-badge">
+                                {{ favorites.length }}
+                            </span>
+                            <fa class="icon" icon="heart"></fa>
+                        </nuxt-link>
+                        <dropdown v-if="$api.isAuth.value" class="header__item header__item-account">
+                            <template v-slot:activator="{ on }">
+                                <div class="dropdown__wrapper" @click="on">
+                                    <span class="user__avatar">
+                                        <img :src="$api.$user.avatar" :alt="$api.$user.name">
+                                    </span>
+                                    <div class="header__item-text" color="#6c757d">
+                                        {{ $api.$user.name }}
+                                    </div>
+                                </div>
+                            </template>
+
+
+                            <nuxt-link class="dropdown__el dropdown__el-username" :to="'/edit-profile'">
+                                <img class="dropdown__avatar" :src="$api.$user.avatar" :alt="$api.$user.avatar">
+                                <span class="dropdown__username">{{ $api.$user.name }}</span>
+                            </nuxt-link>
+                            <nuxt-link class="dropdown__el" :to="{name: 'profile-index-write'}">
+                                <svg class="dropdown__icon" viewBox="0 0 24 24">
+                                    <path
+                                        d="M4.4 23h12.2a1.4 1.4 0 0 0 1.4-1.4V19h2.6a1.4 1.4 0 0 0 1.4-1.4V2.4A1.4 1.4 0 0 0 20.6 1H8.4A1.4 1.4 0 0 0 7 2.4V5H4.4A1.4 1.4 0 0 0 3 6.4v15.2A1.4 1.4 0 0 0 4.4 23zM5 7h11v14H5V7zm4-4h11v14h-2V6.4A1.4 1.4 0 0 0 16.6 5H9V3z"></path>
+                                    <path d="M14 9H7v2h7V9zM14 13H7v2h7v-2z"></path>
+                                </svg>
+                                <span>Написать</span>
+                            </nuxt-link>
+                            <nuxt-link class="dropdown__el" :to="{name: 'profile-index-my-reviews'}">
+                                <svg class="dropdown__icon" viewBox="0 0 24 24">
+                                    <path
+                                        d="M4.4 23h12.2a1.4 1.4 0 0 0 1.4-1.4V19h2.6a1.4 1.4 0 0 0 1.4-1.4V2.4A1.4 1.4 0 0 0 20.6 1H8.4A1.4 1.4 0 0 0 7 2.4V5H4.4A1.4 1.4 0 0 0 3 6.4v15.2A1.4 1.4 0 0 0 4.4 23zM5 7h11v14H5V7zm4-4h11v14h-2V6.4A1.4 1.4 0 0 0 16.6 5H9V3z"></path>
+                                    <path d="M14 9H7v2h7V9zM14 13H7v2h7v-2z"></path>
+                                </svg>
+                                <span>Мои отзывы</span>
+                            </nuxt-link>
+                            <nuxt-link class="dropdown__el" :to="{name: 'profile-index-my-comments'}">
+                                <svg class="dropdown__icon" viewBox="0 0 24 24">
+                                    <path
+                                        d="M4.4 23h12.2a1.4 1.4 0 0 0 1.4-1.4V19h2.6a1.4 1.4 0 0 0 1.4-1.4V2.4A1.4 1.4 0 0 0 20.6 1H8.4A1.4 1.4 0 0 0 7 2.4V5H4.4A1.4 1.4 0 0 0 3 6.4v15.2A1.4 1.4 0 0 0 4.4 23zM5 7h11v14H5V7zm4-4h11v14h-2V6.4A1.4 1.4 0 0 0 16.6 5H9V3z"></path>
+                                    <path d="M14 9H7v2h7V9zM14 13H7v2h7v-2z"></path>
+                                </svg>
+                                <span>Мои публикации</span>
+                            </nuxt-link>
+                            <nuxt-link class="dropdown__el" :to="{name: 'profile-index-message'}">
+                                <fa class="dropdown__icon" icon="envelope"></fa>
+                                <span>Сообщения</span>
+                                <span class="dropdown__count" v-if="$api.$user.unviewed_message_count">
+                                    {{ $api.$user.unviewed_message_count }}
+                                </span>
+
+                            </nuxt-link>
+
+                            <nuxt-link class="dropdown__el" :to="'/favorites'">
+                                <svg class="dropdown__icon" viewBox="0 0 24 24">
+                                    <path
+                                        d="M12 4.367C10.675 3.28 9.245 2.72 7.73 2.72A5.73 5.73 0 0 0 2 8.45c0 4.329 3.197 8.531 9.448 12.664l.552.365.551-.365C18.803 16.981 22 12.778 22 8.45a5.73 5.73 0 0 0-5.73-5.73c-1.515 0-2.945.56-4.27 1.648zM4 8.449a3.73 3.73 0 0 1 3.73-3.73c1.223 0 2.402.551 3.566 1.705l.704.698.704-.698c1.164-1.154 2.343-1.704 3.567-1.704A3.73 3.73 0 0 1 20 8.45c0 3.397-2.623 6.956-8 10.626-5.377-3.67-8-7.23-8-10.627z"></path>
+                                </svg>
+                                <span>Избранное</span>
+                                <span class="dropdown__count" v-if="favorites.length">{{ favorites.length }}</span>
+                            </nuxt-link>
+                            <nuxt-link class="dropdown__el" :to="'/comparison'">
+                                <svg class="dropdown__icon" viewBox="0 0 24 24">
+                                    <path
+                                        d="M3 7V4h2v3l3 .001v2H5V12H3V9H0V7h3zm5 6.004v-2h13v2H8zM10 7v2h11V7H10zM3 17.002v-2h18v2H3zM3 19v2h18v-2H3z"></path>
+                                </svg>
+                                <span>Списки сравнения</span>
+                                <span class="dropdown__count" v-if="allComparedSkuIdsCount">{{ allComparedSkuIdsCount }}</span>
+                            </nuxt-link>
+                            <nuxt-link class="dropdown__el" :to="{name: 'profile-index-balance'}">
+                                <svg class="dropdown__icon" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 50 50">
+                                    <path d="M33.6,9.2l3.6-6.5c0.3-0.5,0.4-1.2,0.1-1.7C36.9,0.3,36.4,0,35.7,0H13.1c-0.6,0-1.2,0.4-1.5,0.9
+                                        c-0.3,0.6-0.2,1.3,0.2,1.8l4.6,6.5C12.7,12.7,2.1,24.1,2.1,39.5C2.1,45.3,6.8,50,12.6,50h24.8c5.8,0,10.5-4.7,10.5-10.5
+                                        C47.9,23.9,37.2,12.5,33.6,9.2z M35.4,29.2c-0.6,1.1-1.4,1.9-2.3,2.5c-0.9,0.6-2,1-3.3,1.3c-1.2,0.2-2.4,0.4-3.9,0.4H21v4h10.1v2.8
+                                        H21v3.1h-3.8v-3h-2v-2.8h2v-4h-2v-3.4h2V17.7h8.9c2.5,0,4.5,0.3,5.8,0.8c1.3,0.5,2.4,1.4,3.2,2.7c0.8,1.3,1.2,2.7,1.3,4.3
+                                        C36.3,26.9,36,28.2,35.4,29.2z"/>
+                                    <path d="M30.6,22c-0.5-0.4-1.1-0.6-2-0.8c-0.8-0.1-1.5-0.2-2.3-0.2h-5.2v9.3h4.8c0.9,0,1.7-0.1,2.5-0.2
+		                                c0.8-0.2,1.5-0.4,2-0.8c0.6-0.3,1-0.8,1.4-1.4l0,0c0.4-0.7,0.5-1.3,0.5-2.2c0-0.8-0.2-1.5-0.5-2.2C31.5,22.8,31.1,22.3,30.6,22z"/>
+                                </svg>
+                                <span>Баланс</span>
+                                <span class="dropdown__count">{{ $api.$user.balance ?? 0 }}</span>
+                            </nuxt-link>
+                            <div class="dropdown__el" @click="exit">
+                                <svg class="dropdown__icon" viewBox="0 0 24 24">
+                                    <path
+                                        d="M7 11h8.987v2H7v2.964l-4-4 4-4V11zm2-6V3h7a5 5 0 0 1 5 5v8a5 5 0 0 1-5 5H9v-2h7a3 3 0 0 0 3-3V8a3 3 0 0 0-3-3H9z"
+                                        fill="#222"></path>
+                                </svg>
+                                <span>Выйти</span>
+                            </div>
+                        </dropdown>
+                        <div v-else class="dropdown__wrapper header__item-account" @click="$api.setIsShowAuthModal(true)">
+                            <div class="header__item-text">
+                                Вход и регистрация
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
@@ -69,120 +184,7 @@
                         </form>
                         <div class="mini-suggest__overlay"></div>
 
-
-                        <nuxt-link class="header__item header__item-comparison" :to="{ name: 'comparison' }">
-                            <span v-if="allComparedSkuIdsCount" class="header__item-badge">
-                                {{ allComparedSkuIdsCount }}
-                            </span>
-                            <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                 viewBox="0 0 32 32">
-                                <path
-                                    d="M12 2h20v4h-20v-4zM12 14h20v4h-20v-4zM12 26h20v4h-20v-4zM0 4c0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.209-1.791 4-4 4s-4-1.791-4-4zM0 16c0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.209-1.791 4-4 4s-4-1.791-4-4zM0 28c0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.209-1.791 4-4 4s-4-1.791-4-4z"></path>
-                            </svg>
-                            <span class="header__item-text">Сравнить</span>
-                        </nuxt-link>
-
-                        <nuxt-link class="header__item header__item-favorite" :to="{ name: 'favorites' }">
-                                  <span v-if="favorites.length" class="header__item-badge">
-                                      {{ favorites.length }}
-                                  </span>
-                            <fa class="icon" icon="heart"></fa>
-                            <span class="header__item-text">Избранное</span>
-                        </nuxt-link>
-
-
-                        <dropdown v-if="$api.isAuth.value" class="header__item header__item-account">
-                            <template v-slot:activator="{ on }">
-                                <div class="dropdown__wrapper" @click="on">
-                                    <div class="header__item-text auth-button" color="#6c757d">
-                                        {{ $api.$user.name }}
-                                    </div>
-                                </div>
-                            </template>
-
-
-                            <nuxt-link class="dropdown__el dropdown__el-username" :to="'/edit-profile'">
-                                <img class="dropdown__avatar" :src="$api.$user.avatar" :alt="$api.$user.avatar">
-                                <span class="dropdown__username">{{ $api.$user.name }}</span>
-                            </nuxt-link>
-                            <nuxt-link class="dropdown__el" :to="{name: 'profile-index-write'}">
-                                <svg class="dropdown__icon" viewBox="0 0 24 24">
-                                    <path
-                                            d="M4.4 23h12.2a1.4 1.4 0 0 0 1.4-1.4V19h2.6a1.4 1.4 0 0 0 1.4-1.4V2.4A1.4 1.4 0 0 0 20.6 1H8.4A1.4 1.4 0 0 0 7 2.4V5H4.4A1.4 1.4 0 0 0 3 6.4v15.2A1.4 1.4 0 0 0 4.4 23zM5 7h11v14H5V7zm4-4h11v14h-2V6.4A1.4 1.4 0 0 0 16.6 5H9V3z"></path>
-                                    <path d="M14 9H7v2h7V9zM14 13H7v2h7v-2z"></path>
-                                </svg>
-                                <span>Написать</span>
-                            </nuxt-link>
-                            <nuxt-link class="dropdown__el" :to="{name: 'profile-index-my-reviews'}">
-                                <svg class="dropdown__icon" viewBox="0 0 24 24">
-                                    <path
-                                        d="M4.4 23h12.2a1.4 1.4 0 0 0 1.4-1.4V19h2.6a1.4 1.4 0 0 0 1.4-1.4V2.4A1.4 1.4 0 0 0 20.6 1H8.4A1.4 1.4 0 0 0 7 2.4V5H4.4A1.4 1.4 0 0 0 3 6.4v15.2A1.4 1.4 0 0 0 4.4 23zM5 7h11v14H5V7zm4-4h11v14h-2V6.4A1.4 1.4 0 0 0 16.6 5H9V3z"></path>
-                                    <path d="M14 9H7v2h7V9zM14 13H7v2h7v-2z"></path>
-                                </svg>
-                                <span>Мои отзывы</span>
-                            </nuxt-link>
-                            <nuxt-link class="dropdown__el" :to="{name: 'profile-index-my-comments'}">
-                                <svg class="dropdown__icon" viewBox="0 0 24 24">
-                                    <path
-                                        d="M4.4 23h12.2a1.4 1.4 0 0 0 1.4-1.4V19h2.6a1.4 1.4 0 0 0 1.4-1.4V2.4A1.4 1.4 0 0 0 20.6 1H8.4A1.4 1.4 0 0 0 7 2.4V5H4.4A1.4 1.4 0 0 0 3 6.4v15.2A1.4 1.4 0 0 0 4.4 23zM5 7h11v14H5V7zm4-4h11v14h-2V6.4A1.4 1.4 0 0 0 16.6 5H9V3z"></path>
-                                    <path d="M14 9H7v2h7V9zM14 13H7v2h7v-2z"></path>
-                                </svg>
-                                <span>Мои публикации</span>
-                            </nuxt-link>
-                            <nuxt-link class="dropdown__el" :to="{name: 'profile-index-message'}">
-                                <fa class="dropdown__icon" icon="envelope"></fa>
-                                <span>Сообщения</span>
-                                <span class="dropdown__count" v-if="$api.$user.unviewed_message_count">
-                                    {{ $api.$user.unviewed_message_count }}
-                                </span>
-
-                            </nuxt-link>
-
-                            <nuxt-link class="dropdown__el" :to="'/favorites'">
-                                <svg class="dropdown__icon" viewBox="0 0 24 24">
-                                    <path
-                                            d="M12 4.367C10.675 3.28 9.245 2.72 7.73 2.72A5.73 5.73 0 0 0 2 8.45c0 4.329 3.197 8.531 9.448 12.664l.552.365.551-.365C18.803 16.981 22 12.778 22 8.45a5.73 5.73 0 0 0-5.73-5.73c-1.515 0-2.945.56-4.27 1.648zM4 8.449a3.73 3.73 0 0 1 3.73-3.73c1.223 0 2.402.551 3.566 1.705l.704.698.704-.698c1.164-1.154 2.343-1.704 3.567-1.704A3.73 3.73 0 0 1 20 8.45c0 3.397-2.623 6.956-8 10.626-5.377-3.67-8-7.23-8-10.627z"></path>
-                                </svg>
-                                <span>Избранное</span>
-                                <span class="dropdown__count" v-if="favorites.length">{{ favorites.length }}</span>
-                            </nuxt-link>
-                            <nuxt-link class="dropdown__el" :to="'/comparison'">
-                                <svg class="dropdown__icon" viewBox="0 0 24 24">
-                                    <path
-                                        d="M3 7V4h2v3l3 .001v2H5V12H3V9H0V7h3zm5 6.004v-2h13v2H8zM10 7v2h11V7H10zM3 17.002v-2h18v2H3zM3 19v2h18v-2H3z"></path>
-                                </svg>
-                                <span>Списки сравнения</span>
-                                <span class="dropdown__count" v-if="allComparedSkuIdsCount">{{ allComparedSkuIdsCount }}</span>
-                            </nuxt-link>
-                            <nuxt-link class="dropdown__el" :to="{name: 'profile-index-balance'}">
-                                <svg class="dropdown__icon" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 50 50">
-                                    <path d="M33.6,9.2l3.6-6.5c0.3-0.5,0.4-1.2,0.1-1.7C36.9,0.3,36.4,0,35.7,0H13.1c-0.6,0-1.2,0.4-1.5,0.9
-                                        c-0.3,0.6-0.2,1.3,0.2,1.8l4.6,6.5C12.7,12.7,2.1,24.1,2.1,39.5C2.1,45.3,6.8,50,12.6,50h24.8c5.8,0,10.5-4.7,10.5-10.5
-                                        C47.9,23.9,37.2,12.5,33.6,9.2z M35.4,29.2c-0.6,1.1-1.4,1.9-2.3,2.5c-0.9,0.6-2,1-3.3,1.3c-1.2,0.2-2.4,0.4-3.9,0.4H21v4h10.1v2.8
-                                        H21v3.1h-3.8v-3h-2v-2.8h2v-4h-2v-3.4h2V17.7h8.9c2.5,0,4.5,0.3,5.8,0.8c1.3,0.5,2.4,1.4,3.2,2.7c0.8,1.3,1.2,2.7,1.3,4.3
-                                        C36.3,26.9,36,28.2,35.4,29.2z"/>
-                                    <path d="M30.6,22c-0.5-0.4-1.1-0.6-2-0.8c-0.8-0.1-1.5-0.2-2.3-0.2h-5.2v9.3h4.8c0.9,0,1.7-0.1,2.5-0.2
-		                                c0.8-0.2,1.5-0.4,2-0.8c0.6-0.3,1-0.8,1.4-1.4l0,0c0.4-0.7,0.5-1.3,0.5-2.2c0-0.8-0.2-1.5-0.5-2.2C31.5,22.8,31.1,22.3,30.6,22z"/>
-                                </svg>
-                                <span>Баланс</span>
-                                <span class="dropdown__count">{{ $api.$user.balance ?? 0 }}</span>
-                            </nuxt-link>
-                            <div class="dropdown__el" @click="exit">
-                                <svg class="dropdown__icon" viewBox="0 0 24 24">
-                                    <path
-                                        d="M7 11h8.987v2H7v2.964l-4-4 4-4V11zm2-6V3h7a5 5 0 0 1 5 5v8a5 5 0 0 1-5 5H9v-2h7a3 3 0 0 0 3-3V8a3 3 0 0 0-3-3H9z"
-                                        fill="#222"></path>
-                                </svg>
-                                <span>Выйти</span>
-                            </div>
-                        </dropdown>
-
-
-                        <div v-else class="dropdown__wrapper header__item-account" @click="$api.setIsShowAuthModal(true)">
-                            <div class="header__item-text auth-button">
-                                Войти
-                            </div>
-                        </div>
+                        <nuxt-link :to="'/profile/write'" class="main-button">Написать</nuxt-link>
                     </div>
 
                     <div class="search">
@@ -356,7 +358,7 @@ a {
 }
 
 .top-menu {
-    z-index: 80;
+    z-index: 81;
     color: gray;
     height: 33px;
     //background-color: #ffedea;
@@ -365,6 +367,13 @@ a {
     &__wrapper {
         height: 100%;
         display: flex;
+        justify-content: space-between;
+        align-items: center
+    }
+    &__right {
+        display: flex;
+        gap: 14px;
+        justify-content: space-between;
         align-items: center
     }
 }
@@ -539,7 +548,7 @@ a {
     }
 }
 
-.auth-button {
+.main-button {
     color: #333;
     height: 38px;
     position: relative;
@@ -549,7 +558,7 @@ a {
     line-height: 36px;
     border-radius: .5rem;
     border: 1px solid #d9d9d9;
-    padding: 0 10px;
+    padding: 0 19px;
     cursor: pointer;
     background-color: #e8e8e8;
     transition: all .12s ease-out;
@@ -558,10 +567,26 @@ a {
         background-color: #dcdcdc;
     }
 }
+.user__avatar {
+    display: block;
+    width: 24px;
+    height: 24px;
+    overflow: hidden;
+    border-radius: 50%;
+    flex-shrink: 0;
+    & img {
+        height: 100%;
+        width: 100%;
+        object-fit: cover;
+    }
+}
 
 .dropdown {
+    z-index: 81;
     &__wrapper {
-        display: block;
+        color: #000;
+        cursor: pointer;
+        display: flex;
     }
 
     &__el {

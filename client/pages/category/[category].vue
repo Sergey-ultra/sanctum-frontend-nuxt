@@ -13,18 +13,22 @@
         </div>
 
         <viewed-products/>
+
+
+
         <popular-brands></popular-brands>
     </div>
 </template>
 
 <script setup>
-    import filterBlock from "../../components/filterBlock"
-    import viewedProducts from '../../components/viewed-products'
-    import productList from '../../components/product-list'
+
+    import filterBlock from "~/components/filterBlock"
+    import viewedProducts from '~/components/viewed-products'
+    import productList from '~/components/product-list'
     import popularBrands from '../../components/popular-brands'
     import { storeToRefs } from "pinia";
-    import {useProductStore} from "../../store/product";
-    import {useFilterStore} from "../../store/filter";
+    import {useProductStore} from "~/store/product";
+    import {useFilterStore} from "~/store/filter";
 
     const productStore = useProductStore();
     const filterStore = useFilterStore();

@@ -10,7 +10,7 @@
                     <h4>Оценка модели</h4>
                     <div>
                         <ratingForm :initLoading="false"/>
-                        <div class="invalid-feedback" v-for="error of v$.rating.$errors" :key="error.$uid">
+                        <div class="invalid-feedback" v-for="error of r$.rating.$errors" :key="error.$uid">
                             {{ error.$message }}
                         </div>
                     </div>
@@ -58,14 +58,17 @@
                 <div class="form__group">
 
                     <div class="label">
-                            <span class="text-gray">Текст отзыва: (20 слов минимум)</span>
+                        <span class="text-gray">Текст отзыва: (20 слов минимум)</span>
                     </div>
 <!--                        <textareaComponent-->
 <!--                            rows="10"-->
 <!--                            v-model.trim="editedReview.body"-->
 <!--                            :color="'white'"-->
 <!--                        />-->
-                    <reviewBody v-model="editedReview.body" class="body"/>
+                    <reviewBody
+                        v-model="editedReview.body"
+                        @saveAsDraft="saveAsDraft"
+                        class="body"/>
 <!--                            <editor-js class="body" v-model="editedReview.body"/>-->
 <!--                            <ckEditorComponent v-model="editedReview.body"></ckEditorComponent>-->
 
@@ -108,7 +111,6 @@
                         >
                             <span>Нет</span>
                         </radioComponent>
-
                     </div>
                 </div>
 
@@ -158,7 +160,8 @@ const currentSkuStore = useCurrentSkuStore();
 const { isUploadingReview, existingReview, selectedRating, isCheckingExistingReview } = storeToRefs(reviewStore);
 const { currentSkuId } = storeToRefs(currentSkuStore);
 
-
+let router = useRouter();
+let route = useRoute();
 
 let rating = ref(0);
 
@@ -177,16 +180,19 @@ let editedReview = ref({
     plus: '',
     minus: '',
     images: [],
-    anonymously: 0
+    anonymously: 0,
+    is_recommend: 1,
 });
 const mustBeRating = value => value > 0;
-let rules = {
+let rulesRating = {
     rating: {
-        mustBeRating:  helpers.withMessage('Нужно оценить товар', mustBeRating),
+        mustBeRating: helpers.withMessage('Нужно оценить товар', mustBeRating),
     },
+}
+let rulesReview = {
     editedReview: {
         title: {
-            required:  helpers.withMessage('Поле должно быть заполнено', required),
+            required: helpers.withMessage('Поле должно быть заполнено', required),
             minLength: minLength(5),
             maxLength: maxLength(256),
         },
@@ -194,17 +200,19 @@ let rules = {
             symbolCount: helpers.withMessage('Поле должно быть заполнено', value => calculateSymbolCount(value) > 0),
         },
         plus: {
-            required:  helpers.withMessage('Поле должно быть заполнено', required),
+            required: helpers.withMessage('Поле должно быть заполнено', required),
             minLength: minLength(5),
         },
         minus: {
-            required:  helpers.withMessage('Поле должно быть заполнено', required),
+            required: helpers.withMessage('Поле должно быть заполнено', required),
             minLength: minLength(5),
         },
     },
 };
 
-const v$ = useVuelidate(rules, {editedReview, rating});
+
+const r$ = useVuelidate(rulesRating, { rating });
+const v$ = useVuelidate(rulesReview, { editedReview });
 
 const anonymouslyLocal = computed({
     get() {
@@ -254,39 +262,60 @@ const initEditedReview = () => {
     }
 };
 
-let router = useRouter();
-let route = useRoute();
+const clearForm = () => {
+    editedReview.value = {
+        title: '',
+        body: '',
+        plus: '',
+        minus: '',
+        images: [],
+        anonymously: 0,
+        is_recommend: 1,
+    };
+    rating.value = 0;
+};
 
+const saveAsDraft = async () => {
+    if (!$api.isAuth.value) {
+        $api.setIsShowAuthModal(true);
+    } else {
+        v$.value.$reset();
+        r$.value.$reset();
+        const validated = await r$.value.$validate();
+        if (validated) {
+            await reviewStore.updateOrCreateReview({
+                ...editedReview.value,
+                asDraft: true
+            });
+            r$.value.$reset();
+        }
+    }
+}
 const saveReview = async () => {
     if (!$api.isAuth.value) {
         $api.setIsShowAuthModal(true);
     } else {
-        const validated = await v$.value.$validate();
+        const mainFormValidated = await v$.value.$validate();
+        const ratingValidated = await r$.value.$validate();
 
-        if (validated) {
+        if (mainFormValidated && ratingValidated) {
             await reviewStore.updateOrCreateReview(editedReview.value);
-            editedReview.value = {
-                title: '',
-                body: '',
-                plus: '',
-                minus: '',
-                images: []
-            };
-            rating.value = 0;
+
+            clearForm();
             v$.value.$reset();
-            router.push(`/product/${route.params.product_code}`);
+
+            await router.push(`/product/${route.params.product_code}`);
         }
     }
 }
-
-
-
-
 
 onMounted(async () => {
     rating.value = selectedRating.value;
     if ($api.isAuth.value && currentSkuId) {
         await reviewStore.checkExistingReview();
+        if (existingReview.value) {
+            initEditedReview();
+        }
     }
 });
 </script>

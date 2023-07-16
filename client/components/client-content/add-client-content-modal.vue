@@ -1,21 +1,21 @@
 <template>
     <modal v-model:isShowModal="isShowImageLoadingFormLocal">
         <template v-slot:header>
-            <h2>Добавление фото или видео</h2>
+            <h2>Добавление видео</h2>
         </template>
-        <div>
-            <div>
-                <nuxt-link
-                        :to="(!$api.isAuth.value || ($api.isAuth.value && !existingReview))
-                         ? `/product/${$route.params.product_code}/add-photos`
-                         : `/product/${$route.params.product_code}/add-review`"
-                        class="btn"
-                >
-                    Загрузить фотографии
-                </nuxt-link>
-            </div>
-            <span class="description">До 15 файлов; JPG, PNG, BMP</span>
-        </div>
+<!--        <div>-->
+<!--            <div>-->
+<!--                <nuxt-link-->
+<!--                    :to="(!$api.isAuth.value || ($api.isAuth.value && !existingReview))-->
+<!--                         ? `/product/${$route.params.product_code}/add-photos`-->
+<!--                         : `/product/${$route.params.product_code}/add-review`"-->
+<!--                    class="btn"-->
+<!--                >-->
+<!--                    Загрузить фотографии-->
+<!--                </nuxt-link>-->
+<!--            </div>-->
+<!--            <span class="description">До 15 файлов; JPG, PNG, BMP</span>-->
+<!--        </div>-->
 
         <div>
             <div>
@@ -31,7 +31,7 @@
 <script setup>
     import modal from '../modal'
     import { storeToRefs } from "pinia";
-    import {useReviewStore} from "../../store/review";
+    import {useReviewStore} from "~/store/review";
     import { useNuxtApp } from '#app'
     const { $api } = useNuxtApp();
 

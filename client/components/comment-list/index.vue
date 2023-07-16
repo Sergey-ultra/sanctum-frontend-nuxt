@@ -19,8 +19,8 @@
 </template>
 
 <script setup>
-    import comment from './comment'
-    import loader from '../loader'
+    import comment from './comment';
+    import loader from '../loader';
 
     const emit = defineEmits(['sendComment', 'addLike']);
 
@@ -60,7 +60,7 @@
             }
 
             if (comment.children && Array.isArray(comment.children)) {
-                this.setAnswerForms(comment.children, id)
+                setAnswerForms(comment.children, id)
             }
         })
     };
@@ -70,7 +70,7 @@
             comment.isShowAnswerForm = false
 
             if (comment.children && Array.isArray(comment.children)) {
-                this.setFalseToAnswerForms(comment.children)
+                setFalseToAnswerForms(comment.children)
             }
         })
     };

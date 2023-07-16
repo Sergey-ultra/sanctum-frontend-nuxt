@@ -31,7 +31,11 @@ export const useReviewStore = defineStore({
         isLoadingMyReviews: false,
         isUploadingFormWithVideo: false,
         isLoadingCurrentReview: false,
-        currentReview: null
+        currentReview: null,
+        myDrafts: [],
+        isLoadingMyDrafts: false,
+        myModeratedReviews: [],
+        isLoadingMyModeratedReviews: false,
     }),
     getters: {
         reviewsByRating: state => {
@@ -44,7 +48,7 @@ export const useReviewStore = defineStore({
                 }
             })
           return reviewsByRating
-        }
+        },
     },
     actions: {
         setSelectedRating(payload) {
@@ -109,7 +113,7 @@ export const useReviewStore = defineStore({
                 if (this.tableOptions.rating.length) {
                     params['filter[rating]'] = this.tableOptions.rating;
                 }
-                const { $api } = useNuxtApp()
+                const { $api } = useNuxtApp();
                 const  data  = await $api.get(`/reviews/by-sku-id/${skuId}`, { params });
                 if (data) {
                     this.reviewsWithPagination = [...data.data];
@@ -144,7 +148,7 @@ export const useReviewStore = defineStore({
                 this.isLoadingSkuAdditionalInfo = false;
             }
         },
-        async loadMyRatingsWithReviews() {
+        async loadMyReviews() {
             this.isLoadingMyReviews = true;
             const params = { page: this.myReviewsOptions.currentPage };
             if (this.myReviewsOptions.rating.length) {
@@ -159,6 +163,24 @@ export const useReviewStore = defineStore({
                 this.myReviewsLastPage = data.meta.last_page;
             }
             this.isLoadingMyReviews = false;
+        },
+        async loadMyModeratedReviews() {
+            this.isLoadingMyModeratedReviews = true;
+            const { $api } = useNuxtApp();
+            const data = await $api.get('/reviews/my-moderated');
+            if (data) {
+                this.myModeratedReviews = [...data.data];
+            }
+            this.isLoadingMyModeratedReviews = false;
+        },
+        async loadMyDrafts() {
+            this.isLoadingMyDrafts = true;
+            const { $api } = useNuxtApp();
+            const data = await $api.get('/reviews/my-drafts');
+            if (data) {
+                this.myDrafts = [...data.data];
+            }
+            this.isLoadingMyDrafts = false;
         },
         async loadCurrentReview(id) {
             this.isLoadingCurrentReview = true;
@@ -202,13 +224,13 @@ export const useReviewStore = defineStore({
                 this.isUploadingFormWithVideo = false;
             }
         },
-        async updateOrCreateReview(obj) {
+        async updateOrCreateReview(payload) {
             const currentSkuStore = useCurrentSkuStore();
             const skuId = currentSkuStore.currentSkuId;
             if (skuId) {
-                obj.sku_id = skuId;
+                payload.sku_id = skuId;
                 const { $api } = useNuxtApp();
-                const { data } = await $api.post('/reviews', obj);
+                const { data } = await $api.post('/reviews', payload);
 
                 if (data.status === 'success') {
                     this.setExistingReview(data.data);
@@ -219,8 +241,8 @@ export const useReviewStore = defineStore({
         async deleteReview(id) {
             const { $api } = useNuxtApp();
             await $api.delete(`/reviews/${id}`)
-            await this.loadMyRatingsWithReviews();
+            await this.loadMyReviews();
             $api.$toast.setSuccess('Отзыв успешно удален');
         },
-    }
+    },
 });

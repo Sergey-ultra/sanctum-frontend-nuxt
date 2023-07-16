@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="review__title">
+        <div class="review__meta">
             <div
                 class="review__avatar"
                 :class="{'review__avatar-is-right': isRight === true}"
@@ -15,6 +15,14 @@
                 <ratingView :rating="Number(review.rating)"/>
             </div>
         </div>
+
+
+        <h3 class="review__title">
+            <nuxt-link :to="`/review/${review.id}`">
+                {{ review.title }}
+            </nuxt-link>
+        </h3>
+
 
         <review-images
             v-if="review.images && review.images.length"
@@ -55,9 +63,12 @@
 
 <style scoped lang="scss">
     .review {
-        &__title {
+        &__meta{
             display: flex;
             align-items: center;
+        }
+        &__title a {
+            color: #2b2b2b;
         }
         &__avatar {
             position: absolute;

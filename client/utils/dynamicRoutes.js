@@ -6,6 +6,7 @@ export default async () => {
         const { data: brands } = await $fetch('https://smart-beautiful.ru/api/routes/brands');
         const { data: articles } = await $fetch('https://smart-beautiful.ru/api/routes/articles');
         const { data: categories } = await $fetch('https://smart-beautiful.ru/api/routes/categories');
+        const { data: reviews } = await $fetch('https://smart-beautiful.ru/api/routes/reviews');
 
 
 
@@ -16,7 +17,7 @@ export default async () => {
         ]).flat();
 
 
-        return [].concat(articles, productUrls, brands, categories);
+        return [].concat(articles, productUrls, brands, categories, reviews);
     } catch (err) {
         console.error(err)
         return ['err' + err];

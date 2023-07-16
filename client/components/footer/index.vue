@@ -47,7 +47,7 @@
             </div>
             <div>Нашли ошибку на этой странице? Выделите ее и нажмите Ctrl+Enter</div>
             <div>По вопросам сотрудничества admin@smart-beautiful.ru</div>
-            <div class="footer__copy">2022 - {{ new Date().getFullYear() }} © Smart-Beautiful</div>
+            <div class="footer__copy">2022 - {{ new Date().getFullYear() }} © Smart-Beautiful - сайт отзывов о косметике и мониторинг цен на продукцию в интернет-магазинах</div>
         </div>
     </footer>
 </template>

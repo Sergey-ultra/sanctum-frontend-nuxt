@@ -9,9 +9,9 @@
         </button>
         <ul class="drop-menu__list" v-show="isShowMenu" ref="dropdownMenu">
             <li
-                    class="drop-menu__item"
-                    v-for="item in items"
-                    :key="item"
+                class="drop-menu__item"
+                v-for="item in items"
+                :key="item"
             >
                 <slot :name="item"/>
             </li>

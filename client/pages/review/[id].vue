@@ -46,22 +46,20 @@
                         <dd>{{ currentReview.plus }}</dd>
                     </dl>
 
-                    <dl v-if="currentReview.minus" class="review__item">
+                    <dl v-if="currentReview.minus" class="review__item" >
                         <dt>Недостатки:</dt>
                         <dd>{{ currentReview.minus }}</dd>
                     </dl>
 
 
-                    <div v-if="currentReview.body" class="review__item">
-                        <div v-for="(block, index) in currentReview.body.blocks" :key="index">
-                            <div v-if="block.type === 'paragraph'">
-                                {{ block.data.text }}
-                            </div>
-                            <div v-else-if="block.type === 'image'">
-                                <img :src="`${$config.APP_URL}/${block.data.text}`" :alt="block.data.description">
-                            </div>
-                        </div>
-                    </div>
+                    <p v-for="(block, index) in currentReview.body.blocks" :key="index" class="review__item">
+                        <span v-if="block.type === 'paragraph'">{{ block.data.text }}</span>
+                        <img
+                            v-else-if="block.type === 'image'"
+                            :src="`${$config.APP_URL}/${block.data.text}`"
+                            :alt="block.data.description">
+                    </p>
+
                 </div>
 
                 <div class="review__bottom" v-if="currentReview.plus && currentReview.minus && currentReview.body">
@@ -240,6 +238,33 @@ $greenColor: #46bd87;
     }
     &__top {
         display: flex;
+    }
+    &__item {
+        margin: 12px 0;
+        color: #2b2b2b;
+        display: block;
+
+        img {
+            max-width: 100%;
+            max-height: 100%;
+        }
+
+        & dt {
+            font-size: 16px;
+            line-height: 24px;
+            font-weight: 700;
+            display: inline-block;
+            margin-right: 5px;
+        }
+
+        & dd {
+            margin: 0;
+            display: inline;
+            max-width: 100%;
+            word-wrap: break-word;
+            word-break: break-word;
+            white-space: pre-line;
+        }
     }
     &__image {
         height: 200px;
