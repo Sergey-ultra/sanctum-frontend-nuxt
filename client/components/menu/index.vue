@@ -35,7 +35,7 @@
                         </nuxt-link>
                     </li>
                     <li class="menu__item" v-if="$api.isAuth.value" @click="closeMobileMenuInternal">
-                        <nuxt-link :to="{name: 'profile-index-write'}">
+                        <nuxt-link :to="'/write'">
                             <svg class="menu__item-icon" height="24" width="24" viewBox="0 0 24 24">
                                 <path
                                         d="M4.4 23h12.2a1.4 1.4 0 0 0 1.4-1.4V19h2.6a1.4 1.4 0 0 0 1.4-1.4V2.4A1.4 1.4 0 0 0 20.6 1H8.4A1.4 1.4 0 0 0 7 2.4V5H4.4A1.4 1.4 0 0 0 3 6.4v15.2A1.4 1.4 0 0 0 4.4 23zM5 7h11v14H5V7zm4-4h11v14h-2V6.4A1.4 1.4 0 0 0 16.6 5H9V3z"></path>
@@ -151,6 +151,16 @@
                             Блоги
                         </nuxt-link>
                     </li>
+                    <li class="menu__item">
+                        <nuxt-link :to="'/brand'">
+                            <svg class="menu__item-icon" width="24" height="24" viewBox="0 0 24 24">
+                                <path
+                                    d="M17,10 L17,19 L12,19 L12,14 C12,12.8954305 11.1045695,12 10,12 C8.8954305,12 8,12.8954305 8,14 L8,19 L3,19 L3,10 L0,10 L10,0 L20,10 L17,10 Z"
+                                    transform="translate(2 2)"></path>
+                            </svg>
+                            Бренды
+                        </nuxt-link>
+                    </li>
                     <li class="menu__item" @click="exit" v-if="$api.isAuth.value">
                         <svg class="menu__item-icon" width="24" height="24" viewBox="0 0 24 24">
                             <path
@@ -179,7 +189,6 @@
     const { allComparedSkuIdsCount } = storeToRefs(comparisonStore);
 
     const menu = [
-        {title: 'Бренды', url: '/brand'},
         {title: 'Сыворотки', url: '/category/serums'},
         {title: 'Увлажняющие кремы', url: '/category/cream'},
         {title: 'Масла', url: '/category/oil'},

@@ -4,7 +4,7 @@
         <section class="top-menu">
             <div class="container">
                 <div class="top-menu__wrapper">
-                    <location class="location-choice"/>
+                    <nuxt-link class="top-menu__item" :to="'/faq'">Помощь</nuxt-link>
                     <div class="top-menu__right">
                         <nuxt-link class="header__item header__item-comparison" :to="{ name: 'comparison' }">
                             <span v-if="allComparedSkuIdsCount" class="header__item-badge">
@@ -26,6 +26,7 @@
                             </span>
                             <fa class="icon" icon="heart"></fa>
                         </nuxt-link>
+
                         <dropdown v-if="$api.isAuth.value" class="header__item header__item-account">
                             <template v-slot:activator="{ on }">
                                 <div class="dropdown__wrapper" @click="on">
@@ -43,7 +44,7 @@
                                 <img class="dropdown__avatar" :src="$api.$user.avatar" :alt="$api.$user.avatar">
                                 <span class="dropdown__username">{{ $api.$user.name }}</span>
                             </nuxt-link>
-                            <nuxt-link class="dropdown__el" :to="{name: 'profile-index-write'}">
+                            <nuxt-link class="dropdown__el" :to="'/write'">
                                 <svg class="dropdown__icon" viewBox="0 0 24 24">
                                     <path
                                         d="M4.4 23h12.2a1.4 1.4 0 0 0 1.4-1.4V19h2.6a1.4 1.4 0 0 0 1.4-1.4V2.4A1.4 1.4 0 0 0 20.6 1H8.4A1.4 1.4 0 0 0 7 2.4V5H4.4A1.4 1.4 0 0 0 3 6.4v15.2A1.4 1.4 0 0 0 4.4 23zM5 7h11v14H5V7zm4-4h11v14h-2V6.4A1.4 1.4 0 0 0 16.6 5H9V3z"></path>
@@ -114,7 +115,7 @@
                                 <span>Выйти</span>
                             </div>
                         </dropdown>
-                        <div v-else class="dropdown__wrapper header__item-account" @click="$api.setIsShowAuthModal(true)">
+                        <div v-else class="dropdown__wrapper header__item-account top-menu__item" @click="$api.setIsShowAuthModal(true)">
                             <div class="header__item-text">
                                 Вход и регистрация
                             </div>
@@ -184,7 +185,17 @@
                         </form>
                         <div class="mini-suggest__overlay"></div>
 
-                        <nuxt-link :to="'/profile/write'" class="main-button">Написать</nuxt-link>
+                        <nuxt-link :to="'/write'" class="main-button">
+                            <svg height="18" width="18" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 20H21M16.5 3.49998C16.8978 3.10216 17.4374 2.87866 18 2.87866C18.2786 2.87866 18.5544 2.93353 18.8118 3.04014C19.0692 3.14674 19.303 3.303 19.5 3.49998C19.697 3.69697 19.8532 3.93082 19.9598 4.18819C20.0665 4.44556 20.1213 4.72141 20.1213 4.99998C20.1213 5.27856 20.0665 5.55441 19.9598 5.81178C19.8532 6.06915 19.697 6.303 19.5 6.49998L7 19L3 20L4 16L16.5 3.49998Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                            </svg>
+                            <span>Написать</span>
+                        </nuxt-link>
+                        <nuxt-link :to="'/write'" class="main-button-mobile">
+                            <svg height="18" width="18" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 20H21M16.5 3.49998C16.8978 3.10216 17.4374 2.87866 18 2.87866C18.2786 2.87866 18.5544 2.93353 18.8118 3.04014C19.0692 3.14674 19.303 3.303 19.5 3.49998C19.697 3.69697 19.8532 3.93082 19.9598 4.18819C20.0665 4.44556 20.1213 4.72141 20.1213 4.99998C20.1213 5.27856 20.0665 5.55441 19.9598 5.81178C19.8532 6.06915 19.697 6.303 19.5 6.49998L7 19L3 20L4 16L16.5 3.49998Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                            </svg>
+                        </nuxt-link>
                     </div>
 
                     <div class="search">
@@ -368,13 +379,22 @@ a {
         height: 100%;
         display: flex;
         justify-content: space-between;
-        align-items: center
+        align-items: center;
+
     }
     &__right {
         display: flex;
         gap: 14px;
         justify-content: space-between;
         align-items: center
+    }
+    &__item {
+        color: #333;
+        font-size: 16px;
+        font-weight: 600;
+        &:hover {
+            color: #46bd87;
+        }
     }
 }
 
@@ -559,9 +579,15 @@ a {
     border-radius: .5rem;
     border: 1px solid #d9d9d9;
     padding: 0 19px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
     cursor: pointer;
     background-color: #e8e8e8;
     transition: all .12s ease-out;
+    &-mobile {
+        display:none;
+    }
 
     &:hover {
         background-color: #dcdcdc;
@@ -584,7 +610,6 @@ a {
 .dropdown {
     z-index: 81;
     &__wrapper {
-        color: #000;
         cursor: pointer;
         display: flex;
     }
@@ -824,7 +849,17 @@ a {
         }
     }
 
+    .main-button {
+        display: none;
+        &-mobile {
+            display:flex;
+            padding: 15px;
+        }
 
+        &:hover {
+            background-color: #dcdcdc;
+        }
+    }
     .top-menu,
     .scroll-up {
         display: none;

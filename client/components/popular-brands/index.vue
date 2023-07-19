@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="fill">
         <h4 class="title">Популярные бренды</h4>
 
         <div class="popular-brands" ref="slider">
@@ -120,6 +120,9 @@
 </script>
 
 <style scoped lang="scss">
+    .fill {
+        width: 100%;
+    }
     .title {
         font-size: 24px;
         font-weight: bold;

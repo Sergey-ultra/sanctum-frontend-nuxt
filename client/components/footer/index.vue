@@ -23,26 +23,7 @@
                     </div>
                 </div>
                 <div class="footer__right">
-                    <div class="footer__col">
-                        <div class="footer__title"> Следите за новинками и акциями:</div>
-                        <form class="main__style subscription" @submit.prevent="createSubscription">
-                            <div class="subscription__form">
-                                <div class="subscription__form-item">
-                                    <inputComponent placeholder="Ваш email" v-model.trim="mail"/>
-                                    <div class="invalid-feedback" v-for="error of v$.mail.$errors" :key="error.$uid">
-                                        {{ error.$message }}
-                                    </div>
-                                </div>
-                                <div class="subscription__form-item subscription__form-submit">
-                                    <buttonComponent class="subscription__button" :radius="true" :color="'default'" type="submit">ПОДПИСАТЬСЯ</buttonComponent>
-                                </div>
-                            </div>
-                            <div class="subscription__policy">
-                                Нажимая на кнопку «Подписаться», я соглашаюсь с
-                                <nuxt-link :to="{ name:'policy' }" target="_blank">Политикой конфиденциальности</nuxt-link>
-                            </div>
-                        </form>
-                    </div>
+
                 </div>
             </div>
             <div>Нашли ошибку на этой странице? Выделите ее и нажмите Ctrl+Enter</div>
@@ -51,37 +32,6 @@
         </div>
     </footer>
 </template>
-
-<script setup>
-    import buttonComponent from "~/components/button-component.vue";
-    import inputComponent from '../../components/input-component';
-    import useVuelidate from '@vuelidate/core';
-    import { required, email, helpers } from '@vuelidate/validators';
-    import {useSubscriptionStore} from "~/store/subscription";
-
-    const subscriptionStore = useSubscriptionStore();
-
-    let mail = ref('');
-
-    const rules = {
-        mail: {
-            required: helpers.withMessage('Поле должно быть заполнено', required),
-            email: helpers.withMessage('Введите правильный email', email)
-        }
-    };
-
-    const v$ = useVuelidate(rules, {mail});
-
-    const createSubscription = async () => {
-        const validated = await v$.value.mail.$validate();
-        if (validated) {
-            await subscriptionStore.create({ email: mail.value });
-            v$.value.$reset();
-            mail.value = '';
-        }
-    };
-</script>
-
 <style lang="scss" scoped>
     .invalid-feedback {
         color: #fff;

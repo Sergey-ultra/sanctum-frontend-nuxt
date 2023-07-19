@@ -5,129 +5,143 @@
             <div v-if="isCheckingExistingReview" class="loader-wrapper">
                 <loader class="loader"/>
             </div>
-            <form v-else class="form review__form" @submit.prevent="saveReview" >
-                <div class="form__group">
-                    <h4>Оценка модели</h4>
-                    <div>
-                        <ratingForm :initLoading="false"/>
-                        <div class="invalid-feedback" v-for="error of r$.rating.$errors" :key="error.$uid">
+            <div v-else class="review__wrapper">
+                <form  class="form review__form" @submit.prevent="saveReview" >
+                    <div class="form__group">
+                        <h4>Оценка модели</h4>
+                        <div>
+                            <ratingForm :initLoading="false"/>
+                            <div class="invalid-feedback" v-for="error of r$.rating.$errors" :key="error.$uid">
+                                {{ error.$message }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form__group">
+                        <label>
+                            <div class="label">
+                                <span class="text-gray">Ваше общее впечатление в двух словах: (от 1 до 15 слов)</span>
+                            </div>
+                            <inputComponent v-model="editedReview.title" :color="'white'"/>
+                        </label>
+
+                        <div class="invalid-feedback" v-for="error of v$.editedReview.title.$errors" :key="error.$uid">
                             {{ error.$message }}
                         </div>
                     </div>
-                </div>
 
-                <div class="form__group">
-                    <label>
-                        <div class="label">
-                            <span class="text-gray">Ваше общее впечатление в двух словах: (от 1 до 15 слов)</span>
+                    <div class="form__group">
+                        <label>
+                            <div class="label">
+                                <span class="text-gray">Достоинства</span>
+                            </div>
+                            <inputComponent v-model.trim="editedReview.plus" :color="'white'"/>
+                        </label>
+
+                        <div class="invalid-feedback" v-for="error of v$.editedReview.plus.$errors" :key="error.$uid">
+                            {{ error.$message }}
                         </div>
-                        <inputComponent v-model="editedReview.title" :color="'white'"/>
-                    </label>
-
-                    <div class="invalid-feedback" v-for="error of v$.editedReview.title.$errors" :key="error.$uid">
-                        {{ error.$message }}
                     </div>
-                </div>
 
-                <div class="form__group">
-                    <label>
-                        <div class="label">
-                            <span class="text-gray">Достоинства</span>
+                    <div class="form__group">
+                        <label>
+                            <div class="label">
+                                <span class="text-gray">Недостатки</span>
+                            </div>
+                            <inputComponent v-model.trim="editedReview.minus" :color="'white'"/>
+                        </label>
+
+                        <div class="invalid-feedback" v-for="error of v$.editedReview.minus.$errors" :key="error.$uid">
+                            {{ error.$message }}
                         </div>
-                        <inputComponent v-model.trim="editedReview.plus" :color="'white'"/>
-                    </label>
-
-                    <div class="invalid-feedback" v-for="error of v$.editedReview.plus.$errors" :key="error.$uid">
-                        {{ error.$message }}
                     </div>
-                </div>
 
-                <div class="form__group">
-                    <label>
+                    <div class="form__group">
+
                         <div class="label">
-                            <span class="text-gray">Недостатки</span>
+                            <span class="text-gray">Текст отзыва: (20 слов минимум)</span>
                         </div>
-                        <inputComponent v-model.trim="editedReview.minus" :color="'white'"/>
-                    </label>
+    <!--                        <textareaComponent-->
+    <!--                            rows="10"-->
+    <!--                            v-model.trim="editedReview.body"-->
+    <!--                            :color="'white'"-->
+    <!--                        />-->
+                        <reviewBody
+                            v-model="editedReview.body"
+                            @saveAsDraft="saveAsDraft"
+                            class="body"/>
+    <!--                            <editor-js class="body" v-model="editedReview.body"/>-->
+    <!--                            <ckEditorComponent v-model="editedReview.body"></ckEditorComponent>-->
 
-                    <div class="invalid-feedback" v-for="error of v$.editedReview.minus.$errors" :key="error.$uid">
-                        {{ error.$message }}
+
+
+
+                        <div class="invalid-feedback" v-for="error of v$.editedReview.body.$errors" :key="error.$uid">
+                            {{ error.$message }}
+                        </div>
                     </div>
+    <!--                <h4>Фотографии отзыва</h4>-->
+
+    <!--                <multiple-image-upload-->
+    <!--                    class="image-upload"-->
+    <!--                    :entity="`review`"-->
+    <!--                    v-model:initialImageUrls="editedReview.images"-->
+    <!--                />-->
+
+                    <div class="form__group ">
+                        <label>
+                            <input v-model="anonymouslyLocal" type="checkbox"/>
+                            <span>Оставить отзыв анонимно</span>
+                        </label>
+                    </div>
+
+                    <div class="form__group">
+                        <div class="label">
+                            <span class="text-gray">Порекоммендовали бы друзьям?</span>
+                        </div>
+                        <div>
+                            <radioComponent
+                                v-model="editedReview.is_recommend"
+                                :value="1"
+                            >
+                                <span>Да</span>
+                            </radioComponent>
+                            <radioComponent
+                                v-model="editedReview.is_recommend"
+                                :value="0"
+                            >
+                                <span>Нет</span>
+                            </radioComponent>
+                        </div>
+                    </div>
+
+
+                    <div class="form__group mt-4">
+                        <button class="add-btn" :disabled="isUploadingReview" type="submit">Опубликовать</button>
+
+                        <div class="agreement">
+                            Нажимая кнопку «Отправить», Вы соглашаетесь c
+                            <span>
+                                <nuxt-link :to="{ name: 'policy' }" target="_blank">
+                                    условиями политики конфиденциальности.
+                                </nuxt-link>
+                            </span>
+                        </div>
+                    </div>
+                </form>
+                <div class="review__notification">
+                    Не пишите в поле <b>Ваше общее впечатление</b> название объекта отзыва, т.к. оно автоматически добавляется при просмотре Вашего отзыва.
+                    <br>
+                    <br>
+                    <b>Не копируйте в отзыв текст и фото с других сайтов</b>, а также не вставляйте ссылки на другие сайты. За это модератор может серьезно наказать в соответствии с правилами сайта.
+                    <br>
+                    <br>
+                    Если Вы вставляете ссылки на свои отзывы, то они должны быть уместны и не вводить в заблуждение читателя (он должен четко понимать куда ведет ссылка).
+                    <br>
+                    <br>
+                    Кроме того, в некоторых разделах наложены ограничения на добавление фото.
                 </div>
-
-                <div class="form__group">
-
-                    <div class="label">
-                        <span class="text-gray">Текст отзыва: (20 слов минимум)</span>
-                    </div>
-<!--                        <textareaComponent-->
-<!--                            rows="10"-->
-<!--                            v-model.trim="editedReview.body"-->
-<!--                            :color="'white'"-->
-<!--                        />-->
-                    <reviewBody
-                        v-model="editedReview.body"
-                        @saveAsDraft="saveAsDraft"
-                        class="body"/>
-<!--                            <editor-js class="body" v-model="editedReview.body"/>-->
-<!--                            <ckEditorComponent v-model="editedReview.body"></ckEditorComponent>-->
-
-
-
-
-                    <div class="invalid-feedback" v-for="error of v$.editedReview.body.$errors" :key="error.$uid">
-                        {{ error.$message }}
-                    </div>
-                </div>
-<!--                <h4>Фотографии отзыва</h4>-->
-
-<!--                <multiple-image-upload-->
-<!--                    class="image-upload"-->
-<!--                    :entity="`review`"-->
-<!--                    v-model:initialImageUrls="editedReview.images"-->
-<!--                />-->
-
-                <div class="form__group ">
-                    <label>
-                        <input v-model="anonymouslyLocal" type="checkbox"/>
-                        <span>Оставить отзыв анонимно</span>
-                    </label>
-                </div>
-
-                <div class="form__group">
-                    <div class="label">
-                        <span class="text-gray">Порекоммендовали бы друзьям?</span>
-                    </div>
-                    <div>
-                        <radioComponent
-                            v-model="editedReview.is_recommend"
-                            :value="1"
-                        >
-                            <span>Да</span>
-                        </radioComponent>
-                        <radioComponent
-                            v-model="editedReview.is_recommend"
-                            :value="0"
-                        >
-                            <span>Нет</span>
-                        </radioComponent>
-                    </div>
-                </div>
-
-
-                <div class="form__group mt-4">
-                    <button class="add-btn" :disabled="isUploadingReview" type="submit">Отправить</button>
-
-                    <div class="agreement">
-                        Нажимая кнопку «Отправить», Вы соглашаетесь c
-                        <span>
-                            <nuxt-link :to="{ name: 'policy' }" target="_blank">
-                                условиями политики конфиденциальности.
-                            </nuxt-link>
-                        </span>
-                    </div>
-                </div>
-            </form>
+            </div>
         </div>
     </compact-sku>
 </template>
@@ -345,11 +359,22 @@ input[type=checkbox] {
 
 .review {
     position: relative;
+    &__wrapper {
+        display: flex;
+        justify-content: space-between;
+        gap: 15px;
+    }
     &__form {
-        max-width: 800px;
+        flex-basis: 800px;
+        flex-grow: 1;
+        flex-shrink: 0;
     }
     & textarea {
         min-height: 60px;
+    }
+    &__notification {
+        margin-top: 130px;
+        flex-shrink: 1;
     }
 }
 

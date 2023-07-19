@@ -10,7 +10,6 @@
                         'block__paragraph': block.type === 'paragraph',
                         'block__image': block.type === 'image',
                     }"
-                    :style="getMarginByIndex(index)"
                 >
                     <div v-if="block.type === 'paragraph'">
                         <textarea v-model="block.data.text" @input="heightSync($event)" @change="heightSync($event)"></textarea>
@@ -19,7 +18,7 @@
                         v-else-if="block.type === 'image'"
                         class="image"
                         :class="{
-                            'drag-item': index === imageDragIndex,
+                            'draggable-image': index === imageDragIndex,
                             'image-focus': index === imageFocusIndex,
                         }"
                         @click="setImageFocusIndex(index)"
@@ -36,6 +35,9 @@
                             <div class="image__close" @click="deletePhoto(index)">×</div>
                         </div>
                     </div>
+                    <div v-else-if="block.type === 'drag'" class="drag-element">
+                        <img :src="`${$config.APP_URL}/${cursorImage}`" >
+                    </div>
                 </div>
             </div>
 
@@ -50,18 +52,22 @@
             <div class="edit-panel">
                 <div class="edit-panel__button" @click.prevent="showAddImageModal">
                     <fa icon="camera"></fa>
-                    Вставить фото
+                    <span>Вставить фото</span>
                 </div>
                 <div class="edit-panel__button">
-                    Добавить ссылку
+                    <fa icon="link"></fa>
+                    <span>Добавить ссылку</span>
                 </div>
                 <div class="edit-panel__button" @click="emit('saveAsDraft')">
-                     В черновик
+                    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 50 50" fill="currentColor">
+                        <path d="M47.9,11.1L37.7,0.6c-0.1-0.1-0.2-0.2-0.3-0.2l-0.3-0.2l0,0c-0.1-0.1-0.3-0.1-0.3-0.1c-0.1,0-0.2-0.1-0.3-0.1   c-0.1,0-0.2,0-0.4,0H3.7C2.4,0,1.3,1.1,1.3,2.4v45.2c0,1.3,1.1,2.4,2.4,2.4h42.6c0.4,0,0.7-0.1,1-0.2c0.9-0.4,1.4-1.2,1.4-2.2V12.9   C48.7,12.2,48.4,11.5,47.9,11.1z M9.2,13.3c0-1.2,0.9-2.2,2.1-2.2h18.4c1.2,0,2.1,1,2.1,2.2s-0.9,2.2-2.1,2.2H11.3   C10.2,15.5,9.2,14.5,9.2,13.3z M35.7,41.8H14.5c-2.9,0-5.3-2.4-5.3-5.3v0c0-2.9,2.4-5.3,5.3-5.3h21.2c2.9,0,5.3,2.4,5.3,5.3v0   C41,39.4,38.6,41.8,35.7,41.8z"/>
+                    </svg>
+                     <span>В черновик</span>
                 </div>
             </div>
         </div>
-        {{ modelValue }}
-        {{ localBody }}
+<!--        {{ modelValue }}-->
+
         <modal v-model:isShowModal="isShowAddImageModal">
             <template v-slot:header>
                 <h3>Добавление новой фотографии</h3>
@@ -140,7 +146,6 @@ const setImageFocusIndex = index => imageFocusIndex.value = index;
 
 const heightSync = event => {
     const target = event.target;
-    console.log(target.scrollTop);
     if (target.scrollTop > 0){
         target.style.height = target.scrollHeight + "px";
     }
@@ -149,16 +154,7 @@ const heightSync = event => {
 
 }
 
-const getMarginByIndex = index => {
-    if (insertedIndex.value === index) {
-        if (index !== localBody.value.blocks.length - 1) {
-            return  'margin-top: 150px;'
-        }
-        return 'margin-bottom: 150px;'
 
-    }
-   return '';
-}
 
 const setImage = async event => {
     const file = event.target.files[0] || event.dataTransfer.files[0];
@@ -195,17 +191,19 @@ const addImage = () => {
 const getCoords = elem => elem.getBoundingClientRect();
 
 const dragPhoto = (index, event) => {
-
     imageDragIndex.value = index;
     cursorImage.value = localBody.value.blocks[index].data.text;
 
-    let element = event.target;
-    const shiftX =  event.pageX - getCoords(element).left;
-    const shiftY =  event.pageY - getCoords(element).top;
+    const element = event.target;
+
+    const shiftX = event.pageX - getCoords(element).left;
+    const shiftY = event.pageY - getCoords(element).top;
     const containerLeft = getCoords(container.value).left;
     const containerTop = getCoords(container.value).top;
     const containerHeight = container.value.offsetHeight;
     const containerWidth = container.value.offsetWidth;
+
+    const halfHeightInContainer = getCoords(element).top - containerTop + element.parentNode.parentNode.offsetHeight / 2;
 
     const moving = (event) => {
         event.preventDefault();
@@ -223,55 +221,38 @@ const dragPhoto = (index, event) => {
         if (mouseTop > containerHeight) {
             mouseTop = containerHeight;
         }
-        //console.log(mouseTop);
+        //console.log(halfHeightInContainer);
         const children = Object.values(container.value.children);
         //let insertedIndex = null;
-        let insertedIndexHeight;
+
         for (let i = 0; i < children.length; i++) {
-            const height = getCoords(children[i]).top - containerTop;
-            //console.log(mouseTop, height);
-            if (children[i].classList.contains('block__image')) {
+            const halfHeight = getCoords(children[i]).top - containerTop + children[i].offsetHeight / 2;
+            if (children[i].classList.contains('block__image') || children[i].classList.contains('drag')) {
                 insertedIndex.value = null;
-            } else if ((mouseTop === 0 || mouseTop === 1) && i === 0) {
-                //children[i].style.cssText = 'margin-top: 150px;'
-                insertedIndex.value = 0;
-                insertedIndexHeight = height;
-                console.log('first', mouseTop, height, i, insertedIndexHeight)
-                break;
-            } else if (mouseTop >= height && height > 0 && i > 0 && i < children.length - 1) {
-                // children[i].style.cssText = 'margin-top: 150px;'
-
+                continue;
+            } else if (mouseTop < halfHeight && mouseTop < halfHeightInContainer &&  halfHeight < halfHeightInContainer) {
                 insertedIndex.value = i;
-                insertedIndexHeight = height;
-                console.log('middle', mouseTop, height, insertedIndexHeight);
                 break;
-            } else if (mouseTop >= height + children[i].offsetHeight && height > 0 && i === children.length - 1) {
-
-                insertedIndexHeight = height + children[i].offsetHeight;
-
-
-                // children[i].style.cssText = 'margin-bottom: 150px;'
-                insertedIndex.value = children.length - 1;
+            } else if (mouseTop > halfHeight && mouseTop > halfHeightInContainer && halfHeight > halfHeightInContainer) {
+                insertedIndex.value = i + 1;
                 break;
             }
 
         }
-        //console.log(insertedIndex.value);
+        // console.log('index', insertedIndex.value);
 
-        let topStyle = mouseTop;
-        let leftStyle = left;
 
-        if (insertedIndex.value) {
-
-            leftStyle = 100;
-            topStyle = insertedIndexHeight + 75;
+        if (null === insertedIndex.value) {
+            cursor.value.style.cssText = `top: ${mouseTop}px; left: ${left}px; display:block; height:150px; width: 200px; transform: translate(-50%, -50%);`;
+        } else {
+            cursor.value.style.cssText = '';
         }
         // && imageDragIndex.value !== i
 
         // console.log(insertedIndex.value);
 
 
-        cursor.value.style.cssText = `top: ${topStyle}px; left: ${leftStyle}px; display:block; height:150px; width: 200px; transform: translate(-50%, -50%);`;
+
     }
     //console.log(containerHeight);
 
@@ -286,10 +267,10 @@ const dragPhoto = (index, event) => {
         document.onmousemove = null;
         document.onmouseup = null;
         cursor.value.style.cssText = '';
-        if (insertedIndex.value) {
+        if (insertedIndex.value !== null) {
             const replace = localBody.value.blocks.splice(imageDragIndex.value, 1);
+            console.log(replace);
             localBody.value.blocks.splice(insertedIndex.value, 0, ...replace);
-
         }
         imageDragIndex.value = null;
         insertedIndex.value = null;
@@ -304,15 +285,15 @@ const deletePhoto = index => {
 
 const closeModal = () => imageFocusIndex.value = null;
 
-// watch(insertedIndex, (value, oldValue) => {
-//     console.log(value, oldValue);
-//     if (oldValue) {
-//         localBody.value.blocks.splice(oldValue, 1);
-//     }
-//     if (value && value !== imageDragIndex.value) {
-//         localBody.value.blocks.splice(value, 0, { type: 'drag'});
-//     }
-// });
+watch(insertedIndex, (value, oldValue) => {
+    console.log(value, oldValue);
+    if (oldValue !== null && oldValue !== imageDragIndex.value) {
+        localBody.value.blocks.splice(oldValue, 1);
+    }
+    if (value !== null && value !== imageDragIndex.value) {
+        localBody.value.blocks.splice(value, 0, { type: 'drag'});
+    }
+});
 
 const syncTextareaHeight = () => {
     Object.values(container.value.children)
@@ -344,7 +325,6 @@ textarea {
     resize: none;
 }
 .editor {
-    padding: 0;
     &__content {
         position: relative;
         border-radius: 8px;
@@ -352,7 +332,7 @@ textarea {
         outline: 1px solid rgb(192, 201, 240);
         min-height: 300px;
         margin-bottom: 10px;
-        padding: 0;
+        padding: 5px;
     }
     &__container {
         border: 1px solid transparent;
@@ -380,11 +360,24 @@ textarea {
         justify-content: space-between;
     }
 }
+.drag-element {
+    height: 150px;
+    width: 200px;
+    & img {
+        height: 100%;
+        width: 100%;
+        object-fit: cover;
+    }
+}
 .edit-panel {
     display: flex;
-    gap: 10px;
+    gap: 15px;
+    color: #13709b;
     &__button {
         cursor: pointer;
+        display:flex;
+        align-items: center;
+        gap: 5px;
         &:hover {
             text-decoration: underline;
         }
@@ -462,7 +455,7 @@ textarea {
     }
 }
 
-.drag-item {
+.draggable-image {
     opacity: 0.3;
     cursor: move;
     & .image-layer {

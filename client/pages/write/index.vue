@@ -1,9 +1,13 @@
 <template>
-    <review-form class="wrapper"/>
+    <div>
+        <h2 class="title">Написать отзыв</h2>
+        <review-form class="wrapper"/>
+    </div>
+
 </template>
 
 <script setup>
-    import reviewForm from "~/components/profile/review-form";
+    import reviewForm from "~/components/profile/review-form.vue";
 
 </script>
 
