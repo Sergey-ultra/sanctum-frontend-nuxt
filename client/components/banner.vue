@@ -23,8 +23,8 @@
 <script setup>
     import toolTip from './tool-tip'
     import { storeToRefs } from "pinia";
-    import {useBannerStore} from "../store/banner";
-    import {useProductStore} from "../store/product";
+    import {useBannerStore} from "~/store/banner";
+    import {useProductStore} from "~/store/product";
 
     const bannerStore = useBannerStore();
     const productStore = useProductStore();

@@ -1,6 +1,17 @@
 <template>
     <div>
         <div v-if="!isShowAddForm" class="fill">
+            <div v-if="$api.isAuth.value && mySkusWithoutReview.length" class="alert">
+                Недавно добавленные Вами объекты отзывов, на которые Вы ещё не писали отзыв:
+                <ul>
+                    <li v-for="sku in mySkusWithoutReview" :key="sku.id">
+                        <nuxt-link :to="`/product/${sku.product_code}-${sku.id}/add-review`">
+                            {{ sku.name }} {{ sku.volume }}
+                        </nuxt-link>
+                    </li>
+                </ul>
+            </div>
+
             <p class="item">
                 Для добавления нового отзыва необходимо указать объект, о котором Вы собираетесь написать отзыв.
                 Если во всплывающей подсказке вы обнаружите нужный объект, то выберите его, чтобы пропустить лишние шаги.
@@ -59,12 +70,13 @@ import {useProductStore} from "~/store/product";
 import {storeToRefs} from "pinia";
 import { helpers, required } from "@vuelidate/validators";
 import useVuelidate from "@vuelidate/core";
+import {useNuxtApp} from "#app";
 
 const suggestStore = useSuggestStore();
 const productStore = useProductStore();
 const { skus, isLoadingSuggests } = storeToRefs(suggestStore);
-const { popularSkus } = storeToRefs(productStore);
-
+const { popularSkus, mySkusWithoutReview } = storeToRefs(productStore);
+const { $api } = useNuxtApp();
 const search = ref('');
 const isShowAddForm = ref('');
 
@@ -92,12 +104,26 @@ const showAddForm = async () => {
     }
 }
 
-onMounted(async() => {
-    await productStore.getPopularTenSkus();
+onMounted(() => {
+    if ($api.isAuth.value) {
+        productStore.loadMySkusWithoutReview();
+    }
+    productStore.getPopularTenSkus();
 });
 </script>
 <style scoped lang="scss">
     $redColor: #b74746;
+    .alert {
+        margin-bottom: 16px;
+        background-color: #e5f4df;
+        color: #5b9040;
+        padding: 16px;
+        border-radius: 8px;
+        line-height: 150%;
+        & li {
+            color: #13709b;
+        }
+    }
     .flex {
         gap: 15px;
         display:flex;

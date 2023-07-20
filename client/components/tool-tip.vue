@@ -1,6 +1,11 @@
 <template>
     <div class="relative">
-        <div class="tool-tip" :style="positionStyle">
+        <div
+            class="tool-tip"
+            :style="positionStyle"
+            :class="{
+                [`tool-tip--${color}`]: Boolean(color),
+            }">
             <slot name="content"></slot>
         </div>
          <slot class="slot"> </slot>
@@ -11,7 +16,10 @@
     const props = defineProps({
         position: {
             type: String,
-            default: 'right'
+            default: 'right',
+        },
+        color: {
+            type: String,
         }
     });
 
@@ -38,12 +46,15 @@
         font-size: 15px;
         z-index:4;
         white-space: nowrap;
-        padding: 5px 15px;
+        padding: 2px 10px;
         display:none;
         position: absolute;
         background-color: #000;
         color: #fff;
         border-radius: 8px;
+        &--pink {
+            background-color: #982971;
+        }
     }
     .slot {
         height:100%;

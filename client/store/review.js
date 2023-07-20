@@ -128,7 +128,7 @@ export const useReviewStore = defineStore({
             const { $api } = useNuxtApp()
             const { data } = await $api.get(`/reviews/last`);
             if (data) {
-                this.lastPage = [...data];
+                this.lastReviews = [...data];
             }
             this.isLoadingLastReviews = false;
         },

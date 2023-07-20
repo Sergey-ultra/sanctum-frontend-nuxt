@@ -6,6 +6,18 @@
                 <div class="top-menu__wrapper">
                     <nuxt-link class="top-menu__item" :to="'/faq'">Помощь</nuxt-link>
                     <div class="top-menu__right">
+                        <nuxt-link  v-if="$api.isAuth.value" class="header__item" :to="{ name: 'profile-index-balance' }">
+                            <svg width="16" height="16" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 50 50">
+                                <path d="M33.6,9.2l3.6-6.5c0.3-0.5,0.4-1.2,0.1-1.7C36.9,0.3,36.4,0,35.7,0H13.1c-0.6,0-1.2,0.4-1.5,0.9
+                                        c-0.3,0.6-0.2,1.3,0.2,1.8l4.6,6.5C12.7,12.7,2.1,24.1,2.1,39.5C2.1,45.3,6.8,50,12.6,50h24.8c5.8,0,10.5-4.7,10.5-10.5
+                                        C47.9,23.9,37.2,12.5,33.6,9.2z M35.4,29.2c-0.6,1.1-1.4,1.9-2.3,2.5c-0.9,0.6-2,1-3.3,1.3c-1.2,0.2-2.4,0.4-3.9,0.4H21v4h10.1v2.8
+                                        H21v3.1h-3.8v-3h-2v-2.8h2v-4h-2v-3.4h2V17.7h8.9c2.5,0,4.5,0.3,5.8,0.8c1.3,0.5,2.4,1.4,3.2,2.7c0.8,1.3,1.2,2.7,1.3,4.3
+                                        C36.3,26.9,36,28.2,35.4,29.2z"/>
+                                <path d="M30.6,22c-0.5-0.4-1.1-0.6-2-0.8c-0.8-0.1-1.5-0.2-2.3-0.2h-5.2v9.3h4.8c0.9,0,1.7-0.1,2.5-0.2
+		                                c0.8-0.2,1.5-0.4,2-0.8c0.6-0.3,1-0.8,1.4-1.4l0,0c0.4-0.7,0.5-1.3,0.5-2.2c0-0.8-0.2-1.5-0.5-2.2C31.5,22.8,31.1,22.3,30.6,22z"/>
+                            </svg>
+                            <span style="margin-left: 5px;">{{ $api.$user.balance ?? 0 }}</span>
+                        </nuxt-link>
                         <nuxt-link class="header__item header__item-comparison" :to="{ name: 'comparison' }">
                             <span v-if="allComparedSkuIdsCount" class="header__item-badge">
                                 {{ allComparedSkuIdsCount }}
@@ -35,6 +47,9 @@
                                     </span>
                                     <div class="header__item-text" color="#6c757d">
                                         {{ $api.$user.name }}
+                                        <svg viewBox="0 0 24 24" height="14" width="14" style="transform: rotate(180deg);" fill="currentColor">
+                                            <path d="M12 10.4142L16.2929 14.7071C16.6834 15.0976 17.3166 15.0976 17.7071 14.7071C18.0976 14.3166 18.0976 13.6834 17.7071 13.2929L12.7071 8.29289C12.3166 7.90237 11.6834 7.90237 11.2929 8.29289L6.29289 13.2929C5.90237 13.6834 5.90237 14.3166 6.29289 14.7071C6.68342 15.0976 7.31658 15.0976 7.70711 14.7071L12 10.4142Z"></path>
+                                        </svg>
                                     </div>
                                 </div>
                             </template>
@@ -441,6 +456,9 @@ a {
 
         &-text {
             margin-left: 10px;
+            &:hover {
+                color: #46bd87;
+            }
         }
 
         &-badge {

@@ -12,10 +12,11 @@
             </nuxt-link>
         </div>
         <div class="main__row">
-            <journal></journal>
+            <last-reviews class="main__left"/>
+            <bestUsers class="main__right" />
         </div>
         <div class="main__row">
-            <popular-brands/>
+            <journal></journal>
         </div>
         <div class="main__row">
             <div class="main__wrapper">
@@ -48,7 +49,8 @@
 </template>
 
 <script setup>
-    import popularBrands from '~/components/popular-brands';
+    import lastReviews from '~/components/last-reviews';
+    import bestUsers from '~/components/best-users';
     import journal from "~/components/journal";
     import {useCategoryStore} from "~/store/category";
     import { useMainStore } from "~/store/main";
@@ -99,7 +101,14 @@
                 margin-bottom: 20px;
             }
         }
+        &__left {
+            max-width: 880px;
+        }
+        &__right {
+            flex-grow: 1;
+        }
         &__row {
+            gap:10px;
             width: 100%;
             display: flex;
             justify-content: space-between;

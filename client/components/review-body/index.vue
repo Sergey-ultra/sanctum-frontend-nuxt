@@ -50,29 +50,49 @@
                Количество символов: {{ symbolCount }}
             </div>
             <div class="edit-panel">
-                <div class="edit-panel__button" @click.prevent="showAddImageModal">
-                    <fa icon="camera"></fa>
-                    <span>Вставить фото</span>
-                </div>
-                <div class="edit-panel__button">
-                    <fa icon="link"></fa>
-                    <span>Добавить ссылку</span>
-                </div>
-                <div class="edit-panel__button" @click="emit('saveAsDraft')">
-                    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 50 50" fill="currentColor">
-                        <path d="M47.9,11.1L37.7,0.6c-0.1-0.1-0.2-0.2-0.3-0.2l-0.3-0.2l0,0c-0.1-0.1-0.3-0.1-0.3-0.1c-0.1,0-0.2-0.1-0.3-0.1   c-0.1,0-0.2,0-0.4,0H3.7C2.4,0,1.3,1.1,1.3,2.4v45.2c0,1.3,1.1,2.4,2.4,2.4h42.6c0.4,0,0.7-0.1,1-0.2c0.9-0.4,1.4-1.2,1.4-2.2V12.9   C48.7,12.2,48.4,11.5,47.9,11.1z M9.2,13.3c0-1.2,0.9-2.2,2.1-2.2h18.4c1.2,0,2.1,1,2.1,2.2s-0.9,2.2-2.1,2.2H11.3   C10.2,15.5,9.2,14.5,9.2,13.3z M35.7,41.8H14.5c-2.9,0-5.3-2.4-5.3-5.3v0c0-2.9,2.4-5.3,5.3-5.3h21.2c2.9,0,5.3,2.4,5.3,5.3v0   C41,39.4,38.6,41.8,35.7,41.8z"/>
-                    </svg>
-                     <span>В черновик</span>
-                </div>
+                <tool-tip :position="'bottom'" :color="'pink'">
+                    <template v-slot:content>
+                        Загрузить фотографию к отзыву
+                    </template>
+                    <div class="edit-panel__button" @click.prevent="showAddImageModal">
+                        <fa icon="camera"></fa>
+                        <span>Вставить фото</span>
+                    </div>
+                </tool-tip>
+
+                <tool-tip :position="'bottom'" :color="'pink'">
+                    <template v-slot:content>
+                        Вставить ссылку в текст отзыва
+                    </template>
+                    <div class="edit-panel__button">
+                        <fa icon="link"></fa>
+                        <span>Добавить ссылку</span>
+                    </div>
+                </tool-tip>
+                <tool-tip :position="'bottom'" :color="'pink'">
+                    <template v-slot:content>
+                        Сохранить текущий отзыв в черновики
+                    </template>
+                    <div class="edit-panel__button" @click="emit('saveAsDraft')">
+                        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 50 50" fill="currentColor">
+                            <path d="M47.9,11.1L37.7,0.6c-0.1-0.1-0.2-0.2-0.3-0.2l-0.3-0.2l0,0c-0.1-0.1-0.3-0.1-0.3-0.1c-0.1,0-0.2-0.1-0.3-0.1   c-0.1,0-0.2,0-0.4,0H3.7C2.4,0,1.3,1.1,1.3,2.4v45.2c0,1.3,1.1,2.4,2.4,2.4h42.6c0.4,0,0.7-0.1,1-0.2c0.9-0.4,1.4-1.2,1.4-2.2V12.9   C48.7,12.2,48.4,11.5,47.9,11.1z M9.2,13.3c0-1.2,0.9-2.2,2.1-2.2h18.4c1.2,0,2.1,1,2.1,2.2s-0.9,2.2-2.1,2.2H11.3   C10.2,15.5,9.2,14.5,9.2,13.3z M35.7,41.8H14.5c-2.9,0-5.3-2.4-5.3-5.3v0c0-2.9,2.4-5.3,5.3-5.3h21.2c2.9,0,5.3,2.4,5.3,5.3v0   C41,39.4,38.6,41.8,35.7,41.8z"/>
+                        </svg>
+                        <span>В черновик</span>
+                    </div>
+                </tool-tip>
             </div>
         </div>
 <!--        {{ modelValue }}-->
 
-        <modal v-model:isShowModal="isShowAddImageModal">
+        <modal v-model:isShowModal="isShowAddImageModal" :width="30">
             <template v-slot:header>
                 <h3>Добавление новой фотографии</h3>
             </template>
-            <input @change="setImage($event)" type="file">
+            <p>
+                Все большие фото автоматически уменьшаются до ширины отзыва. Если же Ваша фотография очень большая (более 4000 пикселей в ширину) и ее не получается вставить, то попробуйте уменьшить ее сначала в любом графическом редакторе до 2000 пикселей в ширину.
+            </p>
+            <br>
+            <input @change="setImage($event)" type="file" accept="image">
             <div class="form__group">
                 <label>
                     Что на фото?
@@ -87,6 +107,7 @@
 <script setup>
 import inputComponent from '~/components/input-component';
 import buttonComponent from '~/components/button-component';
+import toolTip from '~/components/tool-tip';
 import calculateSymbolCount from '~/utils/symbolCount';
 import modal from '~/components/modal.vue';
 import {useFileStore} from "~/store/file";
@@ -221,9 +242,8 @@ const dragPhoto = (index, event) => {
         if (mouseTop > containerHeight) {
             mouseTop = containerHeight;
         }
-        //console.log(halfHeightInContainer);
+
         const children = Object.values(container.value.children);
-        //let insertedIndex = null;
 
         for (let i = 0; i < children.length; i++) {
             const halfHeight = getCoords(children[i]).top - containerTop + children[i].offsetHeight / 2;
@@ -239,8 +259,6 @@ const dragPhoto = (index, event) => {
             }
 
         }
-        // console.log('index', insertedIndex.value);
-
 
         if (null === insertedIndex.value) {
             cursor.value.style.cssText = `top: ${mouseTop}px; left: ${left}px; display:block; height:150px; width: 200px; transform: translate(-50%, -50%);`;
@@ -248,13 +266,9 @@ const dragPhoto = (index, event) => {
             cursor.value.style.cssText = '';
         }
         // && imageDragIndex.value !== i
-
         // console.log(insertedIndex.value);
-
-
-
     }
-    //console.log(containerHeight);
+
 
     moving(event);
     document.onmousemove = function(event) {

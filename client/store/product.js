@@ -30,6 +30,7 @@ export const useProductStore = defineStore({
         productLoadingMode: null,
         isLoadMore: false,
         popularSkus: [],
+        mySkusWithoutReview: [],
     }),
     getters: {
         filterOptionsKeys(state) {
@@ -182,10 +183,16 @@ export const useProductStore = defineStore({
                 this.popularSkus = [...data];
             }
         },
+        async loadMySkusWithoutReview() {
+            const { $api } = useNuxtApp();
+            const { data } = await $api.get(`/skus/my`);
+            if (data && Array.isArray(data)) {
+                this.mySkusWithoutReview = [...data];
+            }
+        },
         async createSku(obj) {
             const { $api } = useNuxtApp();
             const res = await $api.post(`/skus`, obj);
-            console.log(res);
             if (res.data) {
                 return res.data;
             }

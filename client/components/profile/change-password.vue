@@ -6,7 +6,7 @@
                 <div class="label">
                     <span class="text-gray">Текущий пароль</span>
                 </div>
-                <input class="input" type="text" v-model="changePasswordForm.password">
+                <inputComponent v-model="changePasswordForm.password"/>
             </label>
             <div class="invalid-feedback" v-for="error of v$.changePasswordForm.password.$errors" :key="error.$uid">
                 {{ error.$message }}
@@ -17,7 +17,7 @@
                 <div class="label">
                     <span class="text-gray">Новый пароль</span>
                 </div>
-                <input class="input" type="text" v-model="changePasswordForm.new_password">
+                <inputComponent v-model="changePasswordForm.new_password"/>
             </label>
             <div class="invalid-feedback" v-for="error of v$.changePasswordForm.new_password.$errors" :key="error.$uid">
                 {{ error.$message }}
@@ -30,6 +30,7 @@
 </template>
 <script setup>
     import buttonComponent from "~/components/button-component.vue";
+    import inputComponent from "~/components/input-component.vue";
     import { helpers, minLength, required } from "@vuelidate/validators";
     import useVuelidate from "@vuelidate/core";
     import { useNuxtApp } from "#app";

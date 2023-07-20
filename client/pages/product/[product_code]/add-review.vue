@@ -80,20 +80,6 @@
                             {{ error.$message }}
                         </div>
                     </div>
-    <!--                <h4>Фотографии отзыва</h4>-->
-
-    <!--                <multiple-image-upload-->
-    <!--                    class="image-upload"-->
-    <!--                    :entity="`review`"-->
-    <!--                    v-model:initialImageUrls="editedReview.images"-->
-    <!--                />-->
-
-                    <div class="form__group ">
-                        <label>
-                            <input v-model="anonymouslyLocal" type="checkbox"/>
-                            <span>Оставить отзыв анонимно</span>
-                        </label>
-                    </div>
 
                     <div class="form__group">
                         <div class="label">
@@ -193,7 +179,6 @@ let editedReview = ref({
     },
     plus: '',
     minus: '',
-    images: [],
     anonymously: 0,
     is_recommend: 1,
 });
@@ -270,9 +255,6 @@ const initEditedReview = () => {
                     }
                 ],
             },
-        images: Array.isArray(existingReview.value.images)
-            ? [...existingReview.value.images]
-            : []
     }
 };
 
@@ -282,8 +264,6 @@ const clearForm = () => {
         body: '',
         plus: '',
         minus: '',
-        images: [],
-        anonymously: 0,
         is_recommend: 1,
     };
     rating.value = 0;
@@ -361,20 +341,21 @@ input[type=checkbox] {
     position: relative;
     &__wrapper {
         display: flex;
+        flex-wrap: wrap;
         justify-content: space-between;
         gap: 15px;
     }
     &__form {
-        flex-basis: 800px;
         flex-grow: 1;
-        flex-shrink: 0;
+        //flex-shrink: 0;
     }
     & textarea {
         min-height: 60px;
     }
     &__notification {
+        width: 264px;
         margin-top: 130px;
-        flex-shrink: 1;
+        //flex-shrink: 1;
     }
 }
 
@@ -418,5 +399,20 @@ input[type=checkbox] {
 }
 .image-upload {
     // height: 168px;
+}
+@media (max-width: 900px) {
+    .review {
+        &__form {
+           order: 2;
+        }
+        &__notification {
+            padding: 10px;
+            border-radius: 5px;
+            background-color: #ffeaf2;
+            margin-top: 0;
+            order: 1;
+            width: 100%;
+        }
+    }
 }
 </style>
