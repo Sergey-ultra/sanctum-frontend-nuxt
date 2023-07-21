@@ -5,7 +5,6 @@ import {useCurrentSkuStore} from "./currentSku";
 export const useReviewStore = defineStore({
     id: 'review',
     state: () => ({
-        selectedRating: 0,
         isLoadingReviews:false,
         reviewsWithPagination:[],
         tableOptions: {
@@ -51,9 +50,6 @@ export const useReviewStore = defineStore({
         },
     },
     actions: {
-        setSelectedRating(payload) {
-            this.selectedRating = payload;
-        },
         setExistingReview(payload) {
             this.existingReview = payload;
         },
@@ -77,32 +73,7 @@ export const useReviewStore = defineStore({
                 }
             }
         },
-        async checkUserRating() {
-            const currentSkuStore = useCurrentSkuStore();
-            const skuId = currentSkuStore.currentSkuId;
-            if (skuId) {
-                const { $api } = useNuxtApp()
-                const { data } = await $api.post('/rating/check-user-rating', { sku_id: skuId});
 
-                if (data.status === 'success') {
-                    this.setSelectedRating(data.data);
-                }
-            }
-        },
-        async createOrUpdateRating(rating) {
-            const currentSkuStore = useCurrentSkuStore();
-            const skuId = currentSkuStore.currentSkuId;
-            if (skuId) {
-                const { $api } = useNuxtApp()
-                const { data } = await $api.post('/rating/create-or-update', {
-                    sku_id: skuId,
-                    rating
-                })
-                if (data.status === 'success') {
-                    this.setSelectedRating(rating)
-                }
-            }
-        },
         async loadReviewsWithPagination() {
             const currentSkuStore = useCurrentSkuStore();
             const skuId = currentSkuStore.currentSkuId;

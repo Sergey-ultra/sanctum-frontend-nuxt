@@ -5,7 +5,7 @@
             <span class="balance text-gray">На Вашем счёте:</span>
             <div class="balance__main">
                 <span class="balance__value green-text">{{ $api.$user.balance }} ₽</span>
-                <a class="flex" href="#">
+                <a class="flex withdrawal" @click="showWithdrawalModal">
                     <svg class="balance__icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50">
                         <path d="M33.6,9.2l3.6-6.5c0.3-0.5,0.4-1.2,0.1-1.7C36.9,0.3,36.4,0,35.7,0H13.1c-0.6,0-1.2,0.4-1.5,0.9
                                             c-0.3,0.6-0.2,1.3,0.2,1.8l4.6,6.5C12.7,12.7,2.1,24.1,2.1,39.5C2.1,45.3,6.8,50,12.6,50h24.8c5.8,0,10.5-4.7,10.5-10.5
@@ -19,28 +19,48 @@
                 </a>
             </div>
         </div>
+
         <div class="flex">
-            <span class="balance text-gray"> Реферальная ссылка: *</span>
+            <span class="balance text-gray">Реферальная ссылка: *</span>
             <div class="balance__main">
                 <inputComponent v-model="$api.$user.refLink" :disabled="true"/>
             </div>
         </div>
+
+        <div class="flex">
+            <span class="balance text-gray">Количество приглашенных авторов:</span>
+            <span>Вы не пригласили ни одного автора!</span>
+        </div>
+
         <div class="flex">
             <span class="balance text-gray">Доход по реферальной программе: **</span>
             <span class="balance__value green-text">{{ $api.$user.refBalance }} ₽</span>
-
         </div>
+
         <div class="alertframe">
             <div>* Вы можете рассказать друзьям и знакомым о нашем сайте, используя свою реферальную ссылку и получать дополнительную прибыль: +15% от заработка приглашенного автора! При активном участии в привлечении новых авторов, доходы по реферальной программе могут превышать Ваши доходы от отзывов.</div>
             <div>** Внимание! Реферальная программа распространяется ТОЛЬКО на вознаграждение от просмотров отзывов. На прибыль от бонусов, реферальная программа не распространяется, согласно п.3.1 правил.</div>
         </div>
+        <modal v-model:isShowModal="isShowWithdrawalModal" :width="30">
+            <template v-slot:header>
+                <h3>Внимание</h3>
+            </template>
+            <p>Вывести денежные средства можно при достижении минимальной суммы на балансе:</p>
+            <p>для первой выплаты - <b>200 ₽</b>,</p>
+            <p>для всех последующих - <b>100 ₽</b>.</p>
+            <p>Средства выплачиваются на банковский счет по Вашему номеру телефона или Юмани.</p>
+        </modal>
     </div>
 </template>
 <script setup>
+import modal from '~/components/modal.vue';
 import inputComponent from '~/components/input-component.vue';
 import { useNuxtApp } from "#app";
 
 const { $api } = useNuxtApp();
+
+const isShowWithdrawalModal = ref(false);
+const showWithdrawalModal = () => isShowWithdrawalModal.value = true;
 </script>
 <style scoped lang="scss">
 $mainFontColor: #26325c;
@@ -62,7 +82,11 @@ $greenColor: #46bd87;
 .flex {
     display:flex;
     align-items: center;
+    gap: 3px;
     margin-bottom: 20px;
+}
+.withdrawal {
+    cursor: pointer;
 }
 .alertframe {
     padding: 16px;

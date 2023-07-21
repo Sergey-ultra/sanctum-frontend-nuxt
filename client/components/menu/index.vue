@@ -199,6 +199,11 @@
         {title: 'Маски', url: '/category/maski'},
     ];
 
+    const fullMenu = menu.concat([
+        {title: 'Бренды', url: '/brands'},
+        {title: 'Блог', url: '/article'},
+    ])
+
     const emit = defineEmits(['update:isShowMobileMenu']);
     const props = defineProps({
         isShowMobileMenu: {

@@ -1,14 +1,14 @@
 <template>
     <div class="meta">
         <div class="meta__user">
-            <div class="meta__userImg">
+            <nuxt-link :to="`/users/${currentEntity.user_id}`" class="meta__userImg">
                 <img :src="`${$config.APP_URL}/${currentEntity.user_avatar}`" :alt="currentEntity.user_name"/>
-            </div>
+            </nuxt-link>
             <div class="meta__userInfo">
                 <div class="meta__userName">
-                    <span>
+                    <nuxt-link :to="`/users/${currentEntity.user_id}`">
                         {{ currentEntity.user_name }}
-                    </span>
+                    </nuxt-link>
                 </div>
 
             </div>

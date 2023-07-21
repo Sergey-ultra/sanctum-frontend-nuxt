@@ -58,7 +58,7 @@
             </div>
         </div>
 
-        <addNewSku v-else />
+        <addNewSku v-else @hideAddForm="hideAddForm"/>
     </div>
 </template>
 <script setup>
@@ -103,6 +103,8 @@ const showAddForm = async () => {
         isShowAddForm.value = true;
     }
 }
+
+const hideAddForm = () =>  isShowAddForm.value = false;
 
 onMounted(() => {
     if ($api.isAuth.value) {

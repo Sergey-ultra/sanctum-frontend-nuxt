@@ -4,7 +4,11 @@
         <section class="top-menu">
             <div class="container">
                 <div class="top-menu__wrapper">
-                    <nuxt-link class="top-menu__item" :to="'/faq'">Помощь</nuxt-link>
+                    <div class="top-menu__left">
+                        <nuxt-link class="top-menu__item" :to="'/faq'">Помощь</nuxt-link>
+                        <nuxt-link class="top-menu__item" :to="'/brand'">Бренды</nuxt-link>
+                        <nuxt-link class="top-menu__item" :to="'/article'">Блог</nuxt-link>
+                    </div>
                     <div class="top-menu__right">
                         <nuxt-link  v-if="$api.isAuth.value" class="header__item" :to="{ name: 'profile-index-balance' }">
                             <svg width="16" height="16" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 50 50">
@@ -404,6 +408,7 @@ a {
         align-items: center
     }
     &__item {
+        margin-right: 15px;
         color: #333;
         font-size: 16px;
         font-weight: 600;

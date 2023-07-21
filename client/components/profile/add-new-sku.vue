@@ -1,6 +1,9 @@
 <template>
     <form class="form fill" @submit.prevent="createNewSku">
-        <h1>Добавление нового объекта</h1>
+        <buttonComponent @click="emit('hideAddForm')">
+            Назад
+        </buttonComponent>
+        <h2>Добавление нового объекта</h2>
 
         <div class="form__group">
             <label>
@@ -138,6 +141,8 @@ const props = defineProps({
         type: String
     }
 });
+
+const emit = defineEmits(['hideAddForm']);
 
 const topLevelCategoryId = ref(null);
 

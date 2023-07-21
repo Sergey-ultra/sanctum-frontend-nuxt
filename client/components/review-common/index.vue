@@ -5,12 +5,12 @@
                 class="review__avatar"
                 :class="{'review__avatar-is-right': isRight === true}"
             >
-                <div class="review__avatar-img">
+                <nuxt-link :to="`/users/${review.user_id}`" class="review__avatar-img">
                     <img :src="`${$config.APP_URL}/${review.user_avatar}`" alt="avatar"/>
-                </div>
+                </nuxt-link>
             </div>
             <div>
-                <span class="review__user">{{ review.user_name }}</span>
+                <nuxt-link :to="`/users/${review.user_id}`" class="review__user">{{ review.user_name }}</nuxt-link>
                 <span class="review__date">{{ review.created_at }}</span>
                 <ratingView :rating="Number(review.rating)"/>
             </div>
@@ -81,6 +81,7 @@
                 transform: translateX(0);
             }
             &-img {
+                display: block;
                 overflow: hidden;
                 border-radius: 50%;
                 height: 36px;

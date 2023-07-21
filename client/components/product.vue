@@ -408,7 +408,6 @@ watch(
     currentSku,
     (value) => {
         selectPhotoIndex(0);
-        reviewStore.setSelectedRating(0);
         // setSEO(value.name);
     }
 );

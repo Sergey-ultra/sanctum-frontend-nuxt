@@ -4,6 +4,7 @@ export const useUserStore = defineStore({
     id: 'user',
     state: () => ({
         userInfo: {},
+        bestUsers: [],
     }),
     actions: {
         async loadProfile() {
@@ -20,6 +21,13 @@ export const useUserStore = defineStore({
         async updateAvatar(obj) {
             const { $api } = useNuxtApp();
             const { data } = await $api.post('/users/me/avatar', obj)
-        }
+        },
+        async loadBestUsers() {
+            const { $api } = useNuxtApp();
+            const { data } = await $api.get('/users/best');
+            if (data && Array.isArray(data)) {
+                this.bestUsers = [...data];
+            }
+        },
     }
 });

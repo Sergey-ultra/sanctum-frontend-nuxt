@@ -12,7 +12,12 @@
                     }"
                 >
                     <div v-if="block.type === 'paragraph'">
-                        <textarea v-model="block.data.text" @input="heightSync($event)" @change="heightSync($event)"></textarea>
+                        <textarea
+                            v-model="block.data.text"
+                            @input="heightSync($event)"
+                            @change="heightSync($event)"
+                            @paste="heightSync($event)"
+                        ></textarea>
                     </div>
                     <div
                         v-else-if="block.type === 'image'"
@@ -167,12 +172,12 @@ const setImageFocusIndex = index => imageFocusIndex.value = index;
 
 const heightSync = event => {
     const target = event.target;
-    if (target.scrollTop > 0){
+    console.log(target.scrollTop);
+    if (target.scrollTop >= 0) {
         target.style.height = target.scrollHeight + "px";
     }
     // target.style.cssText = 'height:auto; padding:0';
     // target.style.cssText = 'height:' + event.target.scrollHeight + 'px';
-
 }
 
 

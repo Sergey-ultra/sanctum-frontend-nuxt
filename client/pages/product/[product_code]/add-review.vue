@@ -10,8 +10,8 @@
                     <div class="form__group">
                         <h4>Оценка модели</h4>
                         <div>
-                            <ratingForm :initLoading="false"/>
-                            <div class="invalid-feedback" v-for="error of r$.rating.$errors" :key="error.$uid">
+                            <ratingForm v-model="editedReview.rating"/>
+                            <div class="invalid-feedback" v-for="error of v$.editedReview.rating.$errors" :key="error.$uid">
                                 {{ error.$message }}
                             </div>
                         </div>
@@ -61,11 +61,6 @@
                         <div class="label">
                             <span class="text-gray">Текст отзыва: (20 слов минимум)</span>
                         </div>
-    <!--                        <textareaComponent-->
-    <!--                            rows="10"-->
-    <!--                            v-model.trim="editedReview.body"-->
-    <!--                            :color="'white'"-->
-    <!--                        />-->
                         <reviewBody
                             v-model="editedReview.body"
                             @saveAsDraft="saveAsDraft"
@@ -139,10 +134,10 @@ import loader from "~/components/loader";
 import inputComponent from '~/components/input-component';
 import radioComponent from '~/components/radioComponent.vue';
 import reviewBody from '~/components/review-body/index.vue';
- import multipleImageUpload from "~/components/image-upload-as-form/multiple-image-upload";
-// import textareaComponent from '~/components/textareaComponent';
-import editor from "~/components/editor/index.vue";
-// import ckEditorComponent from "~/components/ckEditorComponent";
+//import multipleImageUpload from "~/components/image-upload-as-form/multiple-image-upload";
+//import textareaComponent from '~/components/textareaComponent';
+//import editor from "~/components/editor/index.vue";
+//import ckEditorComponent from "~/components/ckEditorComponent";
 
 import { useNuxtApp } from '#app'
 import useVuelidate from '@vuelidate/core'
@@ -157,7 +152,7 @@ const { $api } = useNuxtApp();
 
 const reviewStore = useReviewStore();
 const currentSkuStore = useCurrentSkuStore();
-const { isUploadingReview, existingReview, selectedRating, isCheckingExistingReview } = storeToRefs(reviewStore);
+const { isUploadingReview, existingReview, isCheckingExistingReview } = storeToRefs(reviewStore);
 const { currentSkuId } = storeToRefs(currentSkuStore);
 
 let router = useRouter();
@@ -166,6 +161,7 @@ let route = useRoute();
 let rating = ref(0);
 
 let editedReview = ref({
+    rating: 0,
     title: '',
     body: {
         blocks: [
@@ -183,13 +179,12 @@ let editedReview = ref({
     is_recommend: 1,
 });
 const mustBeRating = value => value > 0;
-let rulesRating = {
-    rating: {
-        mustBeRating: helpers.withMessage('Нужно оценить товар', mustBeRating),
-    },
-}
-let rulesReview = {
+
+let rules = {
     editedReview: {
+        rating: {
+            mustBeRating: helpers.withMessage('Нужно оценить товар', mustBeRating),
+        },
         title: {
             required: helpers.withMessage('Поле должно быть заполнено', required),
             minLength: minLength(5),
@@ -209,18 +204,9 @@ let rulesReview = {
     },
 };
 
+const v$ = useVuelidate(rules, { editedReview });
 
-const r$ = useVuelidate(rulesRating, { rating });
-const v$ = useVuelidate(rulesReview, { editedReview });
 
-const anonymouslyLocal = computed({
-    get() {
-        return Boolean(editedReview.value.anonymously);
-    },
-    set(value) {
-        editedReview.value.anonymously = Number(value);
-    }
-});
 
 watch(
     existingReview,
@@ -231,7 +217,6 @@ watch(
     }
 );
 
-watch(selectedRating, value => rating.value = value);
 
 watch(currentSkuId, async (value) => {
         if (value && $api.isAuth.value) {
@@ -265,34 +250,27 @@ const clearForm = () => {
         plus: '',
         minus: '',
         is_recommend: 1,
+        rating: 0,
     };
-    rating.value = 0;
 };
 
 const saveAsDraft = async () => {
     if (!$api.isAuth.value) {
         $api.setIsShowAuthModal(true);
     } else {
-        v$.value.$reset();
-        r$.value.$reset();
-        const validated = await r$.value.$validate();
-        if (validated) {
-            await reviewStore.updateOrCreateReview({
-                ...editedReview.value,
-                asDraft: true
-            });
-            r$.value.$reset();
-        }
+        await reviewStore.updateOrCreateReview({
+            ...editedReview.value,
+            asDraft: true
+        });
     }
 }
 const saveReview = async () => {
     if (!$api.isAuth.value) {
         $api.setIsShowAuthModal(true);
     } else {
-        const mainFormValidated = await v$.value.$validate();
-        const ratingValidated = await r$.value.$validate();
+        const validated = await v$.value.$validate();
 
-        if (mainFormValidated && ratingValidated) {
+        if (validated) {
             await reviewStore.updateOrCreateReview(editedReview.value);
 
             clearForm();
@@ -304,7 +282,6 @@ const saveReview = async () => {
 }
 
 onMounted(async () => {
-    rating.value = selectedRating.value;
     if ($api.isAuth.value && currentSkuId) {
         await reviewStore.checkExistingReview();
         if (existingReview.value) {

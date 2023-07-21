@@ -25,14 +25,24 @@
                             {{ review.sku_name }}
                         </nuxt-link>
                     </h3>
-                    <div>
-                        <img class="review__avatar" :src="`${$config.APP_URL}/${review.user_avatar}`" :alt="review.user_name">
-                        <span>{{ review.user_name }}</span>
+                    <div class="review__user">
+                        <nuxt-link :to="`/users/${review.user_id}`">
+                            <img class="review__avatar" :src="`${$config.APP_URL}/${review.user_avatar}`" :alt="review.user_name">
+                        </nuxt-link>
+                        <nuxt-link :to="`/users/${review.user_id}`">
+                            <span>{{ review.user_name }}</span>
+                        </nuxt-link>
+
                         <br>
                         <span class="review__created">{{ review.created_at }}</span>
                     </div>
                     <div>
-                        <div>{{ review.title }}</div>
+                        <span>{{ review.title }}</span>
+                        <span class="review__photoCount">
+                            <svg viewBox="0 0 50 50" height="13" width="13" fill="currentColor">
+	                            <path d="M43.5,45.4h-37c-3.6,0-6.5-2.9-6.5-6.5V18.1c0-3.6,2.9-6.5,6.5-6.5H12c0,0,0.1-0.1,0.1-0.1l1.4-4.3   c0.5-1.5,2-2.6,3.6-2.6h15.7c1.6,0,3.1,1.1,3.6,2.6l1.4,4.3c0,0,0.1,0.1,0.1,0.1h5.5c3.6,0,6.5,2.9,6.5,6.5v20.8   C50,42.5,47.1,45.4,43.5,45.4z M6.5,15.3c-1.5,0-2.8,1.2-2.8,2.8v20.8c0,1.5,1.2,2.8,2.8,2.8h37c1.5,0,2.8-1.2,2.8-2.8V18.1   c0-1.5-1.2-2.8-2.8-2.8H38c-1.6,0-3.1-1.1-3.6-2.6L33,8.4c0,0-0.1-0.1-0.1-0.1H17.2c0,0-0.1,0.1-0.1,0.1l-1.4,4.3   c-0.5,1.5-2,2.6-3.6,2.6H6.5z M25,37.7c-5.7,0-10.3-4.6-10.3-10.3S19.3,17,25,17s10.3,4.6,10.3,10.3S30.7,37.7,25,37.7z M25,20.7   c-3.7,0-6.6,3-6.6,6.6s3,6.6,6.6,6.6s6.6-3,6.6-6.6S28.7,20.7,25,20.7z"/>
+                            </svg>
+                            {{ review.photos_count }}</span>
 
                         <div class="review__plusTitle">
                             <svg height="17" width="17" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50"
@@ -117,6 +127,13 @@
         }
         &__right {
             margin-left: 16px;
+        }
+        &__user {
+            margin: 10px 0;
+        }
+        &__photoCount {
+            color: #8d9399;
+            margin-left: 10px;
         }
         &__skuPhoto {
             font-size: 18px;

@@ -7,7 +7,7 @@
                 :key="value"
                 @mouseenter="enteredValue = value"
                 @mouseleave="enteredValue = 0"
-                @click="reviewStore.createOrUpdateRating(value)"
+                @click="setRating(value)"
         >
             <svg width="28" height="28" viewBox="0 0 28 28" version="1.1"
                  xmlns="http://www.w3.org/2000/svg">
@@ -22,43 +22,45 @@
 </template>
 
 <script setup>
-    import {useReviewStore} from "../store/review";
-    import { storeToRefs } from "pinia";
+const emit = defineEmits(['update:modelValue']);
 
-    const enteredValue = ref(0);
+const props = defineProps({
+    modelValue: {
+        type: Number,
+        default: 0,
+    },
+});
 
-    const props = defineProps({
-        initLoading: {
-            type: Boolean,
-            default: true
-        }
-    });
+const enteredValue = ref(0);
 
-    const reviewStore = useReviewStore();
-    const { selectedRating } = storeToRefs(reviewStore);
+let selectedRating = computed({
+    get() {
+        return props.modelValue;
+    },
+    set(value) {
+        emit('update:modelValue', value);
+    }
+});
 
-    const ratingText = value => {
-        switch (Number(value)) {
-            case 5:
-                return 'Отличный товар';
-            case 4:
-                return 'Хороший товар';
-            case 3:
-                return 'Обычный товар';
-            case 2:
-                return 'Плохой товар';
-            case 1:
-                return 'Ужасный товар';
-            default:
-                return '';
-        }
-    };
+const setRating = value => selectedRating.value = value;
 
-    onMounted(() => {
-        if (props.initLoading) {
-            //reviewStore.checkUserRating();
-        }
-    });
+const ratingText = value => {
+    switch (Number(value)) {
+        case 5:
+            return 'Отличный товар';
+        case 4:
+            return 'Хороший товар';
+        case 3:
+            return 'Обычный товар';
+        case 2:
+            return 'Плохой товар';
+        case 1:
+            return 'Ужасный товар';
+        default:
+            return '';
+    }
+};
+
 </script>
 
 <style lang="scss" scoped>
