@@ -96,7 +96,6 @@
         userInfo,
         value => {
         if (Object.keys(userInfo.value).length) {
-            console.log(value);
             editedUserInfo.value = {...value}
         }
     });

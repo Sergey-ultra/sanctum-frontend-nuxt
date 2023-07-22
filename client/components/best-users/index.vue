@@ -1,6 +1,6 @@
 <template>
     <section class="users">
-        <div class="title">Лучшие пользователи</div>
+        <h3 class="title">Лучшие пользователи</h3>
         <div class="users__wrapper">
             <div
                 v-for="user in bestUsers"
@@ -32,12 +32,12 @@ useAsyncData(async () => {
     line-height: 32px;
     font-size: 26px;
     color: #222;
-    margin-bottom:20px;
+    margin: 20px 0;
     display:block;
 }
     .users {
         &__wrapper {
-            height: calc(100% - 52px);
+            height: calc(100% - 72px);
             border-radius: 8px;
             background-color: #ffeaf2;
             padding: 20px;

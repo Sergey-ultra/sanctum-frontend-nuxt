@@ -173,7 +173,6 @@ export const useReviewStore = defineStore({
 
                 if (data) {
                     this.setExistingReview(data);
-                    this.setSelectedRating(Number(data.rating));
                 } else {
                     this.setExistingReview(null);
                 }

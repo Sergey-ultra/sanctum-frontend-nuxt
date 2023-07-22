@@ -5,13 +5,13 @@
                 {{ item.created_at }}
             </div>
             <nuxt-link
-                :to="`/product/${item.product_code}-${item.sku_id}/add-review`"
+                :to="`/review/${item.id}`"
                 class="review__name"
             >
                 <div class="review__img">
-                    <img :src="item.sku_image" :alt="item.sku_image"/>
+                    <img :src="item.sku.image" :alt="item.sku.name"/>
                 </div>
-                <div class="review__sku">{{ item.sku_name }}, {{ item.volume }}</div>
+                <div class="review__sku">{{ item.sku.name }}, {{ item.sku.volume }}</div>
             </nuxt-link>
             <div class="review__status">
                 {{ getStatusText(item.status) }}
@@ -21,9 +21,6 @@
             </div>
             <div class="review__balance">
                 {{ item.balance }}
-            </div>
-            <div class="review__bonus">
-                {{ item.bonus }}
             </div>
             <div class="review__likes">
                 {{ item.likes_count }}
@@ -83,7 +80,7 @@
             </nuxt-link>
         </div>
         <delete-form
-            :selectedName="`Отзыв на ${item.sku_name}`"
+            :selectedName="`Отзыв на ${item.sku.name}`"
             v-if="isShowDeleteForm"
             v-model:isShowDeleteForm="isShowDeleteForm"
             @delete="deleteCurrentReview"
@@ -109,7 +106,7 @@ const props = defineProps({
     }
 });
 
-const productCode = computed(() =>  props.item.product_code + '-' + props.item.sku_id);
+const productCode = computed(() =>  props.item.sku.product_code + '-' + props.item.sku.id);
 
 const showDeleteForm = () => isShowDeleteForm.value = true;
 const deleteCurrentReview = () => {
@@ -120,7 +117,7 @@ const deleteCurrentReview = () => {
 };
 
 const showEditForm = () => {
-    navigateTo({ name: 'product-product_code-add-review', params: { product_code:productCode.value }})
+    navigateTo({ name: 'product-product_code-add-review', params: { product_code: productCode.value }})
 };
 </script>
 

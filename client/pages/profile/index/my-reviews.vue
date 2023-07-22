@@ -16,7 +16,6 @@
                                 <div class="table__status">Статус</div>
                                 <div class="table__viewsCount">Просмотры</div>
                                 <div class="table__balance">Прибыль</div>
-                                <div class="table__bonus">Бонусы</div>
                                 <div class="table__likes">Лайки</div>
                                 <div>Action</div>
                             </div>

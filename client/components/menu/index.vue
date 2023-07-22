@@ -15,6 +15,29 @@
 
 
                 <ul class="menu__list">
+                    <li class="menu__item menu__item-catalog"
+                        @mouseenter="isShowMainCatalog = true"
+                        @mouseleave="isShowMainCatalog = false"
+                        :class="{'catalog-active': isShowMainCatalog}">
+                        <span>Каталог</span>
+                        <div class="link__items">
+                            <div v-for="category in allCategories" class="link__item">
+                                <nuxt-link :to="`/category/${category.code}`" @click="isShowMainCatalog = false">
+                                    {{ category.name }}
+                                </nuxt-link>
+                                <div v-if="category.children" class="link__subLinks">
+                                    <li
+                                        v-for="subCategory in category.children"
+                                        :key="subCategory.code"
+                                        class="link__item">
+                                        <nuxt-link :to="`/category/${subCategory.code}`" @click="isShowMainCatalog = false">
+                                            {{ subCategory.name }}
+                                        </nuxt-link>
+                                    </li>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
                     <li
                         class="menu__item"
                         v-for="(menuItem, index) in menu"
@@ -176,17 +199,22 @@
 </template>
 
 <script setup>
-    import {storeToRefs} from "pinia";
-    import {useFavoritesStore} from "~/store/favorites";
-    import {useComparisonStore} from "~/store/comparison";
-    import { useNuxtApp } from '#app'
+    import dropdown from '~/components/dropdown';
+    import { storeToRefs } from "pinia";
+    import { useFavoritesStore } from "~/store/favorites";
+    import { useComparisonStore } from "~/store/comparison";
+    import { useNuxtApp } from '#app';
+    import { useCategoryStore } from "~/store/category";
     const { $api } = useNuxtApp();
 
     const favoritesStore = useFavoritesStore();
     const comparisonStore = useComparisonStore();
+    const categoryStore = useCategoryStore();
+
 
     const { favorites } = storeToRefs(favoritesStore);
     const { allComparedSkuIdsCount } = storeToRefs(comparisonStore);
+    const { allCategories } = storeToRefs(categoryStore);
 
     const menu = [
         {title: 'Сыворотки', url: '/category/serums'},
@@ -214,6 +242,7 @@
 
     const menuLayer = ref(null);
     const menuWrapper = ref(null);
+    const isShowMainCatalog = ref(false);
     const isShowCatalog = ref(false);
 
 
@@ -254,9 +283,65 @@
         $api.logout();
     };
 
+    useAsyncData(async() => {
+        categoryStore.loadAllCategories();
+    });
 </script>
 
 <style lang="scss" scoped>
+    .catalog-active .link__items {
+        display: block;
+    }
+    .link {
+        &__items {
+            display: none;
+            position: absolute;
+            z-index: 1099;
+            background-color: #fff;
+            background-clip: padding-box;
+            border-radius: 8px;
+            box-shadow: 0 5px 46px rgba(0, 0, 0, 0.12), 0 7px 15px rgba(0, 0, 0, 0.12);
+        }
+        &__item {
+            position: relative;
+            display: flex;
+            align-items: center;
+            width: 100%;
+
+            min-height: 40px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            line-height: 1.5;
+            letter-spacing: 0;
+            color: #333;
+            font-weight: 400;
+            white-space: nowrap;
+            box-sizing: border-box;
+            text-decoration: none;
+
+            & a {
+                padding: 2px 50px 2px 15px;
+                color: #333;
+            }
+
+            &:hover {
+                background-color: #f5f5f5;
+                & .link__subLinks {
+                    display: block;
+                }
+            }
+        }
+        &__subLinks {
+            display: none;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 5px 46px rgba(0, 0, 0, 0.12), 0 7px 15px rgba(0, 0, 0, 0.12);
+            position: absolute;
+            left: 100%;
+            top:0;
+        }
+    }
     .menu {
         background-color: #fff;
         border-bottom: 1px solid #ccc;
@@ -273,7 +358,7 @@
             list-style:none;
             display:flex;
             align-items: center;
-            overflow: hidden;
+            gap:  40px;
             margin: 0 auto;
             width: auto;
             height:100%;
@@ -282,13 +367,21 @@
             }
         }
         &__item {
-            display:flex;
-            align-items: center;
-            line-height: 1;
-            &:not(:last-child) {
-                padding-right:  40px;
+            font-size: 16px;
+            font-weight: 600;
+            transition: color .2s ease-out;
+            cursor: pointer;
+            height: 100%;
+            &-catalog {
+                position: relative;
             }
-            & a {
+            &:hover {
+                color: #46bd87;
+            }
+
+            & a, span {
+                display:flex;
+                align-items: center;
                 width: 100%;
                 height: 100%;
                 font-size: 16px;

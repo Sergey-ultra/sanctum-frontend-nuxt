@@ -73,10 +73,9 @@
 
     useAsyncData(async() => {
         if (!categories.length) {
-            await categoryStore.loadNestedCategories();
-            mainStore.loadMainStatistics();
+            await categoryStore.loadPopularCategories();
         }
-
+        mainStore.loadMainStatistics();
     });
 </script>
 

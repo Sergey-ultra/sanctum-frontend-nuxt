@@ -23,13 +23,13 @@
                         {{ item.created_at }}
                     </div>
                     <nuxt-link
-                        :to="`/product/${item.product_code}-${item.sku_id}/add-review`"
+                        :to="`/product/${item.sku.product_code}-${item.sku.id}/add-review`"
                         class="table__item table__item-name"
                     >
                         <div class="table__item-img">
-                            <img :src="item.sku_image" :alt="item.sku_image"/>
+                            <img :src="item.sku.image" :alt="item.sku.name"/>
                         </div>
-                        <div class="review__sku">{{ item.sku_name }}, {{ item.volume }}</div>
+                        <div class="review__sku">{{ item.sku.name }}, {{ item.sku.volume }}</div>
                     </nuxt-link>
                     <div class="table__item table__item-status">
                         {{ getStatusText(item.status) }}

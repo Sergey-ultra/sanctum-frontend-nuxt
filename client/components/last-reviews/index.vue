@@ -1,36 +1,37 @@
 <template>
     <section class="review">
-        <div class="title">Последние отзывы</div>
+        <h1 class="title">Последние отзывы</h1>
         <div class="review__wrapper">
             <div
                 v-for="review in lastReviews"
                 :key="review.id"
                 class="review__row">
                 <div class="review__left">
-                    <nuxt-link :to="`/product/${review.product_code}-${review.sku_id}`" class="review__skuPhoto">
-                        <img :src="`${$config.APP_URL}/${review.sku_image}`" :alt="review.sku_name">
+                    <nuxt-link :to="`/product/${review.sku.product_code}-${review.sku.id}`" class="review__skuPhoto">
+                        <img :src="`${$config.APP_URL}/${review.sku.image}`" :alt="review.sku.name">
                     </nuxt-link>
                     <preciseRatingView
                         class="review__rating-precise"
-                        :rating="review.common_rating"
+                        :rating="review.sku.rating"
                         :large="true"
                     />
-                    <nuxt-link :to="`/product/${review.product_code}-${review.sku_id}`" class="review__product">
-                        <span>{{ review.views_count}} отзывов</span>
+                    <nuxt-link :to="`/product/${review.sku.product_code}-${review.sku.id}`" class="review__product">
+                        <span>{{ review.sku.reviews_count}} отзывов</span>
                     </nuxt-link>
+                    <div class="review__recommend">Рекомендуют {{ review.is_recommend_percentage }}%</div>
                 </div>
                 <div class="review__right">
-                    <h3>
-                        <nuxt-link :to="`/product/${review.product_code}-${review.sku_id}/reviews`" class="review__skuPhoto">
+                    <h2>
+                        <nuxt-link :to="`/product/${review.sku.product_code}-${review.sku.id}/reviews`" class="review__skuPhoto">
                             {{ review.sku_name }}
                         </nuxt-link>
-                    </h3>
+                    </h2>
                     <div class="review__user">
-                        <nuxt-link :to="`/users/${review.user_id}`">
-                            <img class="review__avatar" :src="`${$config.APP_URL}/${review.user_avatar}`" :alt="review.user_name">
+                        <nuxt-link :to="`/users/${review.user.id}`">
+                            <img class="review__avatar" :src="`${$config.APP_URL}/${review.user.avatar}`" :alt="review.user.name">
                         </nuxt-link>
-                        <nuxt-link :to="`/users/${review.user_id}`">
-                            <span>{{ review.user_name }}</span>
+                        <nuxt-link :to="`/users/${review.user.id}`">
+                            <span>{{ review.user.name }}</span>
                         </nuxt-link>
 
                         <br>
@@ -65,7 +66,7 @@
                             Недостатки:
                         </div>
                         <div>{{ review.minus }}</div>
-                        <nuxt-link :to="`/review/${review.review_id}`" class="review__link">
+                        <nuxt-link :to="`/review/${review.id}`" class="review__link">
                             <svg height="16" width="16"  xmlns="http://www.w3.org/2000/svg"  x="0px" y="0px" viewBox="0 0 50 50" fill="#969FA9">
                                 <path d="M49.6,21.2c-1.4-2.2-3-4.3-4.7-6.1c-1.8-1.8-3.7-3.4-5.8-4.7c-2.1-1.3-4.4-2.3-6.7-3C30,6.7,27.5,6.4,25,6.4   c-2.5,0-5,0.4-7.4,1.1c-2.3,0.7-4.6,1.7-6.7,3c-2.1,1.3-4,2.9-5.8,4.7C3.4,17,1.8,19,0.4,21.2c-0.8,1.3-0.4,2.9,0.9,3.7   c0.4,0.3,0.9,0.4,1.4,0.4c0.9,0,1.8-0.4,2.3-1.3c4.9-7.9,12.2-12.4,20-12.4s15.2,4.5,20,12.4c0.8,1.3,2.4,1.6,3.7,0.9   C50,24.2,50.4,22.5,49.6,21.2z"/>
                                 <path d="M37,30c-1.4,1.1-3.2,1.8-5.1,1.8c-4.5,0-8.1-3.6-8.1-8.1c0-1.9,0.7-3.7,1.8-5.1c0.3-0.4,0-1.1-0.5-1.1   c-0.1,0-0.1,0-0.2,0c-7.2,0-13.1,5.9-13.1,13.1c0,7.2,5.9,13.1,13.1,13.1c7.2,0,13.1-5.9,13.1-13.1c0,0,0,0,0,0   C38.1,30,37.4,29.7,37,30z"/>
@@ -91,7 +92,7 @@
 </script>
 
 <style lang="scss" scoped>
-    h3 {
+    h2 {
         margin: 0;
     }
     .title {
@@ -99,7 +100,7 @@
         line-height: 32px;
         font-size: 26px;
         color: #222;
-        margin-bottom:20px;
+        margin: 20px 0;
         display:block;
     }
     .review {
@@ -138,12 +139,12 @@
         &__skuPhoto {
             font-size: 18px;
             color: #4e4e4e;
-           & img {
-               display: block;
-               width: 120px;
-               height: 120px;
-               border: 0;
-           }
+            & img {
+                display: block;
+                width: 120px;
+                height: 120px;
+                border: 0;
+            }
         }
         &__avatar {
             float: left;
@@ -161,6 +162,10 @@
                 object-fit: cover;
                 object-position: center;
             }
+        }
+        &__recommend {
+            color: #64a144;
+            font-size: 13px;
         }
         &__created {
             font-size: 13px;

@@ -17,11 +17,11 @@ export const useCategoryStore = defineStore({
                 this.allCategories = [...data];
             }
         },
-        async loadNestedCategories() {
+        async loadPopularCategories() {
             this.isLoadingCategories = true;
 
             const { $api } = useNuxtApp()
-            const { data } = await $api.get(`/categories/nested`);
+            const { data } = await $api.get(`/categories/popular-categories`);
 
             if (data) {
                 this.categories = [...data];

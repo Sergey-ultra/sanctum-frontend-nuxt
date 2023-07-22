@@ -98,7 +98,7 @@
 
 
                     <div class="form__group mt-4">
-                        <button class="add-btn" :disabled="isUploadingReview" type="submit">Опубликовать</button>
+                        <button class="add-btn" :disabled="isUploadingReview || editedReview.id" type="submit">Опубликовать</button>
 
                         <div class="agreement">
                             Нажимая кнопку «Отправить», Вы соглашаетесь c
@@ -270,7 +270,7 @@ const saveReview = async () => {
     } else {
         const validated = await v$.value.$validate();
 
-        if (validated) {
+        if (validated && !editedReview.value.id) {
             await reviewStore.updateOrCreateReview(editedReview.value);
 
             clearForm();

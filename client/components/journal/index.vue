@@ -1,10 +1,10 @@
 <template>
     <section class="journal" v-if="lastArticles.length">
-        <h4>
+        <h2>
             <nuxt-link class="title" :to="'/article'">
                 Новости и секреты красоты
             </nuxt-link>
-        </h4>
+        </h2>
 
 
         <slider
