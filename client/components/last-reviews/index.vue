@@ -23,7 +23,7 @@
                 <div class="review__right">
                     <h2>
                         <nuxt-link :to="`/product/${review.sku.product_code}-${review.sku.id}/reviews`" class="review__skuPhoto">
-                            {{ review.sku_name }}
+                            {{ review.sku.name }}
                         </nuxt-link>
                     </h2>
                     <div class="review__user">

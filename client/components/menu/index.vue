@@ -19,10 +19,14 @@
                         @mouseenter="isShowMainCatalog = true"
                         @mouseleave="isShowMainCatalog = false"
                         :class="{'catalog-active': isShowMainCatalog}">
-                        <span>Каталог</span>
+                        <span class="menu__link">Каталог</span>
                         <div class="link__items">
                             <div v-for="category in allCategories" class="link__item">
-                                <nuxt-link :to="`/category/${category.code}`" @click="isShowMainCatalog = false">
+                                <nuxt-link
+                                    :to="`/category/${category.code}`"
+                                    @click="isShowMainCatalog = false"
+                                    class="link__link"
+                                >
                                     {{ category.name }}
                                 </nuxt-link>
                                 <div v-if="category.children" class="link__subLinks">
@@ -30,7 +34,11 @@
                                         v-for="subCategory in category.children"
                                         :key="subCategory.code"
                                         class="link__item">
-                                        <nuxt-link :to="`/category/${subCategory.code}`" @click="isShowMainCatalog = false">
+                                        <nuxt-link
+                                            :to="`/category/${subCategory.code}`"
+                                            @click="isShowMainCatalog = false"
+                                            class="link__link"
+                                        >
                                             {{ subCategory.name }}
                                         </nuxt-link>
                                     </li>
@@ -43,7 +51,12 @@
                         v-for="(menuItem, index) in menu"
                         :key="index"
                     >
-                        <nuxt-link :to="menuItem.url">{{ menuItem.title }}</nuxt-link>
+                        <nuxt-link
+                            :to="menuItem.url"
+                            class="menu__link"
+                        >
+                            {{ menuItem.title }}
+                        </nuxt-link>
                     </li>
                 </ul>
 
@@ -320,10 +333,7 @@
             box-sizing: border-box;
             text-decoration: none;
 
-            & a {
-                padding: 2px 50px 2px 15px;
-                color: #333;
-            }
+
 
             &:hover {
                 background-color: #f5f5f5;
@@ -331,6 +341,28 @@
                     display: block;
                 }
             }
+        }
+        &__link {
+            padding: 2px 50px 2px 15px;
+            color: #333;
+            display:flex;
+            align-items: center;
+            width: 100%;
+            height: 100%;
+            font-size: 16px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: color .2s ease-out;
+
+            &:hover {
+                color: #46bd87;
+            }
+        }
+        &__catalog {
+            position: relative;
+            display: flex;
+            align-items: center;
+            width: 100%;
         }
         &__subLinks {
             display: none;
@@ -362,6 +394,7 @@
             margin: 0 auto;
             width: auto;
             height:100%;
+
             &-mobile {
                 display:none;
             }
@@ -371,30 +404,20 @@
             font-weight: 600;
             transition: color .2s ease-out;
             cursor: pointer;
-            height: 100%;
             &-catalog {
                 position: relative;
             }
+
+        }
+        &__link {
+            display:flex;
+            align-items: center;
+            color: #333;
+            height: 100%;
             &:hover {
                 color: #46bd87;
             }
-
-            & a, span {
-                display:flex;
-                align-items: center;
-                width: 100%;
-                height: 100%;
-                font-size: 16px;
-                font-weight: 600;
-                text-decoration: none;
-                transition: color .2s ease-out;
-                color: #333;
-                &:hover {
-                    color: #46bd87;
-                }
-            }
         }
-
     }
     ul {
         padding: 0;
@@ -465,6 +488,8 @@
                 width: 100%;
                 cursor: pointer;
                 min-height: 40px;
+                display: flex;
+                align-items: center;
                 &-padding {
                     padding: 16px 0 16px 0;
                 }
@@ -482,6 +507,7 @@
                     margin-left: 10px;
                 }
                 &-text, a {
+                    height: 100%;
                     display: flex;
                     align-items: center;
                     font-family: "Work Sans",sans-serif;

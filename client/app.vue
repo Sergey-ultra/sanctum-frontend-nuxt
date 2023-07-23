@@ -9,6 +9,9 @@
                         <nuxt-link class="top-menu__item" :to="'/article'">Блог</nuxt-link>
                     </div>
                     <div class="top-menu__right">
+                        <nuxt-link v-if="$api.isAuth.value" :to="{ name: 'profile-index-my-reviews' }">
+                            <span class="top-menu__item">Мои отзывы</span>
+                        </nuxt-link>
                         <nuxt-link  v-if="$api.isAuth.value" class="header__item" :to="{ name: 'profile-index-balance' }">
                             <svg width="16" height="16" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 50 50">
                                 <path d="M33.6,9.2l3.6-6.5c0.3-0.5,0.4-1.2,0.1-1.7C36.9,0.3,36.4,0,35.7,0H13.1c-0.6,0-1.2,0.4-1.5,0.9
@@ -412,7 +415,7 @@ a {
         margin-right: 15px;
         color: #333;
         font-size: 16px;
-        font-weight: 600;
+        font-weight: 500;
         &:hover {
             color: #46bd87;
         }

@@ -1,13 +1,12 @@
 <template>
     <div class="compact">
         <div class="back">
-            <nuxt-link
-                    class="back__link"
-                    :to="`/product/${currentSkuProductCode}`"
-            >
+            <nuxt-link :to="`/product/${currentSkuProductCode}`" class="back__link">
                 <div class="back__icon">
                     <svg><use xlink:href="#icons_arrow-left">
-                        <symbol viewBox="0 0 24 24" id="icons_arrow-left"><path fill-rule="evenodd" d="M20 11H7.824l5.583-5.583-1.414-1.414L3.996 12l7.997 7.997 1.414-1.414L7.824 13H20z"></path></symbol>
+                        <symbol viewBox="0 0 24 24" id="icons_arrow-left">
+                            <path fill-rule="evenodd" d="M20 11H7.824l5.583-5.583-1.414-1.414L3.996 12l7.997 7.997 1.414-1.414L7.824 13H20z"></path>
+                        </symbol>
                     </use></svg>
                 </div>
                 <span>К описанию товара</span>
@@ -15,26 +14,23 @@
         </div>
         <div class="compact__main">
             <div class="sku">
-                <div
-                        v-if="isLoadingCompactCurrentSku"
-                        class="loader-wrapper"
-                >
+                <div v-if="isLoadingCompactCurrentSku" class="loader-wrapper">
                     <loader class="loader"/>
                 </div>
                 <div class="sku__inner" v-else>
-                    <div class="sku__image"  v-if="currentSkuLocal.images && currentSkuLocal.images.length">
+                    <div class="sku__image"  v-if="compactCurrentSku.images && compactCurrentSku.images.length">
                         <nuxt-link  :to="`/product/${currentSkuProductCode}`">
-                            <img :src="`${$config.APP_URL}/${currentSkuLocal.images[0]}`" />
+                            <img :src="`${$config.APP_URL}/${compactCurrentSku.images[0]}`" />
                         </nuxt-link>
                     </div>
                     <div class="sku__text">
                         <nuxt-link :to="`/product/${currentSkuProductCode}`">
                             <h1 class="sku__title">
-                                {{ currentSkuLocal.name }}, {{ currentSkuLocal.volume }}
+                                {{ compactCurrentSku.name }}, {{ compactCurrentSku.volume }}
                             </h1>
                         </nuxt-link>
                         <div class="sku__row">
-                            <div v-if="currentSkuLocal.reviews_count === 0" class="sku__url">
+                            <div v-if="compactCurrentSku.reviews_count === 0" class="sku__url">
                                 <nuxt-link
                                     v-if="'product-product_code-reviews' !==  $route.name"
                                     :to="`/product/${currentSkuProductCode}/reviews`"
@@ -46,13 +42,13 @@
 
                             </div>
                             <div v-else class="sku__url" >
-                                <span class="sku__rating">{{ currentSkuLocal.rating }}</span>
+                                <span class="sku__rating">{{ compactCurrentSku.rating }}</span>
                                 <nuxt-link
                                     v-if="'product-product_code-reviews' !==  $route.name"
                                     :to="`/product/${currentSkuProductCode}`"
                                     class="sku__link sku__link-active"
                                 >
-                                    {{ reviewText }}
+                                    {{ `${compactCurrentSku.reviews_count} ${getReviewText(compactCurrentSku.reviews_count)}` }}
                                 </nuxt-link>
                                 <span v-else  class="sku__link">{{ reviewText }}</span>
                             </div>
@@ -78,39 +74,17 @@
 
 <script setup>
     import loader from "../loader";
-    import {useCurrentSkuStore} from "../../store/currentSku";
+    import {useCurrentSkuStore} from "~/store/currentSku";
     import {storeToRefs} from "pinia";
 
     const currentSkuStore = useCurrentSkuStore();
-    const {compactCurrentSku,  currentSku, currentSkuProductCode, isLoadingCompactCurrentSku } = storeToRefs(currentSkuStore);
+    const {compactCurrentSku, isLoadingCompactCurrentSku } = storeToRefs(currentSkuStore);
 
     const route = useRoute();
 
-    const currentSkuLocal = computed(() => {
-        if (!Object.keys(currentSku.value).length) {
-            return compactCurrentSku.value;
-        }
-        return  currentSku.value;
+    const currentSkuProductCode = computed(() => {
+        return `${compactCurrentSku.value.code}-${compactCurrentSku.value.id}`;
     });
-
-    const reviewText = computed(() => {
-        let text = '';
-        switch (currentSkuLocal.value.reviews_count) {
-            case 1:
-                text = 'отзыв';
-                break;
-            case 2:
-            case 3:
-            case 4:
-                text = 'отзыва';
-                break;
-            default:
-                text = 'отзывов';
-        }
-        return currentSkuLocal.value.reviews_count + ' ' + text;
-    });
-
-    // const currentSkuProductCode = computed(() => currentSkuLocal.value.code + '-' + currentSkuLocal.value.id);
 
     const currentSkuId = computed(() => {
         if (route.params.product_code && route.params.product_code.includes('-')) {
@@ -120,7 +94,18 @@
         return null;
     });
 
-
+    const getReviewText = count => {
+        switch (count) {
+            case 1:
+                return 'отзыв';
+            case 2:
+            case 3:
+            case 4:
+                return 'отзыва';
+            default:
+                return 'отзывов';
+        }
+    }
     const getPageTitle = () => {
         switch(true) {
             case route.name.includes('add-review'):
