@@ -15,6 +15,9 @@
 
         <div v-else class="auth">
             <div v-if="showMode === 'login'" class="auth__login">
+                <div v-if="$api.messageInLoginBox.value" class="alert">
+                    {{ $api.messageInLoginBox.value }}
+                </div>
                 <div class="auth__choice">
                     <div class="auth__wrap">
                         <div class="auth__wrap-el auth__with-g" @click="$api.loginWithService('google')">

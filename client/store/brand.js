@@ -40,7 +40,7 @@ export const useBrandStore = defineStore({
             this.isLoadingBrandsByLetters = false;
         },
         async loadPopularBrands() {
-            const { $api } = useNuxtApp()
+            const { $api } = useNuxtApp();
             const { data } = await $api.get('/brands/popular');
 
             if (data) {
@@ -49,12 +49,16 @@ export const useBrandStore = defineStore({
         },
         async loadBrandByCode(code) {
             this.isLoadingCurrentBrand = true;
-            const { $api } = useNuxtApp()
+            const { $api } = useNuxtApp();
             const { data } = await $api.get(`/brands/by-code/${code}`);
             if (data) {
                 this.currentBrand = { ...data };
             }
             this.isLoadingCurrentBrand = false;
         },
+        async createBrand(name) {
+            const { $api } = useNuxtApp();
+            return await $api.post('brands', { name });
+        }
     }
 });

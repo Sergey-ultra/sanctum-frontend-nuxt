@@ -1,6 +1,6 @@
 <template>
     <form class="form fill" @submit.prevent="createNewSku">
-        <buttonComponent @click="emit('hideAddForm')">
+        <buttonComponent @click="emit('hideAddForm')" :radius="true" :color="'gray'">
             Назад
         </buttonComponent>
         <h2>Добавление нового объекта</h2>
@@ -63,11 +63,28 @@
                     :items="brands"
                     :item-title="'name'"
                     :item-value="'id'"
-                />
+                >
+                   <template v-slot:create>
+                        <span class="brand" @click="showAddingBrand">Добавить бренд</span>
+                   </template>
+                </selectComponent>
                 <div class="invalid-feedback" v-for="error of v$.sku.brand_id.$errors" :key="error.$uid">
                     {{ error.$message }}
                 </div>
             </label>
+        </div>
+
+        <div v-if="isShowAddingBrand" class="brand__block">
+            <h3>Добавление бренда</h3>
+            <span @click="hideAddingBrand" class="brand__close">✕</span>
+
+            <div class="form__group">
+                <inputComponent v-model="newBrand" :color="'white'"/>
+            </div>
+
+            <buttonComponent @click="saveBrand" :color="'yellow'" :radius="true">
+                Создать бренд
+            </buttonComponent>
         </div>
 
         <div class="form__group">
@@ -110,7 +127,7 @@
             </label>
         </div>
 
-        <buttonComponent type="submit">
+        <buttonComponent type="submit" :color="'yellow'" :radius="true">
             Продолжить
         </buttonComponent>
     </form>
@@ -127,13 +144,14 @@ import {useBrandStore} from "~/store/brand";
 import {storeToRefs} from "pinia";
 import {helpers, minLength, required} from "@vuelidate/validators";
 import useVuelidate from "@vuelidate/core";
+import {useNuxtApp} from "#app";
 
 const categoryStore = useCategoryStore();
 const brandStore = useBrandStore();
 const productStore = useProductStore();
 const { allCategories } = storeToRefs(categoryStore);
 const { allBrands } = storeToRefs(brandStore);
-
+const { $api } = useNuxtApp();
 const router = useRouter();
 
 const props = defineProps({
@@ -145,6 +163,9 @@ const props = defineProps({
 const emit = defineEmits(['hideAddForm']);
 
 const topLevelCategoryId = ref(null);
+const isShowAddingBrand = ref(false);
+
+const newBrand = ref('');
 
 const sku = ref({
     name: '',
@@ -159,7 +180,6 @@ const rules = {
         },
         brand_id: {
             required: helpers.withMessage('Поле должно быть заполнено', required),
-
         },
         category_id: {
             required: helpers.withMessage('Поле должно быть заполнено', required),
@@ -199,10 +219,14 @@ const topLevelCategories = computed(() => {
 });
 
 let lowLevelCategories = computed(() => {
-    return [{
-        id: null,
-        name: 'Выберите подраздел',
-    }].concat(allCategories.value.filter(el => el.parent_id === topLevelCategoryId.value));
+    let currentCategory = allCategories.value.find(el => el.id === topLevelCategoryId.value)
+    if (currentCategory && currentCategory.children && currentCategory.children.length) {
+        return [{
+            id: null,
+            name: 'Выберите подраздел',
+        }].concat(currentCategory.children);
+    }
+    return [];
 });
 
 let brands = computed(() => {
@@ -212,14 +236,33 @@ let brands = computed(() => {
     }].concat(allBrands.value);
 });
 
+const showAddingBrand = () => isShowAddingBrand.value = true;
+const hideAddingBrand = () => isShowAddingBrand.value = false;
+
+
+const saveBrand = async () => {
+    if (!$api.isAuth.value) {
+        $api.setIsShowAuthModal(true, 'Чтобы создать новый бренд, авторизуйтесь');
+    } else {
+        await brandStore.createBrand(newBrand.value);
+        await brandStore.loadAllBrands();
+        hideAddingBrand();
+    }
+};
+
+
 const createNewSku = async () => {
-    const validated = await v$.value.sku.$validate();
-    if (validated) {
-        const response = await productStore.createSku(sku.value);
-        if (response) {
-            await router.push({ name: 'product-product_code-add-review', params: { product_code: response.sku_code }});
+    if (!$api.isAuth.value) {
+        $api.setIsShowAuthModal(true, 'Чтобы создать новый объект отзыва, авторизуйтесь');
+    } else {
+        const validated = await v$.value.sku.$validate();
+        if (validated) {
+            const response = await productStore.createSku(sku.value);
+            if (response) {
+                await router.push({name: 'product-product_code-add-review', params: {product_code: response.sku_code}});
+            }
+            v$.value.$reset();
         }
-        v$.value.$reset();
     }
 }
 
@@ -231,5 +274,34 @@ onMounted(async() => {
 <style scoped lang="scss">
 .fill {
     width: 100%;
+}
+.brand {
+    cursor: pointer;
+    font-size: 18px;
+    font-weight: 600;
+    margin: 8px;
+    display: block;
+    &__block {
+        position: relative;
+        border: 1px dashed #d9d9d9;
+        margin: 12px 0;
+        border-radius: 4px;
+        padding: 10px;
+    }
+    &__close {
+        cursor: pointer;
+        position: absolute;
+        right: 0;
+        top: 0;
+        font-size: 1.5rem;
+        font-weight: 700;
+        line-height: 1;
+        color: #000;
+        text-shadow: 0 1px 0 #fff;
+        opacity: 0.5;
+        padding: 15px;
+        border-style: none;
+        background-color: transparent;
+    }
 }
 </style>

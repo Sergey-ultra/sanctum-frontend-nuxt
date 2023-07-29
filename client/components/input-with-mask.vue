@@ -7,16 +7,17 @@
             :class="{
                  [`input--${color}`]: Boolean(color)
             }"
+            :data-maska="mask"
             :placeholder="placeholder"
             :readonly="readonly"
             :disabled="disabled"
+            v-maska
         >
         <div v-if="isLoading" class="wrapper__layer">
             <loader :color="'blue'"></loader>
         </div>
     </div>
 </template>
-
 <script setup>
 const emit = defineEmits(['update:modelValue']);
 const props = defineProps({
@@ -39,6 +40,10 @@ const props = defineProps({
         type: Boolean,
         default: false,
     },
+    mask: {
+        type: String,
+        default: '',
+    }
 });
 
 let currentValue = computed({

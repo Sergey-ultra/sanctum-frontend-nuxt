@@ -5,6 +5,7 @@ export const useUserStore = defineStore({
     state: () => ({
         userInfo: {},
         bestUsers: [],
+        wallets: [],
     }),
     actions: {
         async loadProfile() {
@@ -22,6 +23,20 @@ export const useUserStore = defineStore({
             const { $api } = useNuxtApp();
             const { data } = await $api.post('/users/me/avatar', obj)
         },
+        async loadUserWallets() {
+            const { $api } = useNuxtApp();
+            const { data } = await $api.get('/users/wallets');
+            if (data && Array.isArray(data)) {
+                this.wallets = [...data];
+            }
+        },
+        async addNewWallet(payload) {
+            const { $api } = useNuxtApp();
+            const { data } = await $api.post('/users/wallets', payload);
+            if (data) {
+                this.wallets.push(data);
+            }
+        },
         async loadBestUsers() {
             const { $api } = useNuxtApp();
             const { data } = await $api.get('/users/best');
@@ -29,5 +44,9 @@ export const useUserStore = defineStore({
                 this.bestUsers = [...data];
             }
         },
+        async chargeMoney(payload) {
+            const { $api } = useNuxtApp();
+            const { data } = await $api.post('/users/charge-money', payload);
+        }
     }
 });

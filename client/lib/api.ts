@@ -28,6 +28,8 @@ export default class Api {
         message: ''
     })
 
+    public messageInLoginBox = ref('')
+
     public isAuth = ref(false)
     public isShowAuthModal = ref(false)
 
@@ -57,6 +59,7 @@ export default class Api {
     public setEmailVerification({ after, email, message }) {
         this.mailVerification = { isRequired: true, after, email, message };
     }
+
 
     public verifyEmail() {
         this.mailVerification = {
@@ -127,7 +130,7 @@ export default class Api {
 
     public async logout() {
         await this.post('/logout');
-        this.token.value = undefined;
+        this.token.value = null;
         this.isAuth.value = false;
         this.resetUser();
     }
@@ -138,11 +141,16 @@ export default class Api {
         this.$user.role = '';
     }
 
-    public setIsShowAuthModal(payload) {
-        this.isShowAuthModal.value = payload;
+    public setIsShowAuthModal(isShow: boolean, message: string = '') {
+        this.isShowAuthModal.value = isShow;
+        if (isShow && message) {
+            this.messageInLoginBox.value = message;
+        } else {
+            this.messageInLoginBox.value = '';
+        }
     }
 
-    private async fetchOptions(params?: SearchParams, method = 'GET') {
+    private async fetchOptions(params?: SearchParams, method: string = 'GET') {
         const fetchOptions = {...this.config.fetchOptions}
         fetchOptions.headers = {
             Accept: 'application/json',

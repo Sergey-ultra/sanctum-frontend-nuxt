@@ -208,6 +208,15 @@ export const useReviewStore = defineStore({
                 }
             }
         },
+        async updatePublished(payload) {
+            const { $api } = useNuxtApp();
+            const { data } = await $api.put(`/reviews/${payload.id}`, payload);
+
+            if (data.status === 'success') {
+                this.setExistingReview(data.data);
+                $api.$toast.setSuccess('Отзыв успешно создан и будет опубликован после модерации');
+            }
+        },
         async deleteReview(id) {
             const { $api } = useNuxtApp();
             await $api.delete(`/reviews/${id}`)

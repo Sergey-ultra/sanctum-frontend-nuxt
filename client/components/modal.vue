@@ -1,6 +1,6 @@
 <template>
     <Teleport to="body">
-        <div  class="modal__layer" v-if="isShowModal" ref="modal">
+        <div class="modal__layer" v-if="isShowModal" ref="modal">
             <transition name="popup" mode="out-in">
                 <div class="modal__dialog" :style="{'width': `${widthLocal}%`}" ref="modalWrapper">
                     <div class="modal__header">

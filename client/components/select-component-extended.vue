@@ -42,6 +42,7 @@
                     class="select-popup"
                     @click.passive="onBlur">
                     <div class="select-popup__inner">
+                        <slot name="create"></slot>
                         <div
                             v-if="isSearch && !multiple"
                             class="select__input-wrap">
@@ -115,6 +116,10 @@ const props = defineProps({
         default: false,
     },
     fill: {
+        type: Boolean,
+        default: false,
+    },
+    isCreateBlock: {
         type: Boolean,
         default: false,
     },

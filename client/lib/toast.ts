@@ -2,7 +2,6 @@ export default class Toast {
     public notes = ref([])
 
     public setNote(object) {
-        console.log( this.notes.value, object);
         this.notes.value.unshift(object);
     }
     public clearNote() {

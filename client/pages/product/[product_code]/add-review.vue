@@ -98,7 +98,7 @@
 
 
                     <div class="form__group mt-4">
-                        <button class="add-btn" :disabled="isUploadingReview || editedReview.id" type="submit">Опубликовать</button>
+                        <button class="add-btn" :disabled="isUploadingReview" type="submit">Опубликовать</button>
 
                         <div class="agreement">
                             Нажимая кнопку «Отправить», Вы соглашаетесь c
@@ -266,12 +266,16 @@ const saveAsDraft = async () => {
 }
 const saveReview = async () => {
     if (!$api.isAuth.value) {
-        $api.setIsShowAuthModal(true);
+        $api.setIsShowAuthModal(true, 'Чтобы оставить отзыв, авторизуйтесь');
     } else {
         const validated = await v$.value.$validate();
 
-        if (validated && !editedReview.value.id) {
-            await reviewStore.updateOrCreateReview(editedReview.value);
+        if (validated) {
+            if (editedReview.value.status !== 'published') {
+                await reviewStore.updateOrCreateReview(editedReview.value);
+            } else {
+                await reviewStore.updatePublished(editedReview.value);
+            }
 
             clearForm();
             v$.value.$reset();

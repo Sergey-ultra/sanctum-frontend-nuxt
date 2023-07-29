@@ -115,17 +115,6 @@ onMounted(() => {
 </script>
 <style scoped lang="scss">
     $redColor: #b74746;
-    .alert {
-        margin-bottom: 16px;
-        background-color: #e5f4df;
-        color: #5b9040;
-        padding: 16px;
-        border-radius: 8px;
-        line-height: 150%;
-        & li {
-            color: #13709b;
-        }
-    }
     .flex {
         gap: 15px;
         display:flex;
