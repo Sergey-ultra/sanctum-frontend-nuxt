@@ -14,6 +14,9 @@
                         <div class="footer__item">
                             <nuxt-link :to="{ name:'policy' }">Политика конфиденциальности</nuxt-link>
                         </div>
+                        <div class="footer__item">
+                            <nuxt-link :to="{ name:'feedback' }">Обратная связь</nuxt-link>
+                        </div>
                     </div>
                     <div class="footer__col">
                         <div class="footer__title">Сотрудничество</div>
@@ -28,7 +31,7 @@
             </div>
             <div>Нашли ошибку на этой странице? Выделите ее и нажмите Ctrl+Enter</div>
             <div>По вопросам сотрудничества admin@smart-beautiful.ru</div>
-            <div class="footer__copy">2022 - {{ new Date().getFullYear() }} © Smart-Beautiful - сайт отзывов о косметике и мониторинг цен на продукцию в интернет-магазинах</div>
+            <div class="footer__copy">2022 - {{ new Date().getFullYear() }} © Smart-Beautiful - сайт отзывов о косметике и парфюмерии</div>
         </div>
     </footer>
 </template>

@@ -1,6 +1,9 @@
 <template>
     <div>
-        <div>Всего доступно к выводу {{ $api.$user.balance }}</div>
+        <div class="balance">
+            Всего доступно к выводу
+            <span class="green-text">{{ $api.$user.balance }}</span>
+        </div>
         <form @submit.prevent="chargeMoney">
             <div class="form__group">
                 <label>
@@ -53,6 +56,29 @@
                 Подать заявку
             </buttonComponent>
         </form>
+        <div v-if="myCharges.length">
+            <h3>История выплат</h3>
+            <div class="table__row table__row-header">
+                <div class="table__item width">Дата заявки</div>
+                <div class="table__item width">Дата выплаты</div>
+                <div class="table__item width">Кошелек</div>
+                <div class="table__item width">Заказано</div>
+                <div class="table__item width">Сумма к выплате</div>
+                <div class="table__item width">Статус</div>
+            </div>
+            <div
+                v-for="(charge, index) in myCharges"
+                :key="charge.id"
+                :class="{'table__row-even': (index + 1) % 2 === 0}"
+                class="table__row">
+                <div class="table__item width">{{ charge.created }}</div>
+                <div class="table__item width">{{ charge.payment_date }}</div>
+                <div class="table__item width">{{ charge.wallet }}</div>
+                <div class="table__item width">{{ charge.amount }}</div>
+                <div class="table__item width">{{ charge.amount }}</div>
+                <div class="table__item width">{{ charge.status }}</div>
+            </div>
+        </div>
     </div>
 </template>
 <script setup>
@@ -67,7 +93,7 @@ import {useNuxtApp} from "#app";
 
 
 const userStore = useUserStore();
-const { wallets } = storeToRefs(userStore);
+const { wallets, myCharges } = storeToRefs(userStore);
 const { $api } = useNuxtApp();
 
 const charge = ref( {
@@ -131,18 +157,35 @@ const chargeMoney = async () => {
 
         if (validated) {
             await userStore.chargeMoney(charge.value);
+            const newBalance = $api.$user.balance - charge.value.amount;
+
+            $api.updateUserBalance(newBalance);
+            $api.$toast.setSuccess('Деньги поступят в течении пяти рабочих дней');
             clearForm();
             v$.value.$reset();
         }
     }
 }
-onMounted(async() => {
-    await userStore.loadUserWallets();
+onMounted(() => {
+    userStore.loadUserWallets();
+    userStore.loadUserCharges();
 });
 </script>
 <style scoped lang="scss">
+$greenColor: #46bd87;
+.balance {
+    width: 50%;
+    font-size: 20px;
+    text-transform: uppercase;
+}
+.green-text {
+    color: $greenColor;
+}
 .wallet {
     border-bottom: solid 1px #e4e6e8;
+}
+.width {
+    width: calc(100% / 6);
 }
 .newWallet {
     cursor: pointer;

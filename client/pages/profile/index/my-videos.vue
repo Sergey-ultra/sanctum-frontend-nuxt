@@ -23,13 +23,15 @@
 </template>
 
 <script setup>
-    import pagination from '../../../components/pagination'
+    import pagination from '~/components/pagination'
     import reviewsAnswersNav from "~/components/profile/reviewsAnswersNav";
     import loader from "~/components/loader";
     import myVideo from "~/components/profile/my-video";
     import { storeToRefs } from "pinia";
     import {useVideoStore} from "~/store/video";
+    import {useRuntimeConfig} from "#app";
 
+    const config = useRuntimeConfig();
     const videoStore = useVideoStore();
     const { isLoadingMyVideos, myVideos, myVideosOptions, myVideosLastPage } = storeToRefs(videoStore);
 
@@ -67,7 +69,7 @@
 
     const setSEO = () => {
         const title = `Мои видео`;
-        const metaName = `${title} Smart-Beautiful - агрегатор цен косметических товаров`;
+        const metaName = `${title} ${config.public.siteTitle}`;
         useHead({
             title,
             meta: [

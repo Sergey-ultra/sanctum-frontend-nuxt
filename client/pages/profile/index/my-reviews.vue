@@ -52,7 +52,9 @@
     import myModeratesReviews from "~/components/profile/my-moderated-reviews.vue";
     import { storeToRefs } from "pinia";
     import { useReviewStore } from "~/store/review";
+    import {useRuntimeConfig} from "#app";
 
+    const config = useRuntimeConfig();
     const reviewStore = useReviewStore();
     const { isLoadingMyReviews, myReviews, myReviewsOptions, myReviewsLastPage } = storeToRefs(reviewStore);
 
@@ -89,7 +91,7 @@
 
     const setSEO = () => {
         const title = `Мои отзывы`;
-        const metaName = `${title} Smart-Beautiful - агрегатор цен косметических товаров`;
+        const metaName = `${title} ${config.public.siteTitle}`;
         useHead({
             title,
             meta: [

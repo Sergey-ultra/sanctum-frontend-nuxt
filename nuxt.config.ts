@@ -20,9 +20,10 @@ export default defineNuxtConfig({
         '@fortawesome/fontawesome-svg-core/styles.css',
         '@/assets/scss/colors.scss',
         '@/assets/scss/form.scss',
+        '@/assets/scss/table.scss',
     ],
     meta: {
-        title: 'Smart-Beautiful - агрегатор цен косметических товаров',
+        title: 'Smart-Beautiful - отзывы о косметики и парфюмерии',
     },
     app: {
         // meta: [               { name: 'description', content: 'My amazing site.' }      ],
@@ -52,6 +53,7 @@ export default defineNuxtConfig({
             webURL: process.env.WEB_URL || 'http://localhost:3000',
             APP_URL: process.env.APP_URL || 'http://localhost:8000',
             apiURL: process.env.API_URL || 'http://localhost:8000/api',
+            siteTitle: process.env.SITE_TITLE || 'Smart-Beautiful - отзывы о косметики и парфюмерии',
         },
     },
     plugins:[

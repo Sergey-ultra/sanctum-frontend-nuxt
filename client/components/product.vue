@@ -384,7 +384,7 @@ const loadCurrentSkuAndAddItToViewed = async () => {
 
 // const setSEO = name => {
 //     const title = `Описание товара ${name}`;
-//     const metaName = `${title} Smart-Beautiful - агрегатор цен косметических товаров`;
+//     const metaName = `${title} ${config.public.siteTitle}`;
 //     useHead({
 //         title,
 //         meta: [

@@ -26,12 +26,14 @@
 
 <script setup>
     import reviewsAnswersNav from "~/components/profile/reviewsAnswersNav";
-    import pagination from '../../../components/pagination'
+    import pagination from '~/components/pagination'
     import myComment from "~/components/profile/my-comment";
     import loader from "~/components/loader";
     import { storeToRefs } from "pinia";
     import {useCommentStore} from "~/store/comments";
+    import {useRuntimeConfig} from "#app";
 
+    const config = useRuntimeConfig();
     const commentStore = useCommentStore();
     const { isLoadingMyComments, myComments, myCommentOptions, myCommentLastPage } = storeToRefs(commentStore);
 
@@ -68,7 +70,7 @@
 
     const setSEO = () => {
         const title = `Мои комменты`;
-        const metaName = `${title} Smart-Beautiful - агрегатор цен косметических товаров`;
+        const metaName = `${title} ${config.public.siteTitle}`;
         useHead({
             title,
             meta: [

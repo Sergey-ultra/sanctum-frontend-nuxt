@@ -4,10 +4,11 @@
         <div>
             <div
                 class="message"
-                v-for="message in messages"
+                v-for="message in chats"
                 :key="message.id"
                 @mouseover="setOpenChat(message.id)"
                 @mouseout="setOpenChat(null)"
+                @click="openChat(message.id)"
             >
                 <div class="avatar">
                     <img :src="message.avatar" alt="">
@@ -34,21 +35,21 @@
     </div>
 </template>
 <script setup>
-import {useNuxtApp} from "#app";
+import {useMessageStore} from "~/store/message";
+import {storeToRefs} from "pinia";
 
-const { $api } = useNuxtApp();
-const messages = ref([]);
+const messageStore = useMessageStore();
+const { chats } = storeToRefs(messageStore);
+
 const openChatId = ref(null);
 
 const setOpenChat = id => openChatId.value = id;
 
+const openChat = id => {
+    messageStore.loadChatByMessageId(id);
+}
 onMounted(async () => {
-    const { data } = await $api.get('/my-messages');
-
-    if (data && Array.isArray(data)) {
-        messages.value = [...data];
-    }
-
+    await messageStore.loadChats();
 });
 </script>
 <style scoped lang="scss">

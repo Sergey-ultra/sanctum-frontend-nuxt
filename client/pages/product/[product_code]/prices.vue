@@ -21,12 +21,14 @@
     import product from '~/components/product';
     import { storeToRefs } from "pinia";
     import {useCurrentSkuStore} from "~/store/currentSku";
+    import {useRuntimeConfig} from "#app";
+    const config = useRuntimeConfig();
 
     const { currentSku } = storeToRefs(useCurrentSkuStore());
 
     const setSEO = () => {
         const title = `Цены ${currentSku.value.name}`;
-        const metaName = `${title} Smart-Beautiful - агрегатор цен косметических товаров`;
+        const metaName = `${title} ${config.public.siteTitle}`;
         useHead({
             title,
             meta: [

@@ -32,7 +32,8 @@
 
             <div class="flex">
                 <span class="balance text-gray">Количество приглашенных авторов:</span>
-                <span>Вы не пригласили ни одного автора!</span>
+                <span v-if="$api.$user.number_of_invited_authors === 0">Вы не пригласили ни одного автора!</span>
+                <span v-else class="balance__value green-text">{{ $api.$user.number_of_invited_authors }}</span>
             </div>
 
             <div class="flex">
@@ -79,13 +80,10 @@ const isShowWithdrawalModal = ref(false);
 
 
 const showFormModal = () => {
-   if (
-       ($api.$user.balance >= min.FIRST && $api.$user.is_first_charge)
-        || ($api.$user.balance >= min.NEXT && !$api.$user.is_first_charge)
-   ) {
-       isShowForm.value = true;
-   } else {
+   if ($api.$user.balance >= min.FIRST && $api.$user.is_first_charge) {
        isShowWithdrawalModal.value = true;
+   } else {
+       isShowForm.value = true;
    }
 }
 

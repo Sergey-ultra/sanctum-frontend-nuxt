@@ -156,8 +156,9 @@
     import {useCurrentSkuStore} from "~/store/currentSku";
     import {usePriceHistoryStore} from "~/store/pricehistory";
     import {useReviewStore} from "~/store/review";
-    import { useNuxtApp } from '#app'
+    import {useNuxtApp, useRuntimeConfig} from '#app'
     const { $api } = useNuxtApp();
+    const config = useRuntimeConfig();
 
     const currentSkuStore = useCurrentSkuStore();
     const priceHistoryStore = usePriceHistoryStore();
@@ -219,7 +220,7 @@
 
     const setSEO = name => {
         const title = `Описание товара ${name}`;
-        const metaName = `${title} Smart-Beautiful - агрегатор цен косметических товаров`;
+        const metaName = `${title} ${config.public.siteTitle}`;
         useHead({
             title,
             meta: [

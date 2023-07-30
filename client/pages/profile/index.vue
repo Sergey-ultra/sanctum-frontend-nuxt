@@ -33,11 +33,11 @@
 </template>
 
 <script setup>
-    import { useNuxtApp } from '#app'
-    const { $api } = useNuxtApp();
+    import {useNuxtApp, useRuntimeConfig} from '#app'
     import { storeToRefs } from "pinia";
     import {useUserStore} from "~/store/user";
-
+    const config = useRuntimeConfig();
+    const { $api } = useNuxtApp();
 
     definePageMeta({
         middleware: ["auth"]
@@ -48,7 +48,7 @@
 
     const setSEO = () => {
         const title = `Мой профиль`;
-        const metaName = `${title} Smart-Beautiful - агрегатор цен косметических товаров`;
+        const metaName = `${title} ${config.public.siteTitle}`;
         useHead({
             title,
             meta: [

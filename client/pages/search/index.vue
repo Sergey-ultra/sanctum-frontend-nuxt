@@ -18,20 +18,22 @@
 </template>
 
 <script setup>
-    import filterBlock from "../../components/filterBlock"
-    import productList from '../../components/product-list'
-    import viewedProducts from '../../components/viewed-products'
+    import filterBlock from '~/components/filterBlock';
+    import productList from '~/components/product-list';
+    import viewedProducts from '~/components/viewed-products';
     import { storeToRefs } from "pinia";
-    import {useProductStore} from "../../store/product";
-    import {useFilterStore} from "../../store/filter";
+    import {useProductStore} from "~/store/product";
+    import {useFilterStore} from "~/store/filter";
+    import {useRuntimeConfig} from "#app";
 
+    const config = useRuntimeConfig();
     const productStore = useProductStore();
     const filterStore = useFilterStore();
     const { totalCount } = storeToRefs(productStore);
 
     const route = useRoute();
 
-    const isChangeSearchString = ref(false);
+    //const isChangeSearchString = ref(false);
 
     const searchByString = () => {
         productStore.loadProductsWithPagination();
@@ -42,7 +44,7 @@
 
     const setSEO = name => {
         const title = `Поиск по ${name}`;
-        const metaName = `${title} Smart-Beautiful - агрегатор цен косметических товаров`;
+        const metaName = `${title} ${config.public.siteTitle}`;
         useHead({
             title,
             meta: [

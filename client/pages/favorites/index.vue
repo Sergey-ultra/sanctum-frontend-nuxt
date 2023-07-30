@@ -54,14 +54,13 @@
 </template>
 
 <script setup>
-    // import chart from '../../components/sku-price-history-chart'
-    import loader from '../../components/loader'
+    // import chart from '~/components/sku-price-history-chart'
+    import loader from '~/components/loader'
     import { storeToRefs } from "pinia";
-    import {useFavoritesStore} from "../../store/favorites";
-    import { useNuxtApp } from '#app'
+    import {useFavoritesStore} from "~/store/favorites";
+    import {useNuxtApp, useRuntimeConfig} from '#app'
     const { $api } = useNuxtApp();
-
-
+    const config = useRuntimeConfig();
 
     const favoritesStore = useFavoritesStore();
     const { favoriteSkus, isLoadingFavoriteSkus } = storeToRefs(favoritesStore);
@@ -69,7 +68,7 @@
 
     const setSEO = () => {
         const title = `Избранное`;
-        const metaName = `${title} Smart-Beautiful - агрегатор цен косметических товаров`;
+        const metaName = `${title} ${config.public.siteTitle}`;
         useHead({
             title,
             meta: [

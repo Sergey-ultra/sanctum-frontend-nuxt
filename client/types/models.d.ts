@@ -18,7 +18,8 @@ declare global {
         export interface User {
             role: string
             name?: string
-            avatar?: string
+            avatar?: string,
+            balance?: number
         }
 
         export type Users = Array<User>

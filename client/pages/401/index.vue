@@ -12,11 +12,11 @@
 </template>
 
 <script setup>
-    import { useNuxtApp } from '#app'
+    import {useNuxtApp, useRuntimeConfig} from '#app'
     const { $api } = useNuxtApp();
-
+    const config = useRuntimeConfig();
     const route = useRoute();
-    
+
     const text = computed(() => {
         switch (route.query.to) {
             case 'add-photos':
@@ -31,7 +31,7 @@
 
 
     const setSEO = (text) => {
-        const metaName = `Smart-Beautiful - агрегатор цен косметических товаров ${text}`;
+        const metaName = `${config.public.siteTitle} ${text}`;
         useHead({
             title: text,
             meta: [

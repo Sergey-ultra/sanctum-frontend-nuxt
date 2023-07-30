@@ -59,11 +59,11 @@
     import { storeToRefs } from "pinia";
     import {helpers, minLength, required} from "@vuelidate/validators";
     import useVuelidate from '@vuelidate/core';
-    import { useNuxtApp } from '#app';
+    import {useNuxtApp, useRuntimeConfig} from '#app';
 
 
     const { $api } = useNuxtApp();
-
+    const config = useRuntimeConfig();
     const route = useRoute();
 
 
@@ -104,7 +104,7 @@
 
     const setSEO = (name, preview = '') => {
         const title = `Статья ${name}`;
-        const metaName = `${title} Smart-Beautiful - агрегатор цен косметических товаров`;
+        const metaName = `${title} ${config.public.siteTitle}`;
         useHead({
             title,
             meta: [

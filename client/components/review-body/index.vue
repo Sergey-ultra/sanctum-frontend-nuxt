@@ -218,6 +218,7 @@ const getCoords = elem => elem.getBoundingClientRect();
 
 const dragPhoto = (index, event) => {
     imageDragIndex.value = index;
+    localBody.value.blocks[index].dragable = true;
     cursorImage.value = localBody.value.blocks[index].data.text;
 
     const element = event.target;
@@ -270,8 +271,6 @@ const dragPhoto = (index, event) => {
         } else {
             cursor.value.style.cssText = '';
         }
-        // && imageDragIndex.value !== i
-        // console.log(insertedIndex.value);
     }
 
 
@@ -287,9 +286,11 @@ const dragPhoto = (index, event) => {
         document.onmouseup = null;
         cursor.value.style.cssText = '';
         if (insertedIndex.value !== null) {
-            const replace = localBody.value.blocks.splice(imageDragIndex.value, 1);
-            console.log(replace);
-            localBody.value.blocks.splice(insertedIndex.value, 0, ...replace);
+            const replacedIndex = localBody.value.blocks.findIndex(el => el.dragable);
+            localBody.value.blocks[insertedIndex.value] = localBody.value.blocks[replacedIndex];
+
+            const replace = localBody.value.blocks.splice(replacedIndex, 1);
+            //localBody.value.blocks.splice(insertedIndex.value, 0, ...replace);
         }
         imageDragIndex.value = null;
         insertedIndex.value = null;
@@ -298,15 +299,17 @@ const dragPhoto = (index, event) => {
 
 
 const deletePhoto = index => {
-    localBody.value.blocks[index  - 1].data.text += '\n' + localBody.value.blocks[index + 1].data.text;
+    if (localBody.value.blocks[index  - 1] && localBody.value.blocks[index + 1]) {
+        localBody.value.blocks[index  - 1].data.text += '\n' + localBody.value.blocks[index + 1].data.text;
+    }
+
     localBody.value.blocks.splice(index, 2);
 }
 
 const closeModal = () => imageFocusIndex.value = null;
 
 watch(insertedIndex, (value, oldValue) => {
-    console.log(value, oldValue);
-    if (oldValue !== null && oldValue !== imageDragIndex.value) {
+    if (null !== value && oldValue !== null && oldValue !== imageDragIndex.value) {
         localBody.value.blocks.splice(oldValue, 1);
     }
     if (value !== null && value !== imageDragIndex.value) {

@@ -55,19 +55,21 @@
     import {useCategoryStore} from "~/store/category";
     import { useMainStore } from "~/store/main";
     import { storeToRefs } from "pinia";
+    import {useRuntimeConfig} from "#app";
 
+    const config = useRuntimeConfig();
     const categoryStore = useCategoryStore();
     const mainStore = useMainStore();
     const { userCount, reviewCount, commentCount } = storeToRefs(mainStore);
     const { categories } = storeToRefs(categoryStore);
 
     const title = `Главная`;
-    const metaName = `${title} Smart-Beautiful - агрегатор цен косметических товаров`;
+    const name = `${title} ${config.public.siteTitle}`;
     useHead({
-        title,
+        title: name,
         meta: [
-            {name: 'description', content: metaName},
-            {name: 'keywords', content: metaName}
+            {name: 'description', content: name},
+            {name: 'keywords', content: name}
         ],
     });
 

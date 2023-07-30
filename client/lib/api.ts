@@ -18,7 +18,8 @@ export default class Api {
     public $user = reactive<models.User>({
         role: '',
         name: '',
-        avatar: ''
+        avatar: '',
+        balance: 0,
     })
     public $toast: Toast
     public mailVerification = reactive({
@@ -126,6 +127,11 @@ export default class Api {
         } else {
             this.isAuth.value = false;
         }
+    }
+
+    public updateUserBalance(value: number)
+    {
+        this.$user.balance = value;
     }
 
     public async logout() {
@@ -250,9 +256,13 @@ export default class Api {
             throw error;
         }
 
-        if (error.response?.status !== 422 && error.response._data && error.response._data.error) {
+        if (error.response?.status !== 422 && error.response._data) {
             let err = error.response._data;
-            this.$toast.setError(err.error.message ?? '');
+            if (err.error) {
+                this.$toast.setError(err.error.message ?? '');
+            } else if (err.message) {
+                this.$toast.setError(err.message);
+            }
         }
         //
         // if (error.response?.status === 403)

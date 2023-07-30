@@ -29,12 +29,12 @@
     import notification from '~/components/profile/notification.vue'
     import tabsComponent from "~/components/tabsComponent.vue";
     import editProfile from "~/components/profile/edit-profile.vue";
-    import { useNuxtApp } from '#app';
+    import {useNuxtApp, useRuntimeConfig} from '#app';
     import {useUserStore} from "~/store/user";
 
     const { $api } = useNuxtApp();
     const userStore = useUserStore();
-
+    const config = useRuntimeConfig();
 
     definePageMeta({
         middleware: ["auth"]
@@ -67,7 +67,7 @@
 
     const setSEO = () => {
         const title = `Редактирование профиля`;
-        const metaName = `${title} Smart-Beautiful - агрегатор цен косметических товаров`;
+        const metaName = `${title} ${config.public.siteTitle}`;
         useHead({
             title,
             meta: [

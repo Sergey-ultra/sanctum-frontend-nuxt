@@ -9,19 +9,22 @@
   </div>
 </template>
 <script setup>
-    const setSEO = () => {
-        const title = `Политика конфидициальности`;
-        const metaName = `${title} Smart-Beautiful - агрегатор цен косметических товаров`;
-        useHead({
-            title,
-            meta: [
-                {name: 'description', content: metaName},
-                {name: 'keywords', content: metaName}
-            ],
-        });
-    }
+import {useRuntimeConfig} from "#app";
 
-    setSEO();
+const config = useRuntimeConfig();
+const setSEO = () => {
+    const title = `Политика конфидициальности`;
+    const metaName = `${title} ${config.public.siteTitle}`;
+    useHead({
+        title,
+        meta: [
+            {name: 'description', content: metaName},
+            {name: 'keywords', content: metaName}
+        ],
+    });
+}
+
+setSEO();
 </script>
 
 

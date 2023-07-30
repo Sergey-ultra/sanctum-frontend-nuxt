@@ -35,17 +35,17 @@
     import pagination from '~/components/pagination';
     import loader from "~/components/loader";
     import myAnswer from "~/components/profile/my-answer";
-
-
-
     import { storeToRefs } from "pinia";
     import { useQuestionStore } from "~/store/question";
+    import {useRuntimeConfig} from "#app";
 
+    const config = useRuntimeConfig();
     const questionStore = useQuestionStore();
     const { isLoadingMyQuestions, myQuestions, myQuestionOptions, myQuestionLastPage } = storeToRefs(questionStore);
 
     let router = useRouter();
     let route = useRoute();
+
     const setPageQuery = value => {
         const query = {...route.query}
 
@@ -68,7 +68,7 @@
 
     const setSEO = () => {
         const title = `Мои ответы`;
-        const metaName = `${title} Smart-Beautiful - агрегатор цен косметических товаров`;
+        const metaName = `${title} ${config.public.siteTitle}`;
         useHead({
             title,
             meta: [

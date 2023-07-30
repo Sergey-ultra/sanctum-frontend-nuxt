@@ -5,19 +5,21 @@
     </div>
 </template>
 <script setup>
+import {useRuntimeConfig} from "#app";
 
-    const setSEO = () => {
-        const name = `Страница не найдена`;
-        const metaName = `Smart-Beautiful - агрегатор цен косметических товаров ${name}`;
-        useHead({
-            title: name,
-            meta: [
-                {name: 'description', content: metaName},
-                {name: 'keywords', content: metaName}
-            ],
-        });
-    }
-    setSEO();
+const config = useRuntimeConfig();
+const setSEO = () => {
+    const name = `Страница не найдена`;
+    const metaName = `${config.public.siteTitle} ${name}`;
+    useHead({
+        title: name,
+        meta: [
+            {name: 'description', content: metaName},
+            {name: 'keywords', content: metaName}
+        ],
+    });
+}
+setSEO();
 </script>
 
 

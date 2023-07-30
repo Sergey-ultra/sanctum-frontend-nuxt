@@ -67,10 +67,11 @@
     import textareaComponent from '~/components/textareaComponent';
     import inputComponent from '~/components/input-component';
     import buttonComponent from '~/components/button-component';
-    import {useNuxtApp} from "#app";
+    import {useNuxtApp, useRuntimeConfig} from "#app";
     import {helpers, minLength, required} from "@vuelidate/validators";
     import useVuelidate from "@vuelidate/core";
     const { $api } = useNuxtApp();
+    const config = useRuntimeConfig();
 
     const messages = ref([]);
     const form = ref({
@@ -105,7 +106,7 @@
 
     const setSEO = () => {
         const name = `О нас`;
-        const metaName = `Smart-Beautiful - агрегатор цен косметических товаров ${name}`;
+        const metaName = `${config.public.siteTitle} ${name}`;
         useHead({
             title: name,
             meta: [

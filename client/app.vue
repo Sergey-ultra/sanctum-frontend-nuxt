@@ -271,20 +271,20 @@
 </template>
 
 <script setup>
-    import notification from './components/notification';
-    import comparisonNotification from './components/comparison-notification';
-    import topNotification from './components/top-notification';
-    import dropdown from './components/dropdown';
-    import authWrapper from './components/auth';
-    import menuList from './components/menu';
-    import footerBlock from './components/footer';
-    import miniSuggest from './components/mini-suggest';
+    import notification from '~/components/notification';
+    import comparisonNotification from '~/components/comparison-notification';
+    import topNotification from '~/components/top-notification';
+    import dropdown from '~/components/dropdown';
+    import authWrapper from '~/components/auth';
+    import menuList from '~/components/menu';
+    import footerBlock from '~/components/footer';
+    import miniSuggest from '~/components/mini-suggest';
 
     import {storeToRefs} from "pinia";
-    import {useFavoritesStore} from './store/favorites';
-    import {useComparisonStore} from './store/comparison';
-    import {useSuggestStore} from './store/suggest';
-    import {useFilterStore} from './store/filter';
+    import {useFavoritesStore} from '~/store/favorites';
+    import {useComparisonStore} from '~/store/comparison';
+    import {useSuggestStore} from '~/store/suggest';
+    import {useFilterStore} from '~/store/filter';
     import { useNuxtApp } from '#app'
     const { $api } = useNuxtApp();
 

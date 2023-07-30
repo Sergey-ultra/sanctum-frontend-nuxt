@@ -1,6 +1,5 @@
 import {useNuxtApp} from "#app";
 
-
 export const useLikeStore = defineStore({
     id: 'like',
     state: () => ({

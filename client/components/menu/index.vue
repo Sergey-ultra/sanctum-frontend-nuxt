@@ -270,7 +270,7 @@
     });
 
     watch(
-        $api.isAuth.value,
+        $api.isAuth,
         (value, oldValue) => {
             if (value === true && oldValue === false) {
                 closeMobileMenuInternal();

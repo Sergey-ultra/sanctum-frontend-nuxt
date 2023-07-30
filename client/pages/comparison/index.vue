@@ -201,14 +201,15 @@
 </template>
 
 <script setup>
-    import btn from '../../components/btn'
-    import viewedProducts from '../../components/viewed-products'
-    import loader from "../../components/loader";
+    import btn from '~/components/btn'
+    import viewedProducts from '~/components/viewed-products'
+    import loader from "~/components/loader";
     import { storeToRefs } from "pinia";
-    import {useComparisonStore} from "../../store/comparison";
-    import {useFavoritesStore} from "../../store/favorites";
-    import { useNuxtApp } from '#app'
+    import {useComparisonStore} from "~/store/comparison";
+    import {useFavoritesStore} from "~/store/favorites";
+    import {useNuxtApp, useRuntimeConfig} from '#app'
     const { $api } = useNuxtApp();
+    const config = useRuntimeConfig();
 
     let comparisonContainer = ref(null);
     let left = ref(0);
@@ -296,7 +297,7 @@
 
     const setSEO = () => {
         const title = `Сравнение товаров`;
-        const metaName = `${title} Smart-Beautiful - агрегатор цен косметических товаров`;
+        const metaName = `${title} ${config.public.siteTitle}`;
         useHead({
             title,
             meta: [

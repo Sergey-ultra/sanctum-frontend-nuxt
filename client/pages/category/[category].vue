@@ -26,15 +26,17 @@
     import { storeToRefs } from "pinia";
     import {useProductStore} from "~/store/product";
     import {useFilterStore} from "~/store/filter";
+    import {useRuntimeConfig} from "#app";
 
+    const config = useRuntimeConfig();
     const productStore = useProductStore();
     const filterStore = useFilterStore();
     const { currentCategory, totalCount } = storeToRefs(productStore);
-    const route =  useRoute();
+    const route = useRoute();
 
     const setSEO = name => {
         const title = `Категория ${name}`;
-        const metaName = `${title} Smart-Beautiful - агрегатор цен косметических товаров`;
+        const metaName = `${title} ${config.public.siteTitle}`;
         useHead({
             title,
             meta: [

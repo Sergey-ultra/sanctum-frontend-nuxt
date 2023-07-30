@@ -58,8 +58,10 @@
     import inputComponent from '~/components/input-component.vue';
     import {storeToRefs} from "pinia";
     import {useBrandStore} from "~/store/brand";
+    import {useRuntimeConfig} from "#app";
     const brandStore = useBrandStore();
     const { brandsByLetters, isLoadingBrandsByLetters, countries } = storeToRefs(brandStore);
+    const config = useRuntimeConfig();
 
     const country = ref(null);
     const search = ref('');
@@ -123,7 +125,7 @@
 
     const setSEO = () => {
         const name = 'Бренды'
-        const metaName = `${name} Smart-Beautiful - агрегатор цен косметических товаров`;
+        const metaName = `${name} ${config.public.siteTitle}`;
         useHead({
             title: name,
             meta: [

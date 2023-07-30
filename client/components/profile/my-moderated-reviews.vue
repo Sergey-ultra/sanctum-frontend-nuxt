@@ -70,40 +70,5 @@ onMounted(async () => {
         align-items:center;
     }
 }
-.table {
-    &__row {
-        background-color: #fff;
-        display: flex;
-        align-items: center;
-    }
-    &__item {
-        padding: 8px;
 
-        &-date {
-            width: 10%;
-        }
-        &-name {
-            width: 35%;
-            display: flex;
-            align-items: center;
-            letter-spacing: 0.1px;
-            min-height: 40px;
-        }
-        &-sku {
-
-        }
-        &-img {
-            margin-right: 5px;
-            width: 40px;
-            height: 40px;
-        }
-        &-status {
-            width: 20%;
-        }
-        &-symbolCount,
-        &-photosCount {
-            width: 10%;
-        }
-    }
-}
 </style>
