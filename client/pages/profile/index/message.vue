@@ -1,9 +1,12 @@
 <template>
     <div class="wrapper">
-        <h2 class="title">Сообщения</h2>
-        <div>
+        <div v-if="lastMessageId">
+            <messageList/>
+        </div>
+        <div v-else>
+            <h2 class="title">Сообщения</h2>
             <div
-                class="message"
+                class="chat"
                 v-for="message in chats"
                 :key="message.id"
                 @mouseover="setOpenChat(message.id)"
@@ -24,6 +27,9 @@
                                 добавить свой отзыв на "{{ message.data.name }}"
                             </nuxt-link>.
                         </span>
+                        <span v-else-if="message.type === 'feedback'">
+                            {{ message.message }}
+                        </span>
                         <div class="time-box">
                             <span class="open" v-if="openChatId === message.id">Открыть беседу</span>
                             <span>{{ message.created_at }}</span>
@@ -35,19 +41,21 @@
     </div>
 </template>
 <script setup>
+import messageList from '~/components/message/list.vue';
 import {useMessageStore} from "~/store/message";
 import {storeToRefs} from "pinia";
 
 const messageStore = useMessageStore();
-const { chats } = storeToRefs(messageStore);
+const { chats, lastMessageId } = storeToRefs(messageStore);
 
 const openChatId = ref(null);
 
 const setOpenChat = id => openChatId.value = id;
 
 const openChat = id => {
-    messageStore.loadChatByMessageId(id);
+    messageStore.setLastMessageId(id);
 }
+
 onMounted(async () => {
     await messageStore.loadChats();
 });
@@ -62,6 +70,28 @@ onMounted(async () => {
     height: 100%;
 }
 .message {
+    display: flex;
+    gap: 8px;
+    margin: 8px 50px 8px 0;
+    &-isMine {
+        margin: 8px 0 8px 50px;
+    }
+    &__body {
+        flex-grow: 1;
+        position: relative;
+        padding: 16px;
+
+        cursor: pointer;
+        overflow: hidden;
+        background-color: #f1f1f1;
+        border-radius: 12px;
+
+        &-isMine {
+            background-color: #e5f4df;
+        }
+    }
+}
+.chat {
     position: relative;
     padding: 16px;
     cursor: pointer;
@@ -72,14 +102,18 @@ onMounted(async () => {
     }
 }
 .avatar {
-    position: absolute;
+    flex-shrink:0;
     width: 50px;
     height: 50px;
+    & img {
+        border-radius: 50%;
+        overflow: hidden;
+        height: 100%;
+        width: 100%;
+        object-fit: cover;
+    }
 }
-.body {
-    position: relative;
-    margin-left: 66px;
-}
+
 .user-name {
     margin-bottom: 4px;
     font-weight: bold;

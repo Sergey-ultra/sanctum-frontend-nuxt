@@ -71,15 +71,15 @@ export default class Api {
         };
     }
 
-    public async loginWithService(service) {
+    public async loginWithService(service: string) {
         const { url } = await this.get(`/login/${service}`);
         if (url) {
             window.location.href = url;
         }
     }
 
-    public async loginViaSocialServices(obj) {
-        const { user_name, token, avatar, role } = obj;
+    public async loginViaSocialServices(payload: object) {
+        const { user_name, token, avatar, role } = payload;
         this.isAuth.value = true;
         this.token.value = token;
         Object.assign(this.$user, {  avatar, role, name: user_name })
@@ -218,7 +218,9 @@ export default class Api {
             return await $fetch(endpoint, fetchOptions);
         } catch (error) {
             if (cb) cb(error)
-            if (toast) await this.handleError(error)
+            if (toast) {
+                await this.handleError(error)
+            }
         }
     }
 
@@ -255,13 +257,17 @@ export default class Api {
         if (!this.$toast) {
             throw error;
         }
+        const status = error.response?.status;
 
-        if (error.response?.status !== 422 && error.response._data) {
-            let err = error.response._data;
-            if (err.error) {
-                this.$toast.setError(err.error.message ?? '');
-            } else if (err.message) {
-                this.$toast.setError(err.message);
+        if (status) {
+            const errorData = error.response?._data;
+
+            if (status === 429) {
+                throw { message: 'Слишком много запросов', status: 429 };
+            } else if (status === 422) {
+                this.$toast.setError(errorData.message);
+            } else if (errorData && errorData.error) {
+                this.$toast.setError(errorData.error.message ?? '');
             }
         }
         //

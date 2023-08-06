@@ -9,13 +9,16 @@
                             <nuxt-link :to="{ name: 'terms'}">Правила сервиса</nuxt-link>
                         </div>
                         <div class="footer__item">
-                            <nuxt-link :to="{ name: 'about'}"> Вопросы и пожелания по сайту</nuxt-link>
+                            <nuxt-link :to="{ name: 'faq'}">Помощь</nuxt-link>
                         </div>
                         <div class="footer__item">
-                            <nuxt-link :to="{ name:'policy' }">Политика конфиденциальности</nuxt-link>
+                            <nuxt-link :to="{ name: 'about'}">Вопросы и пожелания по сайту</nuxt-link>
                         </div>
                         <div class="footer__item">
-                            <nuxt-link :to="{ name:'feedback' }">Обратная связь</nuxt-link>
+                            <nuxt-link :to="{ name: 'policy' }">Политика конфиденциальности</nuxt-link>
+                        </div>
+                        <div class="footer__item">
+                            <nuxt-link :to="{ name: 'feedback' }">Обратная связь</nuxt-link>
                         </div>
                     </div>
                     <div class="footer__col">

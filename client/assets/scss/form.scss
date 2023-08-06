@@ -50,10 +50,31 @@ p {
     }
 }
 
+.wrapper {
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.16);
+    background-color: #fff;
+    flex-wrap: wrap;
+    height: 100%;
+}
+
 .alert {
     margin-bottom: 16px;
     background-color: #e5f4df;
     color: #5b9040;
+    padding: 16px;
+    border-radius: 8px;
+    line-height: 150%;
+    & li {
+        color: #13709b;
+    }
+}
+
+.alert-warning {
+    margin-bottom: 16px;
+    background-color: #f1eff1;
+    color: #770d38;
     padding: 16px;
     border-radius: 8px;
     line-height: 150%;

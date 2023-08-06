@@ -2,24 +2,17 @@
     <div>
         <h1>Написать в техподдержку</h1>
         <div class="wrapper">
-            <form @submit.prevent="sendMessage">
-                <textarea-component v-model="message"/>
-                <buttonComponent type="submit">
-                    Отправить
-                </buttonComponent>
-            </form>
+            <div v-if="!$api.isAuth.value">
+                Для обращения в техподдержку, пожалуйста, авторизуйтесь под своим логином вверху этой страницы.
+            </div>
+            <messageForm v-else/>
         </div>
     </div>
 </template>
 <script setup>
-import textareaComponent from '~/components/textareaComponent.vue';
-import buttonComponent from '~/components/button-component.vue';
-
-const message = ref('');
-
-const sendMessage = () => {
-
-};
+import messageForm from '~/components/message/form.vue';
+import {useNuxtApp} from "#app";
+const { $api } = useNuxtApp();
 </script>
 <style scoped lang="scss">
 .wrapper {
