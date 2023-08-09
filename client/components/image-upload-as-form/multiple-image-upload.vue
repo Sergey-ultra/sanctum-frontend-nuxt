@@ -63,10 +63,6 @@
           type: String,
           default: '',
         },
-        photoCountInRow: {
-            type: Number,
-            default: 4
-        },
         height: {
             type:Number,
             default: 152
@@ -81,7 +77,27 @@
     const mainPhotoIndex = ref(0);
     const isPreviewImagesInit = ref(true);
 
-    const width = computed(() => `calc(100% / ${props.photoCountInRow} - 16px)`);
+    const photoCountInRow = computed(() => {
+        if (!props.width && document) {
+            const width = document.documentElement.clientWidth
+
+            if (width > 1200) {
+                return 4;
+            }
+            if (width < 1200 && width > 900) {
+                return 3;
+            }
+            if (width < 900 && width > 500) {
+                return 2;
+            }
+            if (width < 500) {
+                return 1;
+            }
+        }
+        return 4;
+    });
+
+    const width = computed(() => `calc(100% / ${photoCountInRow.value} - 16px)`);
 
     let initialImageUrlsLocal = computed({
         get() {

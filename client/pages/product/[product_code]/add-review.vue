@@ -134,7 +134,6 @@ import loader from "~/components/loader";
 import inputComponent from '~/components/input-component';
 import radioComponent from '~/components/radioComponent.vue';
 import reviewBody from '~/components/review-body/index.vue';
-//import multipleImageUpload from "~/components/image-upload-as-form/multiple-image-upload";
 //import textareaComponent from '~/components/textareaComponent';
 //import editor from "~/components/editor/index.vue";
 //import ckEditorComponent from "~/components/ckEditorComponent";

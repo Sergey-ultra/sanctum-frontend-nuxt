@@ -17,8 +17,10 @@
                 </li>
             </ul>
             <div v-if="currentMenu" class="faq__content">
-                <div v-if="currentQuestion !== null" @click="setCurrentQuestion(null)">
-                    <fa icon="arrow-left"></fa>
+                <div v-if="currentQuestion !== null" @click="setCurrentQuestion(null)" class="back">
+                    <svg height="24" width="24" viewBox="0 0 24 24" fill="none">
+                        <path d="M14 8L10 12L14 16" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                    </svg>
                     Назад
                 </div>
                 <div class="section wrapper">
@@ -28,9 +30,9 @@
                         {{ currentQuestion?.a ?? ''}}
                     </div>
                     <ul v-else class="faq__questions">
-                        <li v-for="(question, questionIndex) in currentMenu.list.map(el => el.q)"
+                        <li v-for="(question, questionIndex) in currentMenu.list"
                             @click="setCurrentQuestion(questionIndex)">
-                            {{ question }}
+                            {{ question.q }}
                         </li>
                     </ul>
                 </div>
@@ -71,6 +73,23 @@ onMounted(async() => {
 })
 </script>
 <style scoped lang="scss">
+.back {
+    display: flex;
+    align-items: center;
+    width: fit-content;
+    margin-bottom: 8px;
+    cursor: pointer;
+    &:hover {
+        color: #2c2c80;
+    }
+}
+.wrapper {
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.16);
+    background-color: #fff;
+    flex-wrap: wrap;
+}
 .faq {
     display: flex;
     justify-content: space-between;
@@ -79,6 +98,7 @@ onMounted(async() => {
         list-style: none;
         width: 28%;
         padding:0;
+        height: auto;
     }
     &__menuItem {
         cursor: pointer;
@@ -87,6 +107,9 @@ onMounted(async() => {
             gap: 10px;
             display: flex;
             padding: 1em;
+            &:hover {
+                color: #2c2c80;
+            }
         }
         & svg {
             width: 1.4em;
@@ -109,6 +132,9 @@ onMounted(async() => {
         & li {
             cursor: pointer;
             padding-bottom: 24px;
+            &:hover {
+                color: #2c2c80;
+            }
         }
     }
     &__body {

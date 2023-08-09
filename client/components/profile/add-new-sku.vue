@@ -1,8 +1,11 @@
 <template>
     <form class="form fill" @submit.prevent="createNewSku">
-        <buttonComponent @click="emit('hideAddForm')" :radius="true" :color="'gray'">
+        <div @click="emit('hideAddForm')" class="back">
+            <svg height="24" width="24" viewBox="0 0 24 24" fill="none">
+                <path d="M14 8L10 12L14 16" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+            </svg>
             Назад
-        </buttonComponent>
+        </div>
         <h2>Добавление нового объекта</h2>
 
         <div class="form__group">
@@ -274,6 +277,16 @@ onMounted(async() => {
 <style scoped lang="scss">
 .fill {
     width: 100%;
+}
+.back {
+    display: flex;
+    align-items: center;
+    width: fit-content;
+    margin-bottom: 8px;
+    cursor: pointer;
+    &:hover {
+        color: #2c2c80;
+    }
 }
 .brand {
     cursor: pointer;

@@ -6,11 +6,17 @@
         </template>
 
         <div v-if="$api.mailVerification.isRequired">
-            <span>{{ $api.mailVerification.message }}</span>
-            <btn class="btn" :height="35" :color="'grey'" @click="$api.resendVerificationEmail()">
-                Повторно выслать подтверждение аккаунта
-            </btn>
-            <btn class="btn" :height="35" @click="$api.setIsShowAuthModal(false)">Понятно</btn>
+            <div class="form-group">
+                <span>{{ $api.mailVerification.message }}</span>
+            </div>
+            <div class="form-group">
+                <buttonComponent class="btn" :height="35" :color="'gray'" @click="$api.resendVerificationEmail()">
+                    Повторно выслать подтверждение аккаунта
+                </buttonComponent>
+            </div>
+            <div class="form-group">
+                <buttonComponent class="btn" :height="35" @click="$api.setIsShowAuthModal(false)">Понятно</buttonComponent>
+            </div>
         </div>
 
         <div v-else class="auth">
@@ -26,16 +32,34 @@
                             </div>
                         </div>
 
-<!--                        <div class="auth__wrap-el auth__with-g">-->
-<!--                            <div class="icon__instagram">-->
-<!--                                <svg xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 48 48" width="34px" height="34px"><radialGradient id="yOrnnhliCrdS2gy~4tD8ma" cx="19.38" cy="42.035" r="44.899" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#fd5"/><stop offset=".328" stop-color="#ff543f"/><stop offset=".348" stop-color="#fc5245"/><stop offset=".504" stop-color="#e64771"/><stop offset=".643" stop-color="#d53e91"/><stop offset=".761" stop-color="#cc39a4"/><stop offset=".841" stop-color="#c837ab"/></radialGradient><path fill="url(#yOrnnhliCrdS2gy~4tD8ma)" d="M34.017,41.99l-20,0.019c-4.4,0.004-8.003-3.592-8.008-7.992l-0.019-20	c-0.004-4.4,3.592-8.003,7.992-8.008l20-0.019c4.4-0.004,8.003,3.592,8.008,7.992l0.019,20	C42.014,38.383,38.417,41.986,34.017,41.99z"/><radialGradient id="yOrnnhliCrdS2gy~4tD8mb" cx="11.786" cy="5.54" r="29.813" gradientTransform="matrix(1 0 0 .6663 0 1.849)" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#4168c9"/><stop offset=".999" stop-color="#4168c9" stop-opacity="0"/></radialGradient><path fill="url(#yOrnnhliCrdS2gy~4tD8mb)" d="M34.017,41.99l-20,0.019c-4.4,0.004-8.003-3.592-8.008-7.992l-0.019-20	c-0.004-4.4,3.592-8.003,7.992-8.008l20-0.019c4.4-0.004,8.003,3.592,8.008,7.992l0.019,20	C42.014,38.383,38.417,41.986,34.017,41.99z"/><path fill="#fff" d="M24,31c-3.859,0-7-3.14-7-7s3.141-7,7-7s7,3.14,7,7S27.859,31,24,31z M24,19c-2.757,0-5,2.243-5,5	s2.243,5,5,5s5-2.243,5-5S26.757,19,24,19z"/><circle cx="31.5" cy="16.5" r="1.5" fill="#fff"/><path fill="#fff" d="M30,37H18c-3.859,0-7-3.14-7-7V18c0-3.86,3.141-7,7-7h12c3.859,0,7,3.14,7,7v12	C37,33.86,33.859,37,30,37z M18,13c-2.757,0-5,2.243-5,5v12c0,2.757,2.243,5,5,5h12c2.757,0,5-2.243,5-5V18c0-2.757-2.243-5-5-5H18z"/></svg>-->
-<!--                            </div>-->
-<!--                        </div>-->
-<!--                        <div class="auth__wrap-el auth__with-fb" @click="$api.loginWithService('facebook')">-->
-<!--                            <div class="icon">-->
-<!--                                <svg xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd" clip-rule="evenodd" data-name="Layer 21" image-rendering="optimizeQuality" shape-rendering="geometricPrecision" text-rendering="geometricPrecision" viewBox="0 0 32 32"><path fill="#fefefe" d="M17.09 32H1.77C.79 32 0 31.21 0 30.23V1.77C0 .79.79 0 1.77 0h28.46C31.21 0 32 .79 32 1.77v28.46c0 .98-.79 1.77-1.77 1.77h-8.15V19.61h4.16l.62-4.83h-4.78v-3.09c0-1.39.39-2.35 2.39-2.35h2.56V5.02c-.44-.06-1.96-.19-3.73-.19-3.68 0-6.21 2.25-6.21 6.39v3.56h-4.17v4.83h4.17V32z"/></svg>-->
-<!--                            </div>-->
-<!--                        </div>-->
+                        <div class="auth__wrap-el auth__with-mailru" @click="$api.loginWithService('mailru')">
+                            <div class="icon">
+                                <svg width="20" height="20" viewBox="0 0 8 8" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                                    <title>Shape</title>
+                                    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                        <g id="download" transform="translate(-28.000000, -1.000000)" fill="#FF9E00" fill-rule="nonzero">
+                                            <g id="Group" transform="translate(28.000000, 1.000000)">
+                                                <path d="M5,4 C4.9994274,4.5520474 4.5520474,4.9994274 4,5 C3.4479526,4.9994274 3.0005726,4.5520474 3,4 C3.0005726,3.4479526 3.4479526,3.0005726 4,3 C4.5520474,3.0005726 4.9994274,3.4479526 5,4 M4,0 C1.7945,0 0,1.7945 0,4 C0,6.2055 1.7945,8 4,8 C4.808,8 5.58725,7.7595 6.25325,7.30425 L6.26475,7.29625 L5.72575,6.66975 L5.71675,6.67575 C5.20484044,7.0053009 4.60881447,7.1803678 4,7.18 C2.2465,7.18 0.82,5.7535 0.82,4 C0.82,2.2465 2.2465,0.82 4,0.82 C5.7535,0.82 7.18,2.2465 7.18,4 C7.18,4.22725 7.15475,4.45725 7.105,4.6835 C7.0045,5.09625 6.7155,5.22275 6.4985,5.206 C6.28025,5.18825 6.025,5.03275 6.02325,4.65225 L6.02325,4 C6.02325,2.88425 5.11575,1.97675 4,1.97675 C2.88425,1.97675 1.97675,2.88425 1.97675,4 C1.97675,5.11575 2.88425,6.02325 4,6.02325 C4.53860586,6.02452999 5.05513487,5.80932458 5.4335,5.426 C5.65379642,5.77148669 6.02413451,5.99283713 6.43275,6.02325 C6.76189467,6.0488923 7.08902366,5.95301273 7.35225,5.75375 C7.592,5.57175 7.771,5.3085 7.87,4.99225 C7.88575,4.94125 7.91475,4.82425 7.915,4.8235 L7.91575,4.81925 C7.974,4.5655 8,4.3125 8,4 C8,1.7945 6.2055,0 4,0" id="Shape"></path>
+                                            </g>
+                                        </g>
+                                    </g>
+                                </svg>
+                            </div>
+                        </div>
+
+                        <div class="auth__wrap-el auth__with-g" @click="$api.loginWithService('instagram')">
+                            <div class="icon__instagram">
+                                <svg viewBox="0 0 48 48" width="34px" height="34px">
+                                    <radialGradient id="yOrnnhliCrdS2gy~4tD8ma" cx="19.38" cy="42.035" r="44.899" gradientUnits="userSpaceOnUse">
+                                    <stop offset="0" stop-color="#fd5"/><stop offset=".328" stop-color="#ff543f"/><stop offset=".348" stop-color="#fc5245"/><stop offset=".504" stop-color="#e64771"/><stop offset=".643" stop-color="#d53e91"/><stop offset=".761" stop-color="#cc39a4"/><stop offset=".841" stop-color="#c837ab"/></radialGradient><path fill="url(#yOrnnhliCrdS2gy~4tD8ma)" d="M34.017,41.99l-20,0.019c-4.4,0.004-8.003-3.592-8.008-7.992l-0.019-20	c-0.004-4.4,3.592-8.003,7.992-8.008l20-0.019c4.4-0.004,8.003,3.592,8.008,7.992l0.019,20	C42.014,38.383,38.417,41.986,34.017,41.99z"/><radialGradient id="yOrnnhliCrdS2gy~4tD8mb" cx="11.786" cy="5.54" r="29.813" gradientTransform="matrix(1 0 0 .6663 0 1.849)" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#4168c9"/><stop offset=".999" stop-color="#4168c9" stop-opacity="0"/></radialGradient><path fill="url(#yOrnnhliCrdS2gy~4tD8mb)" d="M34.017,41.99l-20,0.019c-4.4,0.004-8.003-3.592-8.008-7.992l-0.019-20	c-0.004-4.4,3.592-8.003,7.992-8.008l20-0.019c4.4-0.004,8.003,3.592,8.008,7.992l0.019,20	C42.014,38.383,38.417,41.986,34.017,41.99z"/><path fill="#fff" d="M24,31c-3.859,0-7-3.14-7-7s3.141-7,7-7s7,3.14,7,7S27.859,31,24,31z M24,19c-2.757,0-5,2.243-5,5	s2.243,5,5,5s5-2.243,5-5S26.757,19,24,19z"/><circle cx="31.5" cy="16.5" r="1.5" fill="#fff"/><path fill="#fff" d="M30,37H18c-3.859,0-7-3.14-7-7V18c0-3.86,3.141-7,7-7h12c3.859,0,7,3.14,7,7v12	C37,33.86,33.859,37,30,37z M18,13c-2.757,0-5,2.243-5,5v12c0,2.757,2.243,5,5,5h12c2.757,0,5-2.243,5-5V18c0-2.757-2.243-5-5-5H18z"/>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="auth__wrap-el auth__with-fb" @click="$api.loginWithService('facebook')">
+                            <div class="icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd" clip-rule="evenodd" data-name="Layer 21" image-rendering="optimizeQuality" shape-rendering="geometricPrecision" text-rendering="geometricPrecision" viewBox="0 0 32 32"><path fill="#fefefe" d="M17.09 32H1.77C.79 32 0 31.21 0 30.23V1.77C0 .79.79 0 1.77 0h28.46C31.21 0 32 .79 32 1.77v28.46c0 .98-.79 1.77-1.77 1.77h-8.15V19.61h4.16l.62-4.83h-4.78v-3.09c0-1.39.39-2.35 2.39-2.35h2.56V5.02c-.44-.06-1.96-.19-3.73-.19-3.68 0-6.21 2.25-6.21 6.39v3.56h-4.17v4.83h4.17V32z"/></svg>
+                            </div>
+                        </div>
 
                         <div class="auth__wrap-el auth__with-vk" @click="$api.loginWithService('vkontakte')">
                             <div class="icon">
@@ -116,7 +140,6 @@
     import register from "./register";
     import recover from "./recover";
     import modal from '~/components/modal';
-    import btn from "../btn";
     import useVuelidate from '@vuelidate/core'
     import {required, email, minLength, helpers} from '@vuelidate/validators'
     import { useNuxtApp } from '#app'
@@ -281,6 +304,9 @@
             & svg {
 
             }
+        }
+        &__with-mailru {
+            background-color: #005ff9;
         }
     }
     .section-hr {
