@@ -144,7 +144,7 @@ import {required, minLength, helpers, maxLength} from '@vuelidate/validators';
 import { storeToRefs } from "pinia";
 import {useReviewStore} from "~/store/review";
 import {useCurrentSkuStore} from "~/store/currentSku";
-import calculateSymbolCount from '~/utils/symbolCount';
+import { calculateSymbolCount, calculatePhotosCount } from '~/utils/symbolCount';
 
 
 const { $api } = useNuxtApp();
@@ -190,7 +190,8 @@ let rules = {
             maxLength: maxLength(256),
         },
         body: {
-            symbolCount: helpers.withMessage('Поле должно быть заполнено', value => calculateSymbolCount(value) > 0),
+            symbolCount: helpers.withMessage('Количество знаков должно быть больше 2500', value => calculateSymbolCount(value) > 2500),
+            photosCount: helpers.withMessage('Количество фото должно быть 2 или больше', value => calculatePhotosCount(value) >= 2)
         },
         plus: {
             required: helpers.withMessage('Поле должно быть заполнено', required),

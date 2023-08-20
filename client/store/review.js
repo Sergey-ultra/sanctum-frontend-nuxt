@@ -35,6 +35,8 @@ export const useReviewStore = defineStore({
         isLoadingMyDrafts: false,
         myModeratedReviews: [],
         isLoadingMyModeratedReviews: false,
+        myRejectedReviews: [],
+        isLoadingMyRejectedReviews: false,
     }),
     getters: {
         reviewsByRating: state => {
@@ -143,6 +145,15 @@ export const useReviewStore = defineStore({
                 this.myModeratedReviews = [...data.data];
             }
             this.isLoadingMyModeratedReviews = false;
+        },
+        async loadMyRejectedReviews() {
+            this.isLoadingMyRejectedReviews = true;
+            const { $api } = useNuxtApp();
+            const data = await $api.get('/reviews/my-rejected');
+            if (data) {
+                this.myRejectedReviews = [...data.data];
+            }
+            this.isLoadingMyRejectedReviews = false;
         },
         async loadMyDrafts() {
             this.isLoadingMyDrafts = true;

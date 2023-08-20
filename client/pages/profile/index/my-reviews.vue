@@ -1,6 +1,6 @@
 <template>
     <div class="wrapper">
-            <tabsComponent class="review" :tabList="['Отзывы', 'На модерации', 'Черновики']">
+            <tabsComponent class="review" :tabList="['Отзывы', 'На модерации', 'Отклоненные', 'Черновики']">
                 <template v-slot:tabPanel-1>
                     <div class="loader__wrapper" v-if="isLoadingMyReviews">
                         <loader class="loader"></loader>
@@ -37,6 +37,9 @@
                   <myModeratesReviews/>
                 </template>
                 <template v-slot:tabPanel-3>
+                    <myRejectedReviews/>
+                </template>
+                <template v-slot:tabPanel-4>
                     <myDrafts/>
                 </template>
             </tabsComponent>
@@ -49,6 +52,7 @@
     import loader from "~/components/loader";
     import myReview from "~/components/profile/my-review-new";
     import myDrafts from "~/components/profile/my-drafts";
+    import myRejectedReviews from "~/components/profile/my-rejected-reviews.vue";
     import myModeratesReviews from "~/components/profile/my-moderated-reviews.vue";
     import { storeToRefs } from "pinia";
     import { useReviewStore } from "~/store/review";

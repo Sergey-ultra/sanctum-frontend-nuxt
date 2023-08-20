@@ -38,15 +38,15 @@ export default class Api {
         this.config = { ...config }
         this.$toast = toast
     }
-    public async login(object) {
-        const response = await this.post('/login', object);
+    public async login(loginForm) {
+        const response = await this.post('/login', loginForm);
 
         if (response.status) {
             if (!response.isRequiredEmailVerification) {
-                const { name, token, avatar, role } = response;
+                const { name, token, avatar, role, balance } = response;
                 this.isAuth.value = true;
                 this.token.value = token;
-                Object.assign(this.$user, { avatar, role, name })
+                Object.assign(this.$user, { avatar, role, name, balance })
                 this.setIsShowAuthModal(false);
 
             } else {
@@ -110,7 +110,7 @@ export default class Api {
         }
     }
 
-    public async recover(email) {
+    public async recover(email: string) {
         const { message } = await this.post('/forgot-password', { email });
         this.$toast.setSuccess(message);
     }

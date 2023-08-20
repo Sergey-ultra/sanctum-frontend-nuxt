@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="loader__wrapper" v-if="isLoadingMyModeratedReviews">
+        <div class="loader__wrapper" v-if="isLoadingMyRejectedReviews">
             <loader class="loader"></loader>
         </div>
         <div>
@@ -15,7 +15,7 @@
 
             <div
                 class="review item"
-                v-for="(item, index) in myModeratedReviews"
+                v-for="(item, index) in myRejectedReviews"
                 :key="index"
             >
                 <div class="table__row">
@@ -32,7 +32,14 @@
                         <div class="review__sku">{{ item.sku.name }}, {{ item.sku.volume }}</div>
                     </nuxt-link>
                     <div class="table__item table__item-status">
-                        {{ getStatusText(item.status) }}
+                        <tool-tip :position="'bottom'" :color="'pink'">
+                            <template v-slot:content>
+                                <div v-for="(reason, index) in item.rejected_reasons" :key="index">
+                                    {{ reason }}
+                                </div>
+                            </template>
+                            {{ getStatusText(item.status) }}
+                        </tool-tip>
                     </div>
                     <div class="table__item table__item-symbolCount">
                         {{ item.symbol_count }}
@@ -51,23 +58,12 @@ import { storeToRefs } from "pinia";
 import { useReviewStore } from "~/store/review";
 
 const reviewStore = useReviewStore();
-const { myModeratedReviews, isLoadingMyModeratedReviews } = storeToRefs(reviewStore);
+const { myRejectedReviews, isLoadingMyRejectedReviews } = storeToRefs(reviewStore);
 
 onMounted(async () => {
-    if (!myModeratedReviews.value.length) {
-        await reviewStore.loadMyModeratedReviews();
-    }
+    await reviewStore.loadMyRejectedReviews();
 });
 </script>
 <style scoped lang="scss">
-.loader {
-    width: 100px;
-    height: 100px;
-    &__wrapper {
-        display: flex;
-        justify-content: center;
-        align-items:center;
-    }
-}
 
 </style>

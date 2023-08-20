@@ -1,4 +1,4 @@
-const calculateSymbolCount = (value) => {
+export const calculateSymbolCount = (value) => {
     return value.blocks
         .reduce((acc, el) => {
             if (el.type === 'paragraph') {
@@ -13,4 +13,10 @@ const calculateSymbolCount = (value) => {
         .length;
 }
 
-export default calculateSymbolCount;
+
+
+export const calculatePhotosCount = (value) => {
+    return value.blocks.filter(el => el.type === 'image').length
+}
+
+export default { calculateSymbolCount, calculatePhotosCount };

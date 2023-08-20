@@ -113,7 +113,7 @@
 import inputComponent from '~/components/input-component';
 import buttonComponent from '~/components/button-component';
 import toolTip from '~/components/tool-tip';
-import calculateSymbolCount from '~/utils/symbolCount';
+import { calculateSymbolCount } from '~/utils/symbolCount';
 import modal from '~/components/modal.vue';
 import {useFileStore} from "~/store/file";
 import {storeToRefs} from "pinia";
@@ -172,7 +172,7 @@ const setImageFocusIndex = index => imageFocusIndex.value = index;
 
 const heightSync = event => {
     const target = event.target;
-    console.log(target.scrollTop);
+    // console.log(target.scrollTop);
     if (target.scrollTop >= 0) {
         target.style.height = target.scrollHeight + "px";
     }
